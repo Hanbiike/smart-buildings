@@ -69,7 +69,9 @@ logged in the 10-27 appendix update below.)
   anchor (fb1 +10.7%, fb2 +2.1%, rest flat) — stall-detector cap slows
   recovery, same catch-up family. Both r1 and fair versions dead.
 - Item 4 cooling tail next (occ_coolshift on hot cells); item 5 running:
-  evening eco-coast occ_coast7 on 6 cells (/tmp/coast, control in dm1).
+  evening coast occ_coast7 FIXED (band override was guard-neutralized →
+  void matrix; point-target drop CS_DROP 1.0K from 17:00, verified live,
+  off-exact). Real matrix /tmp/coast2 running, control in dm1.
 
 ## Appendix
 
