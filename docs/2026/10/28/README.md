@@ -37,16 +37,25 @@ logged in the 10-27 appendix update below.)
 
 - occ_dualmax7 — b1/fairbanks_1 first-600 — 0.01648 vs 0.01701 (+3.1%).
 - occ_hdamp085_7 — same window — 0.01655 (+2.7%).
-- Full-episode screening: PENDING.
+- dm1 full-8640 (6 fairbanks + atlanta_2 + denver_2), means: occ7 0.016157,
+  dualmax 0.016964 (+5.0%), hdamp085 0.016288 (+0.8%). Dual-max loses on
+  ALL 8 pairs (+2.5% fb1 … +18.3% fb4, +15.2% denver); hdamp mixed
+  (−1.7% fb8 … +3.0% fb1). The 600-step +3.1% was startup-transient
+  illusion — full-horizon reversal, exactly the S-U2 warning.
 
 ## Decisions
 
-- None yet (awaiting full-8640 screening).
+- Naive dual-max CLOSED as specified (output-map swap loses full-episode).
+  Lesson: the waste is plant-level over-conditioning (water/SAT), not
+  zone delivery rate; restricting delivery loses to catch-up dynamics
+  (same family as nightdrop3 +18%). Combination dual-max × retuned PI
+  parked as follow-up after items 2–3.
 
 ## Open
 
-- dm1 results → 30-cell + held-out/no-tails validation if promising.
-- Research item 2 (band-edge riding) next after item 1 resolves.
+- Item 2 frontier (running): edge b0/kp05 + b025/kp05 on 5 cells (control
+  occ7 exists in /tmp/dm1); then b025/kp03 + stop-rule check on tail regret.
+- Item 3: prestart shape (22.5% pool) — biggest remaining suspect.
 
 ## Appendix
 
