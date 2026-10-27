@@ -62,14 +62,12 @@ logged in the 10-27 appendix update below.)
 
 ## Open
 
-- Item 2 CLOSED negative: isolation arm b025/KP-chain ALSO blows up
-  (atl2 +65%, fb2 +35%). Edge-riding dead as specified — deadband target
-  itself is the problem (bypassed down-shift, residual integral, no
-  hysteresis), not the gain. Redirect: gentle-CENTRE under occ gating
-  (occ_edge7 EB_ON=0 + EB_KP 0.03/0.05, running /tmp/edge_kp03|kp05) —
-  forensics' 1:4 exchange rate came from centre-holding kp03, never
-  confirmed full-horizon.
-- Item 3: prestart shape (22.5% pool) — biggest remaining suspect.
+- Item 2 CLOSED (edge dead; gentle-centre banked −1.0%, stop-rule clean,
+  tails even better). Item 3 CLOSED negative in blanket form (shape trades
+  mornings; timing crashes Denver; adaptive timing → item 5).
+- Item 4 running: r1-based occ_sat/03/07 lose (confounded: missing r2–r4
+  fixes); fair port occ_satcap7 (stall-detector damper cap on occ7,
+  off-exact) on 5 hard cells (/tmp/satcap7).
 
 ## Appendix
 
