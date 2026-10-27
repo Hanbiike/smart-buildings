@@ -1,0 +1,33 @@
+name: building_xfer_4
+seed: 50003
+floor_plan:
+  width: 640
+  height: 445
+  num_floors: 4
+  min_room_size: 43
+  max_room_size: 58
+  building_shape: u_shape
+  shape_ratio: 0.33
+  composite_coverage: 0.6
+  composite_style: architectural
+ahu:
+  num_ahus: 4
+  max_zones_per_ahu: 10
+simulation:
+  start_timestamp: 2023-07-10 06:00
+  num_days_in_episode: 30
+  occupants_per_zone: 6
+materials:
+  exterior_cv_conductivity: 0.55
+  exterior_cv_density: 350.0
+  exterior_cv_heat_capacity: 840.0
+  interior_wall_cv_conductivity: 0.6
+  interior_wall_cv_density: 110.0
+  interior_wall_cv_heat_capacity: 900.0
+  interior_cv_conductivity: 50.0
+  interior_cv_density: 1.2
+  interior_cv_heat_capacity: 1005.0
+  interior_mass_cv_conductivity: 15.0
+  interior_mass_cv_density: 10.0
+  interior_mass_cv_heat_capacity: 1000.0
+construction_name: curtain_wall
