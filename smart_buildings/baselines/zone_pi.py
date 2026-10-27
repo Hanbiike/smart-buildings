@@ -177,8 +177,8 @@ class ZonePIPolicy(CoolingHoldPolicy):
             # at comfort.
             if hi - lo > (hi_c - lo_c) + 1e-6:
                 lo, hi = lo_c, hi_c
-            err = self._denormalize_zone_temp(obs[obs_idx]) - self._zone_target(
-                obs, lo, hi
+            err = self._zone_err(
+                obs, self._denormalize_zone_temp(obs[obs_idx]), lo, hi
             )
             integral = self._zone_integral.get(vav_id, 0.0)
             u_raw = self.KP * err + self.KI * integral
@@ -212,6 +212,14 @@ class ZonePIPolicy(CoolingHoldPolicy):
         damper = self.MIN_DAMPER + (1.0 - self.MIN_DAMPER) * abs(u) * gain
         reheat = max(0.0, -u)
         return damper, reheat
+
+    def _zone_err(self, obs, temp, lo, hi):
+        """PI error for a zone at temperature temp with band [lo, hi].
+
+        Default: deviation from the (possibly shifted) band target.
+        Override for deadband edge-riding.
+        """
+        return temp - self._zone_target(obs, lo, hi)
 
     def _base_action(self, obs):
         self._pi_active = self._pi_hours(obs)

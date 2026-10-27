@@ -137,6 +137,7 @@ from smart_buildings.baselines.occ_gated5 import OccGated5Policy
 from smart_buildings.baselines.occ_gated6 import OccGated6Policy
 from smart_buildings.baselines.occ_dualmax import (
     OccDualMax7Policy, OccHDamp085G7Policy)
+from smart_buildings.baselines.occ_edge import OccEdge7Policy
 from smart_buildings.baselines.occ_gated7 import OccGated7Policy
 from smart_buildings.baselines.slot_linear import SlotLinearPolicy
 from smart_buildings.baselines.slot_hybrid import (
@@ -311,6 +312,7 @@ POLICY_MAP: dict[str, type[Any]] = {
     "occ_gated7": OccGated7Policy,
     "occ_dualmax7": OccDualMax7Policy,
     "occ_hdamp085_7": OccHDamp085G7Policy,
+    "occ_edge7": OccEdge7Policy,
     "slot_linear": SlotLinearPolicy,
     "slot_hybrid": SlotHybridPolicy,
     "slot_ppo": SlotPPOPolicy,
