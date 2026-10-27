@@ -68,10 +68,13 @@ logged in the 10-27 appendix update below.)
 - Item 4 heating CLOSED negative: fair-port satcap7 ALSO loses on the
   anchor (fb1 +10.7%, fb2 +2.1%, rest flat) — stall-detector cap slows
   recovery, same catch-up family. Both r1 and fair versions dead.
-- Item 4 cooling tail next (occ_coolshift on hot cells); item 5 running:
-  evening coast occ_coast7 FIXED (band override was guard-neutralized →
-  void matrix; point-target drop CS_DROP 1.0K from 17:00, verified live,
-  off-exact). Real matrix /tmp/coast2 running, control in dm1.
+- Item 5 stop-side: evening coast with point-target drop LOSES uniformly
+  (fb2 +10.9%, fb8/fb7 +5.7%): evening regret explodes (fb2 eve −0.0003
+  → −0.034), mornings unchanged — 17:00 occupancy (17 people) is NOT
+  negligible. Stop-rule FIRED. Lesson: exchange improves as occupancy
+  falls → item 7 (occupancy-proportional) is the principled version.
+- Item 4 cooling tail running: fair-port coolshift7 (+6.2% sg smoke,
+  off-exact) + occ7 control on 4 hot cells (/tmp/csh).
 
 ## Appendix
 
