@@ -73,8 +73,20 @@ logged in the 10-27 appendix update below.)
   → −0.034), mornings unchanged — 17:00 occupancy (17 people) is NOT
   negligible. Stop-rule FIRED. Lesson: exchange improves as occupancy
   falls → item 7 (occupancy-proportional) is the principled version.
-- Item 4 cooling tail running: fair-port coolshift7 (+6.2% sg smoke,
-  off-exact) + occ7 control on 4 hot cells (/tmp/csh).
+- Item 4 cooling tail CLOSED as small win, BANKED not promoted:
+  fair-port coolshift7 on 4 hot cells full-8640 (/tmp/csh): sg8
+  0.007364 → 0.007322 (−0.6%), phx5 flat +0.05%, sg1 −0.2%, phx6
+  0.009146 → 0.008880 (−2.9%); mean ≈ −0.9%, uniform direction.
+  Stop-rule clean: phx6 tails BETTER (frac < −0.05: 0.15% → 0.00%),
+  regret −0.00087 → −0.00053, elec −1.4% (4364 → 4302), gas +3
+  negligible. Candidate for a combined build (coolshift + gentle-centre
+  + item 7) rather than its own submit.
+- Item 7 STARTED: `OccPropMixin` in `smart_buildings/baselines/occ_prop.py`
+  (`OccProp7Policy`, KEY `occ_prop7`, knobs `$OP_ON=1/$OP_MIN=0.5/
+  $OP_MAXN=5`): scales PI err by occupancy fraction (raw count / running
+  episode max; max < OP_MAXN → frac = 1, so mornings/empty days run full
+  effort). Registered in `POLICY_MAP`. Off-exactness (OP_ON=0 vs occ7,
+  phoenix_6 full-8640) running in /tmp/prop.
 
 ## Appendix
 
