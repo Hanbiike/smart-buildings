@@ -46,9 +46,11 @@ Lower is better.
 ## Conventions
 
 - Reply in Russian; preserve paths/commands/scores verbatim.
+- Committed docs are English only (`docs/*`, code comments).
 - Throwaway probes go in `probe_modes.py` + `POLICY_MAP`; promote winners to
   `occ_gatedN.py` with fixed constants (no env vars in shipped code).
 - Transfer scenarios live in `smart_buildings/transfer_scenarios/`
   (git-ignored, regenerate via `tools/gen_transfer.py` with fixed seeds).
-- Record each active day in `docs/YYYY/MM/DD/README.md` (see `docs/README.md`),
-  negative results included.
+- Record each active day in `docs/YYYY/MM/DD/README.md` following the doc
+  system there (Summary + 5 fixed sections + Appendix, rules R1-R9);
+  start from `docs/TEMPLATE.md`.
