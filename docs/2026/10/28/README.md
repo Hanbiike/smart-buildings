@@ -53,8 +53,10 @@ logged in the 10-27 appendix update below.)
 
 ## Open
 
-- Item 2 frontier (running): edge b0/kp05 + b025/kp05 on 5 cells (control
-  occ7 exists in /tmp/dm1); then b025/kp03 + stop-rule check on tail regret.
+- Item 2 frontier: b0/kp05 AND b025/kp05 BLOW UP on comfort (atl2 regret
+  27.3% steps < −0.01 vs 0.1% occ7; fb cells +19…+72%). Stop rule FIRED.
+  Isolation arm b025/KP-chain running (/tmp/edge_b025k7, atl2+fb2): if flat,
+  the lever is gentle-centre (kp03-style, known), not edge-riding.
 - Item 3: prestart shape (22.5% pool) — biggest remaining suspect.
 
 ## Appendix
