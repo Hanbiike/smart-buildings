@@ -46,9 +46,9 @@ from smart_buildings.smart_control.utils.scenario_generator import (  # noqa: E4
 )
 
 
-def make_run(pair: str, policy_key: str):
+def make_run(pair: str, policy_key: str, scenarios_dir: str = "training_scenarios"):
     b, w = pair.split("/")
-    input_dir = ROOT / "smart_buildings" / "training_scenarios" / b / w
+    input_dir = ROOT / "smart_buildings" / scenarios_dir / b / w
     env = load_hybrid_environment(input_dir / "config.gin")
     tracker = SimulationTracker(env, vmin=280, vmax=310, capture_snapshots=False)
     env.metrics_path = None
@@ -92,12 +92,13 @@ def main() -> None:
     ap.add_argument("--noise", type=float, default=0.15)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", default=None)
+    ap.add_argument("--scenarios-dir", default="training_scenarios")
     a = ap.parse_args()
     if a.N + a.H > 8640:
         ap.error("N + H must be <= 8640 (episode length)")
 
     t0 = time.time()
-    env, tracker, policy = make_run(a.pair, a.teacher_key)
+    env, tracker, policy = make_run(a.pair, a.teacher_key, a.scenarios_dir)
     rollout(env, tracker, policy, a.N)  # prefix to step N
     master = snapshot(env, tracker, policy)
     t_prefix = time.time() - t0
@@ -131,7 +132,8 @@ def main() -> None:
     best = int(np.argmin(cand_losses))
     headroom = (teacher_loss - cand_losses[best]) / teacher_loss * 100.0
     result = {
-        "pair": a.pair, "teacher": a.teacher_key, "N": a.N, "H": a.H,
+        "pair": a.pair, "scenarios": a.scenarios_dir,
+        "teacher": a.teacher_key, "N": a.N, "H": a.H,
         "K": a.K, "noise": a.noise, "seed": a.seed,
         "teacher_H_loss": teacher_loss,
         "best_H_loss": cand_losses[best],
@@ -146,11 +148,16 @@ def main() -> None:
     if a.out:
         out = Path(a.out)
         out.write_text(json.dumps(result, indent=2))
+        all_cont = np.array([f[0] for f in first_actions])
+        all_disc = np.array([f[1] for f in first_actions])
         np.savez(out.with_suffix(".npz"),
                  oracle_cont=first_actions[best][0],
                  oracle_disc=first_actions[best][1],
                  teacher_cont=first_actions[0][0],
-                 teacher_disc=first_actions[0][1])
+                 teacher_disc=first_actions[0][1],
+                 all_first_cont=all_cont,
+                 all_first_disc=all_disc,
+                 cand_losses=np.array(cand_losses))
         print(f"wrote {out} + {out.with_suffix('.npz')}")
 
 
