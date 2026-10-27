@@ -54,10 +54,11 @@ logged in the 10-27 appendix update below.)
   comfort for night gas at a bad rate on the anchor cell (fb1: gas −1.5%,
   regret −0.018 → −0.033, stop-rule FAIL). Dead ramp-gate idea dropped
   (grace already ends prestart ~05:00 — verified by instrumentation).
-  Pivot inside item 3: TIMING precision (SAFETY 1.3→1.0 + MARGIN 6→0/2):
-  smoke shows marginal prestart is pure waste on mild cells (atl2 +6.25%,
-  prestart 276–288 skipped entirely); on capped cold cells knobs are
-  inert. Full-horizon timing matrix running (mild + mid cells).
+- Item 3 TIMING precision also CLOSED negative: (1.0/0) and (1.0/2) flat
+  on atl2/fb2/fb8 but CRASH denver (+9.2%/+5.8%, morning deep-regret
+  1.6% → 13.1%, stop-rule FAIL). Margin is load-bearing on cold-mornings
+  climates; blanket cuts are wrong. Handoff: ADAPTIVE timing = item 5
+  (JCI optimal start, daily adaptation), not fixed cuts.
 
 ## Open
 
