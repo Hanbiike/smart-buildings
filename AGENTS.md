@@ -54,3 +54,6 @@ Lower is better.
 - Record each active day in `docs/YYYY/MM/DD/README.md` following the doc
   system there (Summary + 5 fixed sections + Appendix, rules R1-R9);
   start from `docs/TEMPLATE.md`.
+- Push via `GIT_SSH_COMMAND="ssh -i ~/.ssh/id_kaggle_push -o IdentitiesOnly=yes"
+  git push origin main` (plain push is rejected); remote `main` = source of
+  truth for multi-machine work.
