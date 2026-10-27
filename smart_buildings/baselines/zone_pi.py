@@ -190,18 +190,28 @@ class ZonePIPolicy(CoolingHoldPolicy):
             u = float(np.clip(self.KP * err + self.KI * integral, -1.0, 1.0))
             self._max_heat = max(self._max_heat, -u)
             self._zone_u[vav_id] = u
-            gain = self.HEAT_DAMPER_GAIN if u < 0 else 1.0
-            damper = self.MIN_DAMPER + (1.0 - self.MIN_DAMPER) * abs(u) * gain
+            damper, reheat = self._zone_output_map(u)
             damper_idx = action_indices.get("supply_air_damper_percentage_command")
             if damper_idx is not None:
                 continuous[damper_idx] = 2.0 * damper - 1.0
             reheat_idx = action_indices.get("reheat_valve_percentage_command")
             if reheat_idx is not None:
-                continuous[reheat_idx] = 2.0 * max(0.0, -u) - 1.0
+                continuous[reheat_idx] = 2.0 * reheat - 1.0
 
     def _zone_target(self, obs, lo, hi):
         """Temperature each zone's PI loop aims at; the band centre by default."""
         return 0.5 * (lo, hi)[0] + 0.5 * (lo, hi)[1]
+
+    def _zone_output_map(self, u):
+        """(damper_01, reheat_01) from PI signal u in [-1, 1].
+
+        Coupled by default: the damper opens with |u| and the reheat valve
+        with -u simultaneously. Override for decoupled (dual-maximum) maps.
+        """
+        gain = self.HEAT_DAMPER_GAIN if u < 0 else 1.0
+        damper = self.MIN_DAMPER + (1.0 - self.MIN_DAMPER) * abs(u) * gain
+        reheat = max(0.0, -u)
+        return damper, reheat
 
     def _base_action(self, obs):
         self._pi_active = self._pi_hours(obs)
