@@ -65,9 +65,11 @@ logged in the 10-27 appendix update below.)
 - Item 2 CLOSED (edge dead; gentle-centre banked −1.0%, stop-rule clean,
   tails even better). Item 3 CLOSED negative in blanket form (shape trades
   mornings; timing crashes Denver; adaptive timing → item 5).
-- Item 4 running: r1-based occ_sat/03/07 lose (confounded: missing r2–r4
-  fixes); fair port occ_satcap7 (stall-detector damper cap on occ7,
-  off-exact) on 5 hard cells (/tmp/satcap7).
+- Item 4 heating CLOSED negative: fair-port satcap7 ALSO loses on the
+  anchor (fb1 +10.7%, fb2 +2.1%, rest flat) — stall-detector cap slows
+  recovery, same catch-up family. Both r1 and fair versions dead.
+- Item 4 cooling tail next (occ_coolshift on hot cells); item 5 running:
+  evening eco-coast occ_coast7 on 6 cells (/tmp/coast, control in dm1).
 
 ## Appendix
 
