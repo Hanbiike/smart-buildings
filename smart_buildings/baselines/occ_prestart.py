@@ -10,6 +10,8 @@ loss, gas-dominated. This mixin reshapes ONLY the prestart window:
 - $PS_TGT (default 0.0 = off): shift the PI error by this many K during
   prestart (negative = consider the job done below band centre, e.g. -1.0
   heats to lo instead of centre; final ramp happens at arrival).
+- $PS_SAFETY (default empty = class 1.3): prestart timing safety factor.
+- $PS_MARGIN (default empty = class 6): extra prestart steps on top.
 
 Defaults reproduce occ_gated7 exactly.
 """
@@ -25,6 +27,12 @@ class PrestartShapeMixin:
         import os as _os
         self._ps_dmp_cap = float(_os.environ.get("PS_DMP_CAP", "1.0"))
         self._ps_tgt = float(_os.environ.get("PS_TGT", "0.0"))
+        safety = _os.environ.get("PS_SAFETY", "")
+        if safety:
+            self.PRESTART_SAFETY = float(safety)
+        margin = _os.environ.get("PS_MARGIN", "")
+        if margin:
+            self.PRESTART_MARGIN_STEPS = int(margin)
 
     def _zone_err(self, obs, temp, lo, hi):
         err = super()._zone_err(obs, temp, lo, hi)
