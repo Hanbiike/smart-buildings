@@ -5,11 +5,17 @@ Usage:
                    [--out path.json]
 
 Method: roll the teacher 0..N, snapshot (tools/ckpt.py), then evaluate K
-candidates over N..N+H. Candidate 0 is pure teacher (sanity: must exactly
-match a plain rollout); candidates 1..K-1 add Gaussian noise (scale --noise)
-to the teacher's CONTINUOUS action each step; discrete actions stay at the
+candidates over N..N+H. Candidate 0 is pure teacher (sanity: must match a
+plain rollout up to the reseeded shuffle stream, ~1e-6); candidates 1..K-1
+perturb the teacher's CONTINUOUS action; discrete actions stay at the
 teacher's (v1 limitation). Score = mean(|reward|) over H, same convention
 as the leaderboard loss.
+
+Modes (--mode): perstep = fresh Gaussian noise (scale --noise) every step;
+const = one constant offset per dim over the whole horizon (51 params),
+optionally refit with CEM (--cem-iters, --elite-frac): elite mean/std become
+the next round's sampling distribution. Const+CEM finds an interpretable
+steady bias (a mechanism); perstep measures raw local headroom.
 
 Outputs JSON: teacher_H_loss, best_H_loss, headroom_pct, per-candidate
 losses, and the best candidate's first action (oracle action at step N);
@@ -93,6 +99,9 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", default=None)
     ap.add_argument("--scenarios-dir", default="training_scenarios")
+    ap.add_argument("--mode", choices=["perstep", "const"], default="perstep")
+    ap.add_argument("--cem-iters", type=int, default=0)
+    ap.add_argument("--elite-frac", type=float, default=0.2)
     a = ap.parse_args()
     if a.N + a.H > 8640:
         ap.error("N + H must be <= 8640 (episode length)")
@@ -108,26 +117,59 @@ def main() -> None:
 
     cand_losses, first_actions = [], []
     stream = (a.seed * 1000003) ^ (a.N * 9176 + 11)
-    for k in range(a.K):
+    n_elite = max(2, int(a.K * a.elite_frac))
+    mu, sigma, iters_best, elite_offsets = None, None, [], None
+
+    def one_candidate(noise_fn):
         e, tr, p = restore(master)
         reseed_convection(stream)  # same shuffle stream for every candidate
-        if k == 0:
-            loss, first = rollout(e, tr, p, a.H)
-        else:
-            rng = np.random.default_rng(a.seed + k)
-            loss, first = rollout(
-                e, tr, p, a.H,
-                noise_fn=lambda c, t: c + rng.normal(0.0, a.noise, size=c.shape))
-        cand_losses.append(loss)
-        first_actions.append(first)
+        return rollout(e, tr, p, a.H, noise_fn=noise_fn)
 
-    # In-harness restore validation: candidate 0 rides a reseeded shuffle
-    # stream, so it matches the plain teacher up to ~1e-12 relative (proven
-    # symmetric under restore: two restores with the same reseed are exact).
+    if a.mode == "perstep":
+        for k in range(a.K):
+            if k == 0:
+                loss, first = one_candidate(None)
+            else:
+                rng = np.random.default_rng(a.seed + k)
+                loss, first = one_candidate(
+                    lambda c, t: c + rng.normal(0.0, a.noise, size=c.shape))
+            cand_losses.append(loss)
+            first_actions.append(first)
+    else:
+        loss0, first0 = one_candidate(None)  # k=0 doubles as sanity base
+        n_cont = len(first0[0])
+        mu = np.zeros(n_cont)
+        sigma = np.full(n_cont, a.noise)
+        for it in range(a.cem_iters + 1):
+            it_losses, it_offs, it_firsts = [], [], []
+            for k in range(a.K):
+                if k == 0 and it == 0:
+                    loss, first, off = loss0, first0, np.zeros(n_cont)
+                else:
+                    rng = np.random.default_rng(a.seed + it * 100003 + k)
+                    off = rng.normal(mu, sigma)
+                    loss, first = one_candidate(
+                        lambda c, t, off=off: c + off)
+                it_losses.append(loss)
+                it_offs.append(off)
+                it_firsts.append(first)
+            iters_best.append(float(min(it_losses)))
+            elite = np.argsort(it_losses)[:n_elite]
+            mu = np.mean([it_offs[i] for i in elite], axis=0)
+            sigma = np.maximum(
+                np.std([it_offs[i] for i in elite], axis=0), 0.01)
+            if it == a.cem_iters:
+                cand_losses, first_actions = it_losses, it_firsts
+                elite_offsets = [it_offs[i] for i in elite]
+
+    # In-harness restore validation: the pure-teacher branch rides a reseeded
+    # shuffle stream, so it matches the plain teacher up to ~1e-6 relative
+    # (proven symmetric under restore: two restores + same reseed are exact).
+    sanity = cand_losses[0] if a.mode == "perstep" else loss0
     denom = max(abs(teacher_loss), 1e-12)
-    rel = abs(cand_losses[0] - teacher_loss) / denom
+    rel = abs(sanity - teacher_loss) / denom
     assert rel < 1e-4, (
-        f"restore mismatch: {cand_losses[0]} vs {teacher_loss} (rel {rel})")
+        f"restore mismatch: {sanity} vs {teacher_loss} (rel {rel})")
 
     best = int(np.argmin(cand_losses))
     headroom = (teacher_loss - cand_losses[best]) / teacher_loss * 100.0
@@ -135,10 +177,13 @@ def main() -> None:
         "pair": a.pair, "scenarios": a.scenarios_dir,
         "teacher": a.teacher_key, "N": a.N, "H": a.H,
         "K": a.K, "noise": a.noise, "seed": a.seed,
+        "mode": a.mode, "cem_iters": a.cem_iters,
+        "elite_frac": a.elite_frac, "iters_best": iters_best,
         "teacher_H_loss": teacher_loss,
         "best_H_loss": cand_losses[best],
         "headroom_pct": headroom,
         "best_k": best,
+        "elite_mean_offset": (mu.tolist() if mu is not None else None),
         "cand_losses": cand_losses,
         "prefix_seconds": t_prefix,
         "total_seconds": time.time() - t0,
@@ -157,7 +202,9 @@ def main() -> None:
                  teacher_disc=first_actions[0][1],
                  all_first_cont=all_cont,
                  all_first_disc=all_disc,
-                 cand_losses=np.array(cand_losses))
+                 cand_losses=np.array(cand_losses),
+                 elite_offsets=(np.array(elite_offsets)
+                                if elite_offsets is not None else np.zeros(0)))
         print(f"wrote {out} + {out.with_suffix('.npz')}")
 
 
