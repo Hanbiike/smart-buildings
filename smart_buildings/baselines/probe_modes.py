@@ -2,6 +2,8 @@
 """THROWAWAY headroom probes (mode overrides). Delete after use."""
 
 from smart_buildings.baselines.occ_gated4 import OccGated4Policy
+from smart_buildings.baselines.occ_gated7 import OccGated7Policy
+from smart_buildings.baselines.zone_pi import _outside_kelvin
 
 
 class WeekendFloorProbe(OccGated4Policy):
@@ -245,3 +247,211 @@ class SetpointProbe(OccGated4Policy):
         dc = float(_os.environ.get("SP_DC", "0.0"))
         lo, hi = self.comfort_temp_window
         self.comfort_temp_window = (lo + dh, hi + dc)
+
+
+class PtrFastTrimProbe(OccGated7Policy):
+    """occ7 + fast trim-down when every zone is satisfied (P-a).
+
+    Oracle (CEM const-offset, xfer_3 January Tue/Wed) cuts water/air with
+    zero comfort at stake: trim-respond holds pressure up after the
+    excursion is gone. This probe trims at $PA_DOWN (default 0.10) whenever
+    no zone is outside band +/- $PA_SAT_DB (default 0.25K), even with
+    dampers mid-open. $PA_DOWN=0 reproduces occ7 exactly.
+    """
+
+    KEY = "probe_ptr_pa"
+
+    def __init__(self, building_meta_data, action_spec):
+        super().__init__(building_meta_data, action_spec)
+        import os as _os
+        self._pa_sat_db = float(_os.environ.get("PA_SAT_DB", "0.25"))
+        self._pa_down = float(_os.environ.get("PA_DOWN", "0.10"))
+
+    def _base_action(self, obs):
+        import numpy as _np
+        action = super(OccGated7Policy, self)._base_action(obs)
+        cont = action["continuous_action"]
+        disc = action["discrete_action"]
+        active = self._occupied(obs)
+        lo, hi = self.comfort_temp_window
+        db_eff = self.PTR_DB
+        if self.PTR_DB_SLOPE > 0 and getattr(self, "_oat_any", None) is not None:
+            try:
+                oat = _outside_kelvin(self, float(obs[self._oat_any]))
+                dt = abs(oat - 0.5 * (lo + hi))
+                db_eff = self.PTR_DB + self.PTR_DB_SLOPE * max(0.0, dt - self.PTR_DB_REF)
+            except (TypeError, ValueError):
+                pass
+        for i, ctrl in enumerate(self.ahu_controllers):
+            pidx = ctrl["pressure_idx"]
+            if pidx is None:
+                continue
+            if not disc[ctrl["run_discrete_idx"]]:
+                self._ptr_p[i] = -1.0
+                self._ptr_nstarve[i] = 0
+                continue
+            if not active:
+                continue
+            starved = False
+            all_closed = True
+            any_out = False
+            for vav_id, obs_idx, _ in ctrl["zones"]:
+                aidx = self.zone_action_indices.get(vav_id, {}).get(
+                    "supply_air_damper_percentage_command")
+                if aidx is None:
+                    continue
+                d = (float(cont[aidx]) + 1.0) * 0.5
+                if d >= 0.5:
+                    all_closed = False
+                t = self._denormalize_zone_temp(obs[obs_idx])
+                if d > self.PTR_DSAT and (t < lo - db_eff or t > hi + db_eff):
+                    starved = True
+                if t < lo - self._pa_sat_db or t > hi + self._pa_sat_db:
+                    any_out = True
+            if starved:
+                self._ptr_nstarve[i] += 1
+            else:
+                self._ptr_nstarve[i] = 0
+            if self._ptr_nstarve[i] >= self.PTR_PERSIST:
+                self._ptr_p[i] = min(self.PTR_MAX, self._ptr_p[i] + self.PTR_UP)
+            elif all_closed:
+                self._ptr_p[i] = max(-1.0, self._ptr_p[i] - self.PTR_DOWN)
+            elif not any_out:
+                self._ptr_p[i] = max(-1.0, self._ptr_p[i] - self._pa_down)
+            cont[pidx] = _np.float32(self._ptr_p[i])
+        return action
+
+
+class PtrPropKickProbe(OccGated7Policy):
+    """occ7 + respond kick proportional to excursion depth (P-b).
+
+    Oracle (xfer_3 January Thu, real bleed) pushes harder than +0.25/step
+    where it matters: kick = UP * (1 + $PB_PROP * max excursion beyond
+    db among open-damper zones). $PB_PROP=0 reproduces occ7 exactly.
+    """
+
+    KEY = "probe_ptr_pb"
+
+    def __init__(self, building_meta_data, action_spec):
+        super().__init__(building_meta_data, action_spec)
+        import os as _os
+        self._pb_prop = float(_os.environ.get("PB_PROP", "0.5"))
+
+    def _base_action(self, obs):
+        import numpy as _np
+        action = super(OccGated7Policy, self)._base_action(obs)
+        cont = action["continuous_action"]
+        disc = action["discrete_action"]
+        active = self._occupied(obs)
+        lo, hi = self.comfort_temp_window
+        db_eff = self.PTR_DB
+        if self.PTR_DB_SLOPE > 0 and getattr(self, "_oat_any", None) is not None:
+            try:
+                oat = _outside_kelvin(self, float(obs[self._oat_any]))
+                dt = abs(oat - 0.5 * (lo + hi))
+                db_eff = self.PTR_DB + self.PTR_DB_SLOPE * max(0.0, dt - self.PTR_DB_REF)
+            except (TypeError, ValueError):
+                pass
+        for i, ctrl in enumerate(self.ahu_controllers):
+            pidx = ctrl["pressure_idx"]
+            if pidx is None:
+                continue
+            if not disc[ctrl["run_discrete_idx"]]:
+                self._ptr_p[i] = -1.0
+                self._ptr_nstarve[i] = 0
+                continue
+            if not active:
+                continue
+            starved = False
+            all_closed = True
+            exc = 0.0
+            for vav_id, obs_idx, _ in ctrl["zones"]:
+                aidx = self.zone_action_indices.get(vav_id, {}).get(
+                    "supply_air_damper_percentage_command")
+                if aidx is None:
+                    continue
+                d = (float(cont[aidx]) + 1.0) * 0.5
+                if d >= 0.5:
+                    all_closed = False
+                t = self._denormalize_zone_temp(obs[obs_idx])
+                if d > self.PTR_DSAT and (t < lo - db_eff or t > hi + db_eff):
+                    starved = True
+                    exc = max(exc, lo - db_eff - t, t - hi - db_eff)
+            if starved:
+                self._ptr_nstarve[i] += 1
+            else:
+                self._ptr_nstarve[i] = 0
+            if self._ptr_nstarve[i] >= self.PTR_PERSIST:
+                # float() firewall: exc can be np.float32 (zone temps), and
+                # NEP-50 weak promotion would round _ptr_p to float32.
+                kick = float(self.PTR_UP * (1.0 + self._pb_prop * float(exc)))
+                self._ptr_p[i] = min(self.PTR_MAX, self._ptr_p[i] + kick)
+            elif all_closed:
+                self._ptr_p[i] = max(-1.0, self._ptr_p[i] - self.PTR_DOWN)
+            cont[pidx] = _np.float32(self._ptr_p[i])
+        return action
+
+
+class PtrHighCeilProbe(OccGated7Policy):
+    """occ7 + higher pressure ceiling (P-c).
+
+    Oracle pushes AHU_P4 +0.34 past occ7's ceiling (PTR_MAX=0.0) in the
+    extreme state: ceiling, not trigger, binds there. $PC_MAX (default
+    0.5); $PC_MAX=0.0 reproduces occ7 exactly.
+    """
+
+    KEY = "probe_ptr_pc"
+
+    def __init__(self, building_meta_data, action_spec):
+        super().__init__(building_meta_data, action_spec)
+        import os as _os
+        self._pc_max = float(_os.environ.get("PC_MAX", "0.5"))
+
+    def _base_action(self, obs):
+        import numpy as _np
+        action = super(OccGated7Policy, self)._base_action(obs)
+        cont = action["continuous_action"]
+        disc = action["discrete_action"]
+        active = self._occupied(obs)
+        lo, hi = self.comfort_temp_window
+        db_eff = self.PTR_DB
+        if self.PTR_DB_SLOPE > 0 and getattr(self, "_oat_any", None) is not None:
+            try:
+                oat = _outside_kelvin(self, float(obs[self._oat_any]))
+                dt = abs(oat - 0.5 * (lo + hi))
+                db_eff = self.PTR_DB + self.PTR_DB_SLOPE * max(0.0, dt - self.PTR_DB_REF)
+            except (TypeError, ValueError):
+                pass
+        for i, ctrl in enumerate(self.ahu_controllers):
+            pidx = ctrl["pressure_idx"]
+            if pidx is None:
+                continue
+            if not disc[ctrl["run_discrete_idx"]]:
+                self._ptr_p[i] = -1.0
+                self._ptr_nstarve[i] = 0
+                continue
+            if not active:
+                continue
+            starved = False
+            all_closed = True
+            for vav_id, obs_idx, _ in ctrl["zones"]:
+                aidx = self.zone_action_indices.get(vav_id, {}).get(
+                    "supply_air_damper_percentage_command")
+                if aidx is None:
+                    continue
+                d = (float(cont[aidx]) + 1.0) * 0.5
+                if d >= 0.5:
+                    all_closed = False
+                t = self._denormalize_zone_temp(obs[obs_idx])
+                if d > self.PTR_DSAT and (t < lo - db_eff or t > hi + db_eff):
+                    starved = True
+            if starved:
+                self._ptr_nstarve[i] += 1
+            else:
+                self._ptr_nstarve[i] = 0
+            if self._ptr_nstarve[i] >= self.PTR_PERSIST:
+                self._ptr_p[i] = min(self._pc_max, self._ptr_p[i] + self.PTR_UP)
+            elif all_closed:
+                self._ptr_p[i] = max(-1.0, self._ptr_p[i] - self.PTR_DOWN)
+            cont[pidx] = _np.float32(self._ptr_p[i])
+        return action

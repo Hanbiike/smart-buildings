@@ -144,7 +144,8 @@ from smart_buildings.baselines.occ_duty import (
     OccDutyLeanPolicy,
 )
 from smart_buildings.baselines.probe_modes import (
-    EconProbe, GuardProbe, MarginProbe, PressureTrimRespondProbe, SATProbe,
+    EconProbe, GuardProbe, MarginProbe, PressureTrimRespondProbe,
+    PtrFastTrimProbe, PtrHighCeilProbe, PtrPropKickProbe, SATProbe,
     SetpointProbe, TodShiftProbe, WeekendFloorProbe)
 from smart_buildings.baselines.transfer_policy import TransferPolicy
 from smart_buildings.baselines.nn_policy import (  # noqa: F401
@@ -313,6 +314,9 @@ POLICY_MAP: dict[str, type[Any]] = {
     "occ_duty_lean": OccDutyLeanPolicy,
     "probe_guard": GuardProbe,
     "probe_ptr": PressureTrimRespondProbe,
+    "probe_ptr_pa": PtrFastTrimProbe,
+    "probe_ptr_pb": PtrPropKickProbe,
+    "probe_ptr_pc": PtrHighCeilProbe,
     "probe_wfloor": WeekendFloorProbe,
     "probe_sp": SetpointProbe,
     "probe_margin": MarginProbe,
