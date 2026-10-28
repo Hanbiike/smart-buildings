@@ -228,6 +228,15 @@ the research audit has no new public score for either.
   midday flat, evening zero both. Provenance: clean code tree at commit
   `59a307b` (docs-only dirty); no code edits during the run. occ9 6-cell
   numbers reproduce exactly inside the suite.
+- SCORES LANDED: occ8 **0.01260** (−4.8% vs occ7), occ9 **0.01236**
+  (−6.6%) — both COMPLETE. Transfer ≈ 75% of local (occ9 local −8.8%).
+  Leader 0.00521 still 2.37× away; all heuristics exhausted, next is
+  report-10 stage 4 (causal gates) + fresh holdout, no noise ships.
+- Component ablations full train-30 (/tmp/abl30, 90×8640): econ −1.67%
+  (mild cells −3..−22%, inert on hot/deep-cold), dbh −5.39% (wins 29/30,
+  only phx5 +0.6%), heatopt −2.21% (heating cells); stack −8.80%
+  near-additive. Tails: econ flat 0.0021, heatopt improves to 0.0018,
+  dbh raises to 0.0030 (midnight family only).
 - New research context (docs/research/06–10 + README, 2026-10-28):
   Oct-27 ranking SUPERSEDED by report 10; no leader-method evidence;
   priorities now = reproducible current-family reference (this suite),
