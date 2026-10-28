@@ -165,6 +165,17 @@ logged in the 10-27 appendix update below.)
   drives −1.0 where OAT > return, and the gate never fires elsewhere.
 - occ9 SUBMITTED (kernel v1 COMPLETE, 3 left today): occ8 + HeatOpt.
   Both occ8 and occ9 PENDING in the ~10 h scoring queue.
+- Item 10 CLOSED: (b) pseudo-DCV (`occ_dcv7`, off-exact + ON bit-identical
+  to occ7 on sg1, loss-equal on phx6/atl2/den2) is fully inert — the
+  organizer economizer already minimizes outside air whenever OAT >
+  inside, so the DCV clamp never fires; the plan's "never tried" was
+  wrong in effect. (a) warmest-zone SAT reset not built: the 0.012 stack
+  tried it (MILD_SatWarm) and dropped it from the final (external
+  negative), and our Hot-inert result shows cooling SAT depth already
+  optimal on our base. (c) cooling night-drift covered by architecture
+  (occ shutdown drifts freely). All heuristic items 1–10 now closed:
+  shipped/econ+dbh+heatopt, banked/prop-v3+coolshift+gentle-centre,
+  rest negative.
 
 ## Appendix
 
