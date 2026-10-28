@@ -126,7 +126,26 @@ logged in the 10-27 appendix update below.)
   loop is. Lesson: our instant demand follower already beats G36 T&R
   here; G36 assumes reheat waste dominates, here chiller+comfort do.
   Rogue-zone variant not tried (failure is systematic, not rogue).
-  Next: items 9/10 (AHU staging, cooling/DCV).
+- Item 9 CLOSED neutral/negative (`occ_stage7`, knobs `$AHU9_ON/
+  $AHU9_OFF_DELAY=12/$AHU9_DB=0.2/$AHU9_U=0.1`; off-exact bit-proven).
+  v1 (temp-breach need): atl3 +10.5%, fb2 +4.3%, atl2 +1.6%, den2 −0.8% —
+  saves energy (gas −10%, elec −2%) but doubles regret (late re-on).
+  v1.1 (u-based need |u|>0.1): atl3 −0.36%, fb2/den2 exactly neutral —
+  safe but ~inert (all-zones-calm for 1 h is rare mid-day). Lesson:
+  staging doesn't pay in the occ-shutdown architecture (nights already
+  off); the 0.012 notebook's force-gate is specific to no-shutdown
+  policies. Next: item 10, then distillation ports.
+- DISTILLATION of sb-t-combo-d.ipynb (public 0.012, same code family):
+  (a) `occ_econ7` explicit PI-hours economizer — atl2 −8.7%, atl3 −3.9%,
+  den2 −4.2%, fb2/fb1/fb8/sg1 neutral-inert; stop-rule PERFECT (tails +
+  regret bit-equal, gas equal, elec −5..−34%). (b) `occ_dbh7`
+  heating-side-only deadband 0.15 K + leak 0.97 — fb1 −2.1%, fb2 −7.3%,
+  atl2 −11.2%, den2 −7.8%, BUT tails grow (fb1 1.5%→2.5%, den2
+  0.2%→0.44%) at midnight hours (less evening pre-charge); item-2
+  closure stands for the BOTH-sided variant only. (c) `occ_hot7`
+  Sat12Hot port + `occ_econdbh7` combo written; combo matrix running.
+  (d) HeatOpt coil math verified against local `vav.py` source
+  (discharge = T_s+e(T_w−T_s), e=min(1,C_w/C_a,(35−T_s)/(T_w−T_s))).
 
 ## Appendix
 
