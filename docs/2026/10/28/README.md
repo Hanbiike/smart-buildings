@@ -81,12 +81,23 @@ logged in the 10-27 appendix update below.)
   regret −0.00087 → −0.00053, elec −1.4% (4364 → 4302), gas +3
   negligible. Candidate for a combined build (coolshift + gentle-centre
   + item 7) rather than its own submit.
-- Item 7 STARTED: `OccPropMixin` in `smart_buildings/baselines/occ_prop.py`
-  (`OccProp7Policy`, KEY `occ_prop7`, knobs `$OP_ON=1/$OP_MIN=0.5/
-  $OP_MAXN=5`): scales PI err by occupancy fraction (raw count / running
-  episode max; max < OP_MAXN → frac = 1, so mornings/empty days run full
-  effort). Registered in `POLICY_MAP`. Off-exactness (OP_ON=0 vs occ7,
-  phoenix_6 full-8640) running in /tmp/prop.
+- Item 7 CLOSED as banked small win (`occ_prop7` v3, commit `b71e0ca`).
+  v1 (err × frac): fb8 −2.6%, atl2 −1.2%, den2 +0.5%, fb1 +5.6% LOSE —
+  cold-anchor mornings pay the savings back (morn regret ×7). v2 added
+  warmth-gate (coast only when empty AND warm): fb1 → +0.4% neutral,
+  cold wins kept. But hot cells lost: phx5 +10.7%, sg8 +5.5%, sg1 +3.0%
+  — night coasting overheats the building (cooling mirror of fb1).
+  v3 symmetric ride-gate (`ride = m` below centre / `1−m` above):
+  phx5 +0.15%, sg8 −0.07%, phx6 +0.09%, sg1 −0.13%, fb1 +0.4%,
+  fb8 −0.2%, atl2 −0.5%, den2 −0.6%. Mean ≈ −0.2%, stop-rule clean
+  (tails ≤ control on all 8). Combo prop+coolshift REJECTED: coolshift
+  inactive in cold (bit-identical to prop) but adds +0.3..+2% on hot —
+  target-shift × err-scale double-shifts. Too small to submit alone;
+  stack with item 5 next. Code: `OccPropMixin` in
+  `smart_buildings/baselines/occ_prop.py` (`OccProp7Policy`, KEY
+  `occ_prop7`, knobs `$OP_ON=1/$OP_MIN=0.5/$OP_MAXN=5`), registered in
+  `POLICY_MAP`; off-exactness `OP_ON=0` bit-proven vs occ7 (phoenix_6
+  full-8640, /tmp/prop). v3 formula: `scale = 1−(1−OP_MIN)*(1−frac)*ride`.
 
 ## Appendix
 
