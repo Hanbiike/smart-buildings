@@ -146,6 +146,14 @@ logged in the 10-27 appendix update below.)
   Sat12Hot port + `occ_econdbh7` combo written; combo matrix running.
   (d) HeatOpt coil math verified against local `vav.py` source
   (discharge = T_s+e(T_w−T_s), e=min(1,C_w/C_a,(35−T_s)/(T_w−T_s))).
+- occ8 SUBMITTED (kernel v1 COMPLETE, submission sent, 4 left today):
+  `occ_econdbh7` = occ7 + econ + dbh. Local full-8640: fb1 −2.1%, fb2
+  −7.3%, atl2 −19.1%, den2 −11.3%; tails = dbh tails (midnight family).
+  Notebook `notebooks/smart-buildings-submission-occ8.ipynb` assembled
+  via tool (ZonePIPolicy block refreshed for the integral hook) and
+  proven BIT-IDENTICAL to the repo policy on atl2 full-8640. Assembly
+  trap fixed: module consts (lowercase `_SAT_*`) are NOT copied by the
+  assembler — econ mixin made self-contained (class attrs).
 
 ## Appendix
 
