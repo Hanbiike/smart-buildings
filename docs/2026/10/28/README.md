@@ -247,6 +247,14 @@ the research audit has no new public score for either.
 - Leaderboard 2026-10-28: NEW leader Pardheev Krishna **0.00514** (Joe
   Penn 0.00521 now 2nd, Marc Donovici 0.00530, boys 0.00550). Top-4
   cluster 0.00514–0.00550; our 0.01236 is 2.4× away.
+- MPC gate 1 PASSED (report 10 §4.1): `tools/timing_audit.py` (new, sim-free,
+  isolated damper/reheat steps in occ4 dumps) proves the zone-temp response
+  to u[t] arrives at obs[t+2], never obs[t+1]: lag1 mean −0.0015/+0.0082/
+  +0.0017 K (atl2/fb1/sg1) vs lag2 +0.027/−0.066/−0.099 K. Signs physical
+  (damper-open cools in fb1/sg1). Consequence: one-step-ahead models fit
+  noise; any planner model must predict t+2...t+H. Next gate: held-out
+  multistep forecasts vs persistence (greybox checker capped at 288 steps
+  — needs extension or a new script).
 - New research context (docs/research/06–10 + README, 2026-10-28):
   Oct-27 ranking SUPERSEDED by report 10; no leader-method evidence;
   priorities now = reproducible current-family reference (this suite),
