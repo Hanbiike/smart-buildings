@@ -237,6 +237,16 @@ the research audit has no new public score for either.
   only phx5 +0.6%), heatopt −2.21% (heating cells); stack −8.80%
   near-additive. Tails: econ flat 0.0021, heatopt improves to 0.0018,
   dbh raises to 0.0030 (midnight family only).
+- Fresh holdout 16/16 for occ9 (/tmp/hold, new buildings seeds 60000+,
+  unseen months minneapolis_3/denver_4/phoenix_7/fairbanks_6): mean
+  0.009645 → 0.008538 (−11.47%), wins every pair (−3.4..−35.9%).
+  Generalization STRONGER than train (−8.8%). Tails: minneapolis cold
+  cells grow (1.1→2.2%) — same midnight family (hours 0–4/23), no
+  mornings. First attempt killed: BLAS thread explosion (load 43) on
+  100+ zone buildings → relaunched conc 3 + thread caps + timeout 5400.
+- Leaderboard 2026-10-28: NEW leader Pardheev Krishna **0.00514** (Joe
+  Penn 0.00521 now 2nd, Marc Donovici 0.00530, boys 0.00550). Top-4
+  cluster 0.00514–0.00550; our 0.01236 is 2.4× away.
 - New research context (docs/research/06–10 + README, 2026-10-28):
   Oct-27 ranking SUPERSEDED by report 10; no leader-method evidence;
   priorities now = reproducible current-family reference (this suite),
