@@ -151,6 +151,7 @@ from smart_buildings.baselines.occ_dbh import OccDbh7Policy
 from smart_buildings.baselines.occ_hot import OccHot7Policy
 from smart_buildings.baselines.occ_econdbh import OccEconDbh7Policy
 from smart_buildings.baselines.occ_heatopt import OccHeatOpt7Policy
+from smart_buildings.baselines.occ_econdbhhot9 import OccEconDbhHot9Policy
 from smart_buildings.baselines.occ_satcap import OccSatCap7Policy
 from smart_buildings.baselines.occ_gated7 import OccGated7Policy
 from smart_buildings.baselines.slot_linear import SlotLinearPolicy
@@ -341,6 +342,7 @@ POLICY_MAP: dict[str, type[Any]] = {
     "occ_hot7": OccHot7Policy,
     "occ_econdbh7": OccEconDbh7Policy,
     "occ_heatopt7": OccHeatOpt7Policy,
+    "occ_econdbhhot9": OccEconDbhHot9Policy,
     "slot_linear": SlotLinearPolicy,
     "slot_hybrid": SlotHybridPolicy,
     "slot_ppo": SlotPPOPolicy,

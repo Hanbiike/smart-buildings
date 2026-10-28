@@ -154,6 +154,15 @@ logged in the 10-27 appendix update below.)
   proven BIT-IDENTICAL to the repo policy on atl2 full-8640. Assembly
   trap fixed: module consts (lowercase `_SAT_*`) are NOT copied by the
   assembler — econ mixin made self-contained (class attrs).
+- occ9 STACK (`occ_econdbhhot9` = occ7 + econ + dbh + heatopt; OFF
+  bit-exact): fb1 −2.9%, fb2 −11.5%, fb8 −9.5%, atl2 −23.1%, den2 −16.8%,
+  sg1 −3.1% — uniform, all better than occ8. Tails = dbh midnight family
+  (fb1 1.5%→2.6%, den2 0.2%→0.36%); heatopt slightly amplifies dbh's fb1
+  regret (−0.0037→−0.0044) via slower recovery, net still wins. HELD for
+  submit until occ8 scores (tail-risk call needs hidden evidence).
+- `occ_hot7` (Sat12Hot port) CLOSED as inert-duplicate: bit-equal to occ7
+  on all 4 cells (sg1/phx6/atl2/den2) — our mixedness/deep SAT already
+  drives −1.0 where OAT > return, and the gate never fires elsewhere.
 
 ## Appendix
 
