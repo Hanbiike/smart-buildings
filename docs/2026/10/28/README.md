@@ -163,6 +163,8 @@ logged in the 10-27 appendix update below.)
 - `occ_hot7` (Sat12Hot port) CLOSED as inert-duplicate: bit-equal to occ7
   on all 4 cells (sg1/phx6/atl2/den2) — our mixedness/deep SAT already
   drives −1.0 where OAT > return, and the gate never fires elsewhere.
+- occ9 SUBMITTED (kernel v1 COMPLETE, 3 left today): occ8 + HeatOpt.
+  Both occ8 and occ9 PENDING in the ~10 h scoring queue.
 
 ## Appendix
 
