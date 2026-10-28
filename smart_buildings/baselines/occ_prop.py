@@ -2,11 +2,11 @@
 """Occupancy-proportional conditioning (research item 7).
 
 Comfort value scales with occupants present, energy cost does not. Scale
-the PI error only when empty AND warm: scale = 1-(1-OP_MIN)*(1-frac)*m,
-with frac = raw count / running episode max (guarded: max < OP_MAXN ->
-frac = 1, so mornings/empty days run full effort) and m = (temp-lo)/(hi-lo)
-clamped to [0,1]. Cold buildings (m~0) and peak hours (frac~1) always run
-full effort — protects cold-cell mornings (fb1 lesson).
+the PI error only when empty AND far from the threatened edge:
+scale = 1-(1-OP_MIN)*(1-frac)*ride, frac = raw count / running episode max
+(guarded: max < OP_MAXN -> frac = 1), ride = m below band centre (heating:
+needs warmth) or 1-m above it (cooling: needs coolness), m=(temp-lo)/(hi-lo).
+Cold buildings, hot buildings, peak hours always run full effort.
 
 Knobs: $OP_ON (default 1; 0 = occ7-exact), $OP_MIN (default 0.5, effort
 floor at zero occupancy), $OP_MAXN (default 5).
@@ -41,9 +41,14 @@ class OccPropMixin:
         frac = n / self._occ_max
         span = hi - lo
         m = 0.0 if span <= 0 else min(1.0, max(0.0, (temp - lo) / span))
-        # Coast only when empty AND warm: cold buildings (m~0) and peak
-        # hours (frac~1) always run full effort.
-        scale = 1.0 - (1.0 - self._op_min) * (1.0 - frac) * m
+        # Coast only when the building can ride to next occupancy: empty
+        # AND far from the threatened edge. Heating need (temp<=centre):
+        # ride needs warmth (m~1); cooling need: ride needs coolness
+        # (m~0). Cold buildings, hot buildings, and peak hours (frac~1)
+        # always run full effort (fb1/phx5 lessons).
+        centre = 0.5 * (lo + hi)
+        ride = m if temp <= centre else 1.0 - m
+        scale = 1.0 - (1.0 - self._op_min) * (1.0 - frac) * ride
         return float(err) * scale
 
 
