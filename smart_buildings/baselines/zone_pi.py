@@ -181,11 +181,7 @@ class ZonePIPolicy(CoolingHoldPolicy):
                 obs, self._denormalize_zone_temp(obs[obs_idx]), lo, hi
             )
             integral = self._zone_integral.get(vav_id, 0.0)
-            u_raw = self.KP * err + self.KI * integral
-            # Conditional integration: stop winding up while saturated.
-            if abs(u_raw) < 1.0 or np.sign(err) != np.sign(u_raw):
-                integral = float(np.clip(integral + err, -1.0 / self.KI,
-                                         1.0 / self.KI))
+            integral = self._zone_integral_update(err, integral)
             self._zone_integral[vav_id] = integral
             u = float(np.clip(self.KP * err + self.KI * integral, -1.0, 1.0))
             self._max_heat = max(self._max_heat, -u)
@@ -220,6 +216,14 @@ class ZonePIPolicy(CoolingHoldPolicy):
         Override for deadband edge-riding.
         """
         return temp - self._zone_target(obs, lo, hi)
+
+    def _zone_integral_update(self, err, integral):
+        """Conditional integration: stop winding up while saturated."""
+        u_raw = self.KP * err + self.KI * integral
+        if abs(u_raw) < 1.0 or np.sign(err) != np.sign(u_raw):
+            integral = float(np.clip(integral + err, -1.0 / self.KI,
+                                     1.0 / self.KI))
+        return integral
 
     def _base_action(self, obs):
         self._pi_active = self._pi_hours(obs)
