@@ -93,11 +93,27 @@ logged in the 10-27 appendix update below.)
   (tails ≤ control on all 8). Combo prop+coolshift REJECTED: coolshift
   inactive in cold (bit-identical to prop) but adds +0.3..+2% on hot —
   target-shift × err-scale double-shifts. Too small to submit alone;
-  stack with item 5 next. Code: `OccPropMixin` in
+  stack with item 5 next (item 5 has since CLOSED negative, see below).
+  Code: `OccPropMixin` in
   `smart_buildings/baselines/occ_prop.py` (`OccProp7Policy`, KEY
   `occ_prop7`, knobs `$OP_ON=1/$OP_MIN=0.5/$OP_MAXN=5`), registered in
   `POLICY_MAP`; off-exactness `OP_ON=0` bit-proven vs occ7 (phoenix_6
   full-8640, /tmp/prop). v3 formula: `scale = 1−(1−OP_MIN)*(1−frac)*ride`.
+
+## Open (end of session)
+
+- Item 5 CLOSED negative in margin-schedule form (`occ_start7`,
+  `smart_buildings/baselines/occ_start.py`, KEY `occ_start7`, knobs
+  `$ST_ON/$ST_OAT_K/$ST_OAT_REF=283.15`; off-exact bit-proven vs occ7).
+  `margin = 6 + K*(REF−OAT_predawn)`: K=1 loses everywhere (den2 +1.7%,
+  fb1 +2.8%, fb2 +3.0%, atl2 +0.6%), K=2 worse (den2 +6.0%, fb1 +3.1%,
+  fb2 +4.4%, atl2 +2.4%). Extra margin burns gas (+4–11%) while morning
+  regret improves (fb1 −0.0025→−0.0007) at a bad exchange rate — the same
+  catch-up family as items 3/4: earlier pre-heat costs more than it saves
+  in recovery, and even margin CUTS (mild cells) lose via deeper-dip
+  recovery sprints (atl2 gas 205→207). occ7's EMA-adapted gap/rate×SAFETY
+  equation is at the local optimum; both start-side and stop-side (coast)
+  of item 5 are dead. Next: item 6 (G36 two-stage SAT).
 
 ## Appendix
 

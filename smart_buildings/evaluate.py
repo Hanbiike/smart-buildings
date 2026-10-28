@@ -143,6 +143,7 @@ from smart_buildings.baselines.occ_coast import OccCoast7Policy
 from smart_buildings.baselines.occ_coolshift7 import OccCoolShift7Policy
 from smart_buildings.baselines.occ_prop import OccProp7Policy
 from smart_buildings.baselines.occ_combo import OccCombo7Policy
+from smart_buildings.baselines.occ_start import OccStart7Policy
 from smart_buildings.baselines.occ_satcap import OccSatCap7Policy
 from smart_buildings.baselines.occ_gated7 import OccGated7Policy
 from smart_buildings.baselines.slot_linear import SlotLinearPolicy
@@ -325,6 +326,7 @@ POLICY_MAP: dict[str, type[Any]] = {
     "occ_coolshift7": OccCoolShift7Policy,
     "occ_prop7": OccProp7Policy,
     "occ_combo7": OccCombo7Policy,
+    "occ_start7": OccStart7Policy,
     "slot_linear": SlotLinearPolicy,
     "slot_hybrid": SlotHybridPolicy,
     "slot_ppo": SlotPPOPolicy,
