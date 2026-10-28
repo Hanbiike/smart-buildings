@@ -17,11 +17,12 @@ import numpy as np
 from smart_buildings.baselines.occ_gated7 import OccGated7Policy
 from smart_buildings.baselines.zone_pi import _outside_kelvin
 
-_SAT_MIN_K, _SAT_MAX_K = 285.0, 305.0
-
 
 class OccEconMixin:
     """Explicit economizer recirculation for cooling AHUs in PI hours."""
+
+    ECON_SAT_MIN_K = 285.0
+    ECON_SAT_MAX_K = 305.0
 
     def __init__(self, building_meta_data, action_spec):
         super().__init__(building_meta_data, action_spec)
@@ -43,7 +44,8 @@ class OccEconMixin:
                 continue
             if float(cont[ctrl["temp_idx"]]) >= 0.0:
                 continue
-            target = self._native(cont[ctrl["temp_idx"]], _SAT_MIN_K, _SAT_MAX_K)
+            target = self._native(cont[ctrl["temp_idx"]],
+                                  self.ECON_SAT_MIN_K, self.ECON_SAT_MAX_K)
             try:
                 inside = float(np.mean([
                     self._denormalize_zone_temp(obs[j])
