@@ -11,6 +11,12 @@ of the PI output map into an overridable hook, dual-max mixin + occ_dualmax7
 P-a/P-b/P-c probes, transfer-12, deep research, occ6/occ7 scores — is
 logged in the 10-27 appendix update below.)
 
+Later research update: audited the current repository and rebuilt the HVAC
+research index around the completed experiments. Added a collection specification,
+domain reference, primary-paper evidence audit and current control synthesis.
+Corrected unsupported leader/algorithm inferences and a ventilation equation.
+Existing CSVs were inspected; this update launched no simulations or submissions.
+
 ## Status
 
 | Whose | Score | State |
@@ -19,6 +25,11 @@ logged in the 10-27 appendix update below.)
 | us (occ_gated4) | 0.01323 | COMPLETE (best, tied) |
 | us (occ_gated7) | 0.01323 | COMPLETE (tied 10-27) |
 | us (occ_gated6) | 0.01337 | COMPLETE (+1.1% regression) |
+
+Research update: no new scores. The table is retained as the day's historical
+record, not a fresh live leaderboard query. The closing reconciliation of
+`9cd060e` and `59a307b` reports both occ8 and occ9 submitted, scores pending;
+the research audit has no new public score for either.
 
 ## Done
 
@@ -33,6 +44,21 @@ logged in the 10-27 appendix update below.)
 - Launched `/tmp/dm1`: 8 pairs × 3 policies full-8640 (fairbanks_1/2/4/5/7/8
   + atlanta_2 + denver_2). Commit `769dc61` pushed before launch.
 
+- Audited interfaces, causal timing, scenarios, stored results and notebooks
+  in `docs/research/06-repository-analysis.md` to establish the research baseline.
+- Specified evidence priorities, run/transition/source records, external datasets
+  and evaluation gates in `docs/research/07-evidence-collection-plan.md`.
+- Added physics, ventilation, standards and field applicability in
+  `docs/research/08-hvac-domain-reference.md` to explain simulator limitations.
+- Verified seven primary paper bodies in `docs/research/09-evidence-audit.md`
+  and corrected overbroad RL/MPC conclusions and unsupported leader inference.
+- Replaced `docs/research/README.md` with the current reading guide, archived
+  its dated ranking in `docs/research/2026-10-27-synthesis.md`, and added
+  `docs/research/10-control-research-synthesis.md` for updated priorities.
+- Corrected the section 1.4 ventilation-efficiency sign in
+  `docs/research/03-rule-based-sota.md` against the linked LBNL implementation;
+  added historical-scope notices to all five original tracks.
+
 ## Measured
 
 - occ_dualmax7 — b1/fairbanks_1 first-600 — 0.01648 vs 0.01701 (+3.1%).
@@ -42,6 +68,11 @@ logged in the 10-27 appendix update below.)
   ALL 8 pairs (+2.5% fb1 … +18.3% fb4, +15.2% denver); hdamp mixed
   (−1.7% fb8 … +3.0% fb1). The 600-step +3.1% was startup-transient
   illusion — full-horizon reversal, exactly the S-U2 warning.
+
+- occ_gated4 — train-30, existing 8640-row CSVs recomputed — 0.009628636765325417 — delta 0 versus the same archived reference.
+- occ_gated7 — hard-cell-8, existing `/tmp/dm1` CSVs recomputed — 0.016157327656207122 — reference.
+- occ_dualmax7 — hard-cell-8, existing `/tmp/dm1` CSVs recomputed — 0.01696358643371738 — +0.000806258777510258 versus occ_gated7.
+- occ_coolshift7 — hot-cell-4, existing `/tmp/csh` CSVs recomputed — 0.009672823510725462 — -0.000077852260133571 versus occ_gated7.
 
 ## Decisions
 
@@ -60,7 +91,29 @@ logged in the 10-27 appendix update below.)
   climates; blanket cuts are wrong. Handoff: ADAPTIVE timing = item 5
   (JCI optimal start, daily adaptation), not fixed cuts.
 
+- A leaderboard score does not identify the leader's controller or hidden
+  failure distribution. Proof: the repository contains scalar scores without
+  hidden action traces or a solution disclosure. Consequence: remove these
+  inferences from the current research recommendations.
+- The occ4 energy/carbon share is a decomposition, not an avoidable-waste
+  estimate. Proof: existing full trajectories quantify costs but no matching
+  zero-cost comfort-preserving counterfactual. Consequence: require paired
+  complete-episode evidence for each claimed saving.
+- Prioritize exact current-policy provenance and causal model evaluation.
+  Proof: recent results are scattered across temporary paths, some policy
+  keys cover several variants, and thermal diagnostics explicitly limit
+  their control claims. Consequence: use the collection contract in report 07.
+
 ## Open
+
+- Research update: old top-ten recommendations are reconciled in reports 06
+  and 09; completed negative variants stay closed in their tested form.
+- Moved to the collection plan: archive effective run settings, evaluate the
+  current stack on complete declared train/transfer coverage, attribute night
+  tails, and validate counterfactual predictions with participant-only inputs.
+- Current competition status, unread historical paper bodies and field IAQ/
+  humidity constraints remain explicit evidence gaps; none is treated as a
+  verified result by the updated synthesis.
 
 - Item 2 CLOSED (edge dead; gentle-centre banked −1.0%, stop-rule clean,
   tails even better). Item 3 CLOSED negative in blanket form (shape trades
@@ -165,6 +218,21 @@ logged in the 10-27 appendix update below.)
   drives −1.0 where OAT > return, and the gate never fires elsewhere.
 - occ9 SUBMITTED (kernel v1 COMPLETE, 3 left today): occ8 + HeatOpt.
   Both occ8 and occ9 PENDING in the ~10 h scoring queue.
+- Full train-30 suite occ7 vs occ9 (/tmp/suite30, 60×8640, commit
+  `59a307b` + uncommitted docs only): mean 0.009630 → 0.008782 (−8.80%),
+  occ9 wins 29/30 (only phx5 +0.6%). Best: phx1 −28.6%, fb4 −27.4%,
+  denver_7 −26.9%. Tails grow on ~6 cells (fb1 1.5%→2.6%, denver_3
+  0.7%→1.6%, atlanta_8 0.3%→0.9%) — ALL midnight family (hours 0/1/23),
+  no morning failures. Event table: night regret −0.00204→−0.00259
+  (gas −14%), MORNING regret IMPROVES −0.00042→−0.00026 (gas −25%),
+  midday flat, evening zero both. Provenance: clean code tree at commit
+  `59a307b` (docs-only dirty); no code edits during the run. occ9 6-cell
+  numbers reproduce exactly inside the suite.
+- New research context (docs/research/06–10 + README, 2026-10-28):
+  Oct-27 ranking SUPERSEDED by report 10; no leader-method evidence;
+  priorities now = reproducible current-family reference (this suite),
+  night-tail quantification (done above), component ablations (/tmp/abl30
+  running: econ/dbh/heatopt × 30), causal model gates before any MPC.
 - Item 10 CLOSED: (b) pseudo-DCV (`occ_dcv7`, off-exact + ON bit-identical
   to occ7 on sg1, loss-equal on phx6/atl2/den2) is fully inert — the
   organizer economizer already minimizes outside air whenever OAT >
@@ -196,3 +264,34 @@ logged in the 10-27 appendix update below.)
   top-10 plan; headline: our loss is 96% energy+carbon / 4% comfort.
 - Speed analysis: reward computed 2x/step (~10% win available), zone-temp
   stats 234 calls/step (~5%); SuperLU 35% structural. Tier 0 not started.
+
+### HVAC research documentation audit
+
+The research pass began at `2603d8e` and reconciled concurrent commits
+`9cd060e` and `59a307b`. The later journal records occ9 submitted and
+pseudo-DCV inert; no fresh external score is inferred. Research edits are
+documentation only, and the three policy/evaluator working-file hashes
+recorded in report 06 were rechecked unchanged.
+
+| Requested outcome | Inspectable evidence | Audit result |
+|---|---|---|
+| Analyze the repository first | `docs/research/06-repository-analysis.md`: source interfaces, causal timing, configuration inventory, current policy/model status, existing CSV reductions | Covered; source evidence, recomputed values and journal-only claims labeled separately |
+| Determine what must be collected | `docs/research/07-evidence-collection-plan.md`: prioritized questions, manifests, transition/source schemas, datasets, holdouts and acceptance conditions | Covered; future measurements explicitly distinguished from collected evidence |
+| Provide comprehensive HVAC research for this project | Existing tracks 01–05 plus new domain reference, seven-paper primary audit and current synthesis | Covered across physics, equipment, IAQ, standards, rule control, MPC, learning, transfer, diagnostics and commissioning; inaccessible claims excluded |
+| Write documentation in English | All research Markdown, documentation index and day log checked for Cyrillic prose | Check passed |
+| Preserve navigable and usable documentation | All local Markdown targets resolve; code fences balanced; 26 domain source-reference IDs defined and used; whitespace check | Check passed |
+| Verify quantitative anchors | All 30 occ4 reward CSVs independently read; every one has 8640 rows; mean reproduces `0.0096286367653254` at shown precision | Check passed; no new simulator scores produced |
+| Account for later evidence and prior failures | Historical synthesis archived; each original track has a correction notice; Oct-28 closures and concurrent submission updates reconciled | Covered |
+
+The independent review identified four substantive issues, all corrected:
+material properties are not exposed in participant metadata; temperature
+logs need explicit sensor/reward timing and visibility labels; an extensively
+tuned transfer suite is development data; and predictive comfort needs an
+explicit proxy for unobserved zone occupancy. The ventilation-efficiency
+minus sign was checked against the opened LBNL primary implementation.
+
+No code tests, training, new simulation episodes, submissions, commits or
+pushes were performed by this documentation pass. Source access limitations,
+missing historical run identity, current pending scores and future field
+measurements remain in the collection plan rather than being reported as
+completed experiments.
