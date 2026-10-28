@@ -252,9 +252,17 @@ the research audit has no new public score for either.
   to u[t] arrives at obs[t+2], never obs[t+1]: lag1 mean −0.0015/+0.0082/
   +0.0017 K (atl2/fb1/sg1) vs lag2 +0.027/−0.066/−0.099 K. Signs physical
   (damper-open cools in fb1/sg1). Consequence: one-step-ahead models fit
-  noise; any planner model must predict t+2...t+H. Next gate: held-out
-  multistep forecasts vs persistence (greybox checker capped at 288 steps
-  — needs extension or a new script).
+  noise; any planner model must predict t+2...t+H.
+- MPC gate 2 FAILED (report 10 §4.2): `tools/forecast_gate.py` (new;
+  causal greybox, fit day 1, eval days 2–30, horizons 2/6/12/48/144)
+  loses to persistence almost everywhere: atl2 skill +0.03/−0.03/−0.04/
+  −0.06/−0.29, fb1 +0.03/−0.47/−0.36/−0.35/−0.56, sg1 −0.06/−0.23/−0.23/
+  −0.28/−0.46. Only h2 is marginally positive on 2/3 cells. Per the
+  gate rule the model-based planning line STOPS here: no MPC without a
+  validated model. Remaining untested family: residual/offline RL
+  (needs compute + aligned transition logs); applied-command validators
+  and residual action-conditioned models are refinements of this failed
+  gate, not a bypass.
 - New research context (docs/research/06–10 + README, 2026-10-28):
   Oct-27 ranking SUPERSEDED by report 10; no leader-method evidence;
   priorities now = reproducible current-family reference (this suite),
