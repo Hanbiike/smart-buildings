@@ -113,7 +113,20 @@ logged in the 10-27 appendix update below.)
   in recovery, and even margin CUTS (mild cells) lose via deeper-dip
   recovery sprints (atl2 gas 205→207). occ7's EMA-adapted gap/rate×SAFETY
   equation is at the local optimum; both start-side and stop-side (coast)
-  of item 5 are dead. Next: item 6 (G36 two-stage SAT).
+  of item 5 are dead.
+- Item 6 CLOSED negative (`occ_gsat7`, `smart_buildings/baselines/occ_gsat.py`,
+  KEY `occ_gsat7`, knobs `$SAT2_ON/$SAT2_TRIM=0.25/$SAT2_RESP1=-0.5/
+  $SAT2_RESP2=-1.5/$SAT2_LO=285.15/$SAT2_HI=291.15`; off-exact bit-proven).
+  Two-stage (OAT base 12–18 C + Trim&Respond) vs single-stage demand
+  follower: fb8 bit-identical (SAT dead in cold, gate works), atl2 −0.1%,
+  den2 +0.6%, sg1 +22% (!). Isolation: pure OAT base (TRIM=RESP=0) sg1
+  +2.1% with clean regret but gas 20→41 (cold base forces reheat); the
+  T&R loop adds the rest (elec +14%, regret ×13–14). Warmer base 15–18 C
+  even worse (+23.5%) — level is not the driver, the quantized hunting
+  loop is. Lesson: our instant demand follower already beats G36 T&R
+  here; G36 assumes reheat waste dominates, here chiller+comfort do.
+  Rogue-zone variant not tried (failure is systematic, not rogue).
+  Next: items 9/10 (AHU staging, cooling/DCV).
 
 ## Appendix
 
