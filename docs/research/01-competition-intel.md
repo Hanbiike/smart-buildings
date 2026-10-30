@@ -1,5 +1,11 @@
 # Track 1 — Competition Intel: NeurIPS Smart-Buildings family + sibling benchmarks
 
+> Historical research track. For current repository state and recommendations,
+> read [06](06-repository-analysis.md), [09](09-evidence-audit.md) and
+> [10](10-control-research-synthesis.md). Related competitions have different
+> plants and metrics; their results do not identify this competition's leader
+> or establish a universal algorithm ranking. Unopened sources remain leads.
+
 **Question:** what has won (and by how much) in this competition family and its
 siblings — and what does that imply for OUR actuators
 (SAT / static pressure / recirculation / HWS temps + pump / VAV damper + reheat / on-off)?

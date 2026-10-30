@@ -1,5 +1,12 @@
 # TRACK 2 — Model-Predictive Control for Commercial-Building HVAC
 
+> Historical research track. Read the [source audit](09-evidence-audit.md)
+> and [current synthesis](10-control-research-synthesis.md) before applying
+> its recommendations. Study-specific savings are not forecasts for this
+> repository; snippet-only results are excluded from the current synthesis.
+> At five minutes per step, 6–12 steps mean 30–60 minutes; 2–4 hours require
+> 24–48 steps. Action projection alone does not guarantee future comfort.
+
 **Author:** workflow child `mpc-buildings` · **Date:** 2026-10-27 · **Status:** web research only, no code touched
 **Target plant:** Kaggle NeurIPS smart-buildings simulator — VAV-reheat-only (NO AHU heating coil),
 VAV discharge cap 308.15 K, recirculation cap 0.70, dampers ≥ 10%, 5-min steps,

@@ -1,5 +1,12 @@
 # Track 5: Leader-gap forensics (repo-only, from our own data)
 
+> Historical analysis. The [repository audit](06-repository-analysis.md)
+> confirms the occ4 train-30 loss decomposition and updates run coverage.
+> Its energy/carbon share does not measure avoidable waste; train and hidden
+> means cannot identify the cause of the leaderboard gap. Many formerly
+> unrun probes now have results. Use [09](09-evidence-audit.md) and
+> [10](10-control-research-synthesis.md) for corrected interpretation.
+
 **Question:** our best (`occ_gated4`/`occ_gated7`) scores public 0.01323;
 the leader scores 0.00521 (2.5x gap). The leader beats even our TRAIN mean
 (0.00963), so this is a CONTROL gap, not composition. Where does our loss

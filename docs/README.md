@@ -10,6 +10,11 @@ Three artifacts:
   whenever a rung moves.
 - Template: `docs/TEMPLATE.md`. Starting point for a new day.
 
+The [HVAC research collection](research/README.md) contains the repository
+audit, evidence collection specification, domain reference, source audit and
+current synthesis. Historical research is dated and retained with corrections;
+the journal remains the chronological experiment record.
+
 Language: English only (R9). Chat with the user may be in Russian, but
 everything committed under `docs/` and `AGENTS.md` operational sections
 is English so that any machine, any agent, and the public repo readers

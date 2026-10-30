@@ -3,8 +3,8 @@
 
 Their DSA_DeadbandHeat: zones between lo+DB and the band centre are left
 alone (err = 0, integral leaks by INTEGRAL_LEAK); above the centre the PI
-regulates to the centre as usual; below lo+DB it heats to lo+DB. Shipped at
-DB = 0.15 K with leak 0.97. This differs from our item-2 edge riding (which
+regulates to the centre as usual; below lo+DB it heats to lo+DB. Shipped
+at DB 0.15 K with leak 0.97. This differs from our item-2 edge riding (which
 floated BOTH sides to the edges and died): the cooling side still regulates
 to the centre here.
 

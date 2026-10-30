@@ -1,5 +1,13 @@
 # Rule-Based HVAC State of the Art (Track 3)
 
+> Historical implementation survey, corrected 2026-10-28. Several proposed
+> ports now have negative full-episode evidence: see [06](06-repository-analysis.md).
+> Read [08](08-hvac-domain-reference.md) for current standards, humidity and
+> reference-implementation scope. Claims below about unavailable humidity
+> logic or importance weights describe the earlier inspected implementation,
+> not every current G36 edition or library release. The ventilation-efficiency
+> equation in section 1.4 has been corrected against the primary implementation.
+
 Exhaustive survey of advanced rule-based HVAC sequences and their mapping to
 our simulator's observation/action space. All sources below were opened and
 read (full bodies, not snippets); sources that could not be opened are listed
@@ -178,7 +186,11 @@ Mechanism (two layers):
    Tdis vs Tzone) → required zone OA (zero if unoccupied mode or window open;
    area-only if occ-sensor says empty) → zone OA fraction (÷ measured box
    flow) → system uncorrected OA → system ventilation efficiency
-   `SysVe = 1 + X + max(Z)` → `effMinOA = min(uncorrected/SysVe, design)`.
+   `SysVe = 1 + X - max(Z)` → `effMinOA = min(uncorrected/SysVe, design)`.
+   Correction (2026-10-28): the [LBNL single-path multizone implementation](https://simulationresearch.lbl.gov/modelica/releases/latest/help/Buildings_Controls_OBC_ASHRAE_G36_AHUs_MultiZone_VAV_SetPoints_OutdoorAirFlow_ASHRAE62_1.html)
+   subtracts the maximum zone outdoor-air fraction; the previous plus sign
+   was incorrect. This implementation references G36 May 2020 / ASHRAE
+   62.1-2013 and does not define every multipath ventilation calculation.
    The AHU then tracks this minimum OA through damper limits (separate min-OA
    damper with flow station, or with DP, or common OA/econ damper).
 
