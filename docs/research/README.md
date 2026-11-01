@@ -40,6 +40,28 @@ the current synthesis.
 | [05 Gap forensics](05-gap-forensics.md) | Historical occ4 loss decomposition and probe coverage | Recomputed train-30 decomposition is retained; new policy coverage/provenance is in report 06 |
 | [October 27 synthesis](2026-10-27-synthesis.md) | Historical ranking and unresolved reading leads | Archived; superseded by report 10 |
 
+## Online RL series (2026-11-01)
+
+Seven dated reports plus an executable check plan in
+[docs/plan/](../plan/README.md). Discovery-grade web evidence (two
+deep-research runs whose verification stage returned `no_evidence`, so all
+web numbers below are read pages/PDFs, not verifier-confirmed claims),
+a line-by-line reverse-engineering of the public residual-PPO notebook and
+dataset (`yes-rl-can-run-a-building-residual-ppo.ipynb`, `rl.zip`),
+and repo grounding. Track F (notebook) is the only fully body-verified
+report; literature numbers in tracks A–E carry per-claim provenance and
+transfer limits.
+
+| Report | Contents | Status |
+|---|---|---|
+| [11 Online RL algorithms](11-online-rl-algorithms.md) | PPO/SAC/TD3/recurrent evidence per benchmark; no universal ranking; residual SAC primary, TD3 backup, gated PPO; STOP rule | Draft 2026-11-01 |
+| [12 Online RL architectures](12-online-rl-architectures.md) | Shared per-entity MLP, temporal-conv+LSTM, in-context transformer, morphology-aware transformer; 23 findings, 8 open questions | Draft 2026-11-01 |
+| [13 Online RL training logic](13-online-rl-training-logic.md) | Adv normalization, masking, DR curricula, checkpoint judges, LR schedules, reward normalization, honest billing | Draft 2026-11-01 |
+| [14 Online RL failures and exploits](14-online-rl-failures-exploits.md) | Cycling, boundary collapse, residual authority, billing/metric exploits, lever saturation | Draft 2026-11-01 |
+| [15 Online RL model-based](15-online-rl-model-based.md) | ADAPT, LDLP, Counter-Dyna, hypernetwork, DreamerV3 head-to-heads; CPU-deployment exclusions | Draft 2026-11-01 |
+| [16 Skynet residual-PPO notebook](16-skynet-residual-ppo-notebook.md) | Notebook+dataset reconstruction; shipped `m3r_ramp_cmagen_seed1@752640`, board 0.01128; honest gain -10.6% vs shipped -16.9% | Draft 2026-11-01 |
+| [17 Repo grounding for Online RL](17-repo-grounding-online-rl.md) | Our policies, ladder, transfer method, simulator and submission constraints bounding RL design | Draft 2026-11-01 |
+
 ## Findings that change the next action
 
 - Existing occ4 train-30 CSVs reproduce loss `0.009628636765325417`;
