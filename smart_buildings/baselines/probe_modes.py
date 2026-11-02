@@ -6,6 +6,163 @@ from smart_buildings.baselines.occ_gated7 import OccGated7Policy
 from smart_buildings.baselines.zone_pi import _outside_kelvin
 
 
+class SkynetResidualProbe:
+    """Local-only measurement probe: shipped residual weights on the zt_off base.
+
+    Exact reproduction of the dataset policy (skynet.pt@5001216 over ZTPolicy
+    via make_floor controller zt_off). Local measurement only, not for
+    submission: weights live outside the repo. Throwaway per conventions.
+    """
+
+    KEY = "probe_skynet"
+
+    WEIGHTS = "/tmp/opencode/sb-rl/skynet.pt"
+    PKGDIR = "/tmp/pkg"
+
+    def __init__(self, building_meta_data, action_spec):
+        import sys as _sys
+        if self.PKGDIR not in _sys.path:
+            _sys.path.insert(0, self.PKGDIR)
+        from skynet.policy import load as _load
+        from smart_buildings.baselines.pid_plus import PIDWaterResetPolicy
+        from smart_buildings.evaluate import validate_action as _validate
+        net, params, scale, latch = _load(self.WEIGHTS)
+        from skynet.policy import SkynetPolicy as _Skynet
+        self._pol = _Skynet(
+            building_meta_data, action_spec, net, params, scale,
+            PIDWaterResetPolicy, _validate, latch)
+
+    @property
+    def name(self):
+        return self.KEY
+
+    def get_action(self, obs):
+        return self._pol.get_action(obs)
+
+
+def any_cold(floor, ix, obs, k):
+    """True if any zone sits more than k below its band low edge.
+
+    Read-only with respect to the floor policy (band accessors are pure
+    reads). Shared by the probe and the rollout driver so training sees
+    exactly the gating deployment applies.
+    """
+    import numpy as _np
+    zr = _np.asarray(obs, dtype=_np.float64)[ix.zone_obs]
+    temp_k = zr[:, 0] * ix.t_std + ix.t_mean
+    lo_c, hi_c = (float(x) for x in floor.comfort_temp_window)
+    for i, vav in enumerate(ix.zone_vav):
+        lo, hi = floor._zone_band(obs, vav, lo_c, hi_c)
+        if hi - lo > (hi_c - lo_c) + 1e-6:
+            lo, hi = lo_c, hi_c
+        if float(temp_k[i]) < lo - k:
+            return True
+    return False
+
+
+class ExpandedResidualProbe(OccGated7Policy):
+    """occ_gated7 + expanded residual harness (stateful inputs + target head).
+
+    Zero-residual check probe for the Online line: the surgery-expanded
+    FlatNets (tools/skynet_surgery.py::expand_net, loaded from skynet.pt)
+    reads 23-wide zone features (21 base + true loop err + integral
+    saturation) and its corrections are composed with RESIDUAL_SCALE.
+    Switches stay frozen on the base (Bernoulli heads are a later step);
+    the target head is dead by construction (the occ chain has no
+    target_offset effector yet). With RESIDUAL_SCALE = 0.0 the action is
+    bit-identical to occ_gated7 while exercising the full harness.
+    Live corrections use scale 1.0. Local measurement only.
+    """
+
+    KEY = "probe_xres"
+    WEIGHTS = "/tmp/opencode/sb-rl/skynet.pt"
+    RESIDUAL_SCALE = 0.0
+    # Cold gate (K below the band low edge): while any zone is this cold,
+    # return the base action untouched. Measured failure it fixes: the
+    # residual under-heated cold buildings to save gas (xfer_1/minneapolis_1
+    # comfort regret 5.2x for -8% gas). One-sided by construction: mild
+    # regimes keep the learned corrections, cold keeps the base.
+    COLD_GATE_K = 1.0
+
+    def _load_expanded(self):
+        import os as _os
+        import sys as _sys
+        _surg = (_sys.modules.get("skynet_surgery")
+                 or _sys.modules.get("tools.skynet_surgery"))
+        from skynet.policy import load as _load
+        path = _os.environ.get("SKYNET_WEIGHTS", self.WEIGHTS)
+        ck = __import__("torch").load(path, map_location="cpu",
+                                      weights_only=False)
+        if "zone.0.adapter.weight" in ck.get("model", {}):
+            net, _rep = _surg.expand_net_from_ckpt(ck)
+            net.eval()
+            return net
+        net, _params, _scale, _latch = _load(path)
+        net, _rep = _surg.expand_net(net)
+        net.eval()
+        return net
+
+    def __init__(self, building_meta_data, action_spec):
+        import os as _os
+        self.RESIDUAL_SCALE = float(
+            _os.environ.get("SKYNET_SCALE", self.RESIDUAL_SCALE))
+        from pathlib import Path as _Path
+        super().__init__(building_meta_data, action_spec)
+        import sys as _sys
+        if "/tmp/pkg" not in _sys.path:
+            _sys.path.insert(0, "/tmp/pkg")
+        import importlib.util as _ilu
+        _surg = (_Path(__file__).resolve().parents[2]
+                 / "tools" / "skynet_surgery.py")
+        _spec = _ilu.spec_from_file_location("skynet_surgery", _surg)
+        _mod = _ilu.module_from_spec(_spec)
+        _sys.modules["skynet_surgery"] = _mod
+        _spec.loader.exec_module(_mod)
+        import torch as _torch
+        try:
+            _torch.set_num_threads(1)
+            _torch.set_num_interop_threads(1)
+        except RuntimeError:
+            pass  # ThreadPool workers start parallel work before policies
+        self._torch = _torch
+        self._xnet = self._load_expanded()
+        from skynet.features import BuildingIndex as _BI
+        self._ix = _BI(building_meta_data)
+
+    def _expanded_zone_cols(self, obs):
+        import sys as _sys
+        _mod = _sys.modules.get("skynet_surgery")
+        return _mod.expanded_zone_cols(self, self._ix, obs)
+
+    def _any_cold(self, obs, k):
+        return any_cold(self, self._ix, obs, k)
+
+    def get_action(self, obs):
+        import numpy as _np
+        action = super().get_action(obs)
+        if self._shutdown or self._floor_mode is not None:
+            return action
+        if (self.RESIDUAL_SCALE != 0.0 and self.COLD_GATE_K >= 0.0
+                and self._any_cold(obs, self.COLD_GATE_K)):
+            return action
+        cont = action["continuous_action"]
+        disc = action["discrete_action"]
+        zf, af, pf = self._ix.features(obs, cont, disc)
+        extra = self._expanded_zone_cols(obs)
+        z23 = _np.concatenate([zf, extra], axis=1).astype(_np.float32)
+        t = self._torch.from_numpy
+        with self._torch.no_grad():
+            (mz, ma, mp), _v = self._xnet(
+                t(z23)[None], self._torch.ones(1, len(z23)),
+                t(af)[None], self._torch.ones(1, len(af)),
+                t(pf)[None])
+            mz, ma, mp = mz[0].numpy(), ma[0].numpy(), mp[0].numpy()
+        cont2, _ = self._ix.compose(
+            cont, disc, mz, ma, mp, self.RESIDUAL_SCALE)
+        return {"continuous_action": cont2,
+                "discrete_action": disc}
+
+
 class WeekendFloorProbe(OccGated4Policy):
     """occ_gated4, but cold weekends hold floor_heat instead of shutdown."""
 

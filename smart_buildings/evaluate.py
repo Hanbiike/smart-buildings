@@ -163,9 +163,10 @@ from smart_buildings.baselines.occ_duty import (
     OccDutyLeanPolicy,
 )
 from smart_buildings.baselines.probe_modes import (
-    EconProbe, GuardProbe, MarginProbe, PressureTrimRespondProbe,
+    EconProbe, ExpandedResidualProbe, GuardProbe, MarginProbe,
+    PressureTrimRespondProbe,
     PtrFastTrimProbe, PtrHighCeilProbe, PtrPropKickProbe, SATProbe,
-    SetpointProbe, TodShiftProbe, WeekendFloorProbe)
+    SetpointProbe, SkynetResidualProbe, TodShiftProbe, WeekendFloorProbe)
 from smart_buildings.baselines.transfer_policy import TransferPolicy
 from smart_buildings.baselines.nn_policy import (  # noqa: F401
     BcV0Policy, BcV1Policy, BcV1SnapPolicy, BcV2Policy, BcV2SnapPolicy,
@@ -361,6 +362,8 @@ POLICY_MAP: dict[str, type[Any]] = {
     "probe_econ": EconProbe,
     "probe_tod": TodShiftProbe,
     "probe_sat": SATProbe,
+    "probe_skynet": SkynetResidualProbe,
+    "probe_xres": ExpandedResidualProbe,
     # Behavior-cloned imitation of dsat_gen31 (windowed Zipformer-lite,
     # torch CPU); checkpoint smart_buildings/results/nn_runs/bc_v0.pt.
     "bc_v0": BcV0Policy,
