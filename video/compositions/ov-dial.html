@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>ov-dial</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #dial-root { position: absolute; inset: 0; font-family: Inter, sans-serif; }
+      #dial-in { position: absolute; top: 54px; right: 64px; width: 248px; text-align: center; background: rgba(10,16,24,0.95); border: 2px solid rgba(255,255,255,0.16); border-radius: 26px; padding: 22px 14px 16px; }
+      #dial-face { position: relative; width: 208px; height: 208px; margin: 0 auto; border-radius: 50%; background: rgba(10,16,24,0.82); border: 2px solid rgba(255,255,255,0.28); }
+      .tick { position: absolute; left: 50%; top: 50%; width: 4px; height: 14px; margin: -7px 0 0 -2px; background: rgba(255,255,255,0.65); border-radius: 2px; }
+      #hand-h, #hand-m { position: absolute; left: 50%; bottom: 50%; transform-origin: 50% 100%; border-radius: 4px; }
+      #hand-h { width: 9px; height: 56px; margin-left: -4.5px; background: #f2f5f7; }
+      #hand-m { width: 5px; height: 82px; margin-left: -2.5px; background: #e8590c; }
+      #dial-pin { position: absolute; left: 50%; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: #f2f5f7; }
+      #dial-time { position: relative; height: 52px; margin-top: 12px; color: #fff; font-weight: 700; font-size: 42px; font-variant-numeric: tabular-nums; }
+      #dial-sub { position: relative; height: 38px; margin-top: 2px; color: rgba(255,255,255,0.88); font-weight: 600; font-size: 28px; letter-spacing: 0.06em; }
+      #dial-wx { position: relative; height: 36px; margin-top: 2px; color: #ffd9a0; font-weight: 700; font-size: 28px; letter-spacing: 0.14em; }
+      #dial-tag { margin-top: 6px; color: #d7dee5; font-size: 20px; letter-spacing: 0.22em; }
+      .stack-it { position: absolute; left: 0; right: 0; top: 0; opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="dial-root" data-composition-id="ov-dial" data-width="1920" data-height="1080">
+      <div id="dial-in">
+        <div id="dial-face">
+          <span class="tick" style="transform: rotate(0deg) translateY(-86px);"></span>
+          <span class="tick" style="transform: rotate(30deg) translateY(-86px);"></span>
+          <span class="tick" style="transform: rotate(60deg) translateY(-86px);"></span>
+          <span class="tick" style="transform: rotate(90deg) translateY(-86px);"></span>
+          <span class="tick" style="transform: rotate(120deg) translateY(-86px);"></span>
+          <span class="tick" style="transform: rotate(150deg) translateY(-86px);"></span>
+          <span class="tick" style="transform: rotate(180deg) translateY(-86px);"></span>
+          <span class="tick" style="transform: rotate(210deg) translateY(-86px);"></span>
+          <span class="tick" style="transform: rotate(240deg) translateY(-86px);"></span>
+          <span class="tick" style="transform: rotate(270deg) translateY(-86px);"></span>
+          <span class="tick" style="transform: rotate(300deg) translateY(-86px);"></span>
+          <span class="tick" style="transform: rotate(330deg) translateY(-86px);"></span>
+          <div id="hand-h"></div>
+          <div id="hand-m"></div>
+          <div id="dial-pin"></div>
+        </div>
+        <div id="dial-time">
+          <span class="stack-it" id="dt-5">05:00</span>
+          <span class="stack-it" id="dt-6">06:00</span>
+          <span class="stack-it" id="dt-7">07:00</span>
+          <span class="stack-it" id="dt-8">08:00</span>
+          <span class="stack-it" id="dt-9">09:00</span>
+          <span class="stack-it" id="dt-10">10:00</span>
+          <span class="stack-it" id="dt-11">11:00</span>
+          <span class="stack-it" id="dt-12">12:00</span>
+          <span class="stack-it" id="dt-13">13:00</span>
+          <span class="stack-it" id="dt-14">14:00</span>
+          <span class="stack-it" id="dt-15">15:00</span>
+          <span class="stack-it" id="dt-16">16:00</span>
+          <span class="stack-it" id="dt-17">17:00</span>
+          <span class="stack-it" id="dt-18">18:00</span>
+          <span class="stack-it" id="dt-19">19:00</span>
+          <span class="stack-it" id="dt-20">20:00</span>
+          <span class="stack-it" id="dt-21">21:00</span>
+          <span class="stack-it" id="dt-22">22:00</span>
+          <span class="stack-it" id="dt-23">23:00</span>
+        </div>
+        <div id="dial-sub"><span style="color: rgba(255,255,255,0.6);">OUT&nbsp;</span><span style="position: relative; display: inline-block; width: 118px; height: 34px; vertical-align: top;">          <span class="stack-it" id="tp-0">9°C</span>
+          <span class="stack-it" id="tp-1">11°C</span>
+          <span class="stack-it" id="tp-2">22°C</span>
+          <span class="stack-it" id="tp-3">29°C</span>
+          <span class="stack-it" id="tp-4">31°C</span>
+          <span class="stack-it" id="tp-6">4°C</span>
+          <span class="stack-it" id="tp-7">3°C</span></span></div>
+        <div id="dial-wx">
+          <span class="stack-it" id="wx-0">CLEAR</span>
+          <span class="stack-it" id="wx-1">COLD SNAP</span>
+          <span class="stack-it" id="wx-2">NIGHT</span>
+        </div>
+        <div id="dial-tag">SIMULATED DAY</div>
+      </div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#dial-in", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "power2.out" }, 0.4);
+      tl.to("#dial-in", { opacity: 0, duration: 0.6, ease: "power2.in" }, 134.2);
+      tl.set("#hand-h", { rotation: 171.0 }, 0);
+      tl.set("#hand-m", { rotation: 0.0 }, 0);
+      tl.to("#hand-h", { rotation: 183.0, duration: 20.0, ease: "none" }, 0.0);
+      tl.to("#hand-m", { rotation: 144.0, duration: 20.0, ease: "none" }, 0.0);
+      tl.to("#hand-h", { rotation: 186.0, duration: 10.0, ease: "none" }, 20.0);
+      tl.to("#hand-m", { rotation: 180.0, duration: 10.0, ease: "none" }, 20.0);
+      tl.to("#hand-h", { rotation: 192.0, duration: 15.0, ease: "none" }, 30.0);
+      tl.to("#hand-m", { rotation: 252.0, duration: 15.0, ease: "none" }, 30.0);
+      tl.to("#hand-h", { rotation: 219.0, duration: 9.0, ease: "none" }, 45.0);
+      tl.to("#hand-m", { rotation: 576.0, duration: 9.0, ease: "none" }, 45.0);
+      tl.to("#hand-h", { rotation: 300.0, duration: 12.0, ease: "none" }, 54.0);
+      tl.to("#hand-m", { rotation: 1548.0, duration: 12.0, ease: "none" }, 54.0);
+      tl.to("#hand-h", { rotation: 330.0, duration: 2.2, ease: "none" }, 66.0);
+      tl.to("#hand-m", { rotation: 2448.0, duration: 9.0, ease: "none" }, 66.0);
+      tl.to("#hand-h", { rotation: 360.0, duration: 2.2, ease: "none" }, 68.2);
+      tl.to("#hand-h", { rotation: 390.0, duration: 5.6, ease: "none" }, 70.4);
+      tl.to("#hand-m", { rotation: 3348.0, duration: 13.0, ease: "none" }, 75.0);
+      tl.to("#hand-h", { rotation: 420.0, duration: 5.0, ease: "none" }, 76.0);
+      tl.to("#hand-h", { rotation: 450.0, duration: 5.0, ease: "none" }, 81.0);
+      tl.to("#hand-h", { rotation: 480.0, duration: 7.0, ease: "none" }, 86.0);
+      tl.to("#hand-m", { rotation: 3888.0, duration: 12.0, ease: "none" }, 88.0);
+      tl.to("#hand-h", { rotation: 510.0, duration: 7.0, ease: "none" }, 93.0);
+      tl.to("#hand-h", { rotation: 540.0, duration: 5.4, ease: "none" }, 100.0);
+      tl.to("#hand-m", { rotation: 4788.0, duration: 12.0, ease: "none" }, 100.0);
+      tl.to("#hand-h", { rotation: 570.0, duration: 6.6, ease: "none" }, 105.4);
+      tl.to("#hand-h", { rotation: 600.0, duration: 5.2, ease: "none" }, 112.0);
+      tl.to("#hand-m", { rotation: 5688.0, duration: 13.0, ease: "none" }, 112.0);
+      tl.to("#hand-h", { rotation: 630.0, duration: 5.2, ease: "none" }, 117.2);
+      tl.to("#hand-h", { rotation: 660.0, duration: 6.0, ease: "none" }, 122.4);
+      tl.to("#hand-m", { rotation: 6228.0, duration: 10.0, ease: "none" }, 125.0);
+      tl.to("#hand-h", { rotation: 690.0, duration: 6.6, ease: "none" }, 128.4);
+      tl.set("#dt-5", { opacity: 1 }, 0.00);
+      tl.set("#dt-5", { opacity: 0 }, 15.00);
+      tl.set("#dt-6", { opacity: 1 }, 15.00);
+      tl.set("#dt-6", { opacity: 0 }, 51.00);
+      tl.set("#dt-7", { opacity: 1 }, 51.00);
+      tl.set("#dt-7", { opacity: 0 }, 57.20);
+      tl.set("#dt-8", { opacity: 1 }, 57.20);
+      tl.set("#dt-8", { opacity: 0 }, 61.60);
+      tl.set("#dt-9", { opacity: 1 }, 61.60);
+      tl.set("#dt-9", { opacity: 0 }, 66.00);
+      tl.set("#dt-10", { opacity: 1 }, 66.00);
+      tl.set("#dt-10", { opacity: 0 }, 68.20);
+      tl.set("#dt-11", { opacity: 1 }, 68.20);
+      tl.set("#dt-11", { opacity: 0 }, 70.40);
+      tl.set("#dt-12", { opacity: 1 }, 70.40);
+      tl.set("#dt-12", { opacity: 0 }, 76.00);
+      tl.set("#dt-13", { opacity: 1 }, 76.00);
+      tl.set("#dt-13", { opacity: 0 }, 81.00);
+      tl.set("#dt-14", { opacity: 1 }, 81.00);
+      tl.set("#dt-14", { opacity: 0 }, 86.00);
+      tl.set("#dt-15", { opacity: 1 }, 86.00);
+      tl.set("#dt-15", { opacity: 0 }, 93.00);
+      tl.set("#dt-16", { opacity: 1 }, 93.00);
+      tl.set("#dt-16", { opacity: 0 }, 100.00);
+      tl.set("#dt-17", { opacity: 1 }, 100.00);
+      tl.set("#dt-17", { opacity: 0 }, 105.40);
+      tl.set("#dt-18", { opacity: 1 }, 105.40);
+      tl.set("#dt-18", { opacity: 0 }, 112.00);
+      tl.set("#dt-19", { opacity: 1 }, 112.00);
+      tl.set("#dt-19", { opacity: 0 }, 117.20);
+      tl.set("#dt-20", { opacity: 1 }, 117.20);
+      tl.set("#dt-20", { opacity: 0 }, 122.40);
+      tl.set("#dt-21", { opacity: 1 }, 122.40);
+      tl.set("#dt-21", { opacity: 0 }, 128.40);
+      tl.set("#dt-22", { opacity: 1 }, 128.40);
+      tl.set("#dt-22", { opacity: 0 }, 135.00);
+      tl.set("#dt-23", { opacity: 1 }, 135.00);
+      tl.set("#dt-23", { opacity: 0 }, 135.00);
+      tl.set("#tp-0", { opacity: 1 }, 0.0);
+      tl.set("#tp-0", { opacity: 0 }, 30.0);
+      tl.set("#tp-1", { opacity: 1 }, 30.0);
+      tl.set("#tp-1", { opacity: 0 }, 60.0);
+      tl.set("#tp-2", { opacity: 1 }, 60.0);
+      tl.set("#tp-2", { opacity: 0 }, 70.4);
+      tl.set("#tp-3", { opacity: 1 }, 70.4);
+      tl.set("#tp-3", { opacity: 0 }, 80.0);
+      tl.set("#tp-4", { opacity: 1 }, 80.0);
+      tl.set("#tp-4", { opacity: 0 }, 88.0);
+      tl.set("#tp-6", { opacity: 1 }, 88.0);
+      tl.set("#tp-6", { opacity: 0 }, 112.0);
+      tl.set("#tp-7", { opacity: 1 }, 112.0);
+      tl.set("#tp-7", { opacity: 0 }, 135.0);
+      tl.set("#wx-0", { opacity: 1 }, 0.0);
+      tl.set("#wx-0", { opacity: 0 }, 88.0);
+      tl.set("#wx-1", { opacity: 1 }, 88.0);
+      tl.set("#wx-1", { opacity: 0 }, 112.0);
+      tl.set("#wx-2", { opacity: 1 }, 112.0);
+      tl.set("#wx-2", { opacity: 0 }, 135.0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["ov-dial"] = tl;
+    </script>
+  </body>
+</html>

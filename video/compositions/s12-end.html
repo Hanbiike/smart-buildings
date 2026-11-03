@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>s12-end</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #11161b; }
+      #s12-root { position: absolute; inset: 0; font-family: Outfit, Inter, sans-serif; }
+      #s12-kick { position: absolute; left: 150px; top: 300px; font-family: Inter, sans-serif; font-size: 40px; font-weight: 700; letter-spacing: 0.14em; color: #8b949e; }
+      #s12-url { position: absolute; left: 150px; top: 400px; font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 56px; color: #fff; letter-spacing: -0.01em; white-space: nowrap; }
+      #s12-url .acc { color: #e8590c; }
+      #s12-rule { position: absolute; left: 150px; top: 560px; width: 0; height: 10px; background: #e8590c; border-radius: 5px; }
+      #s12-cta { position: absolute; left: 150px; top: 640px; color: #cfd6dd; font-size: 64px; font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <div id="s12-root" data-composition-id="s12-end" data-width="1920" data-height="1080">
+      <div id="s12-kick" class="clip" data-start="0.2" data-duration="4.6">NEURIPS 2026 · SMART BUILDINGS</div>
+      <div id="s12-url" class="clip" data-start="0.5" data-duration="4.3">github.com/<span class="acc">Hanbiike</span>/smart-buildings</div>
+      <div id="s12-rule" class="clip" data-start="0.9" data-duration="3.9"></div>
+      <div id="s12-cta" class="clip" data-start="1.2" data-duration="3.6">Run your own weather.</div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#s12-kick", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.2);
+      tl.fromTo("#s12-url", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.5);
+      tl.fromTo("#s12-rule", { width: 0 }, { width: 1620, duration: 0.6, ease: "power2.inOut" }, 0.9);
+      tl.fromTo("#s12-cta", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 1.2);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s12-end"] = tl;
+    </script>
+  </body>
+</html>

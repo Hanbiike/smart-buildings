@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>s-comfort</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #edf0f3; }
+      #cmf-root { position: absolute; inset: 0; font-family: Outfit, Inter, sans-serif; color: #11161b; }
+      #cmf-kick { position: absolute; left: 150px; top: 90px; font-family: Inter, sans-serif; font-size: 38px; font-weight: 700; letter-spacing: 0.14em; color: #5b6470; }
+      #cmf-title { position: absolute; left: 150px; top: 142px; font-size: 68px; font-weight: 700; letter-spacing: -0.02em; }
+      #cmf-title .acc { color: #e8590c; }
+      .cmf-card { position: absolute; top: 300px; width: 300px; height: 500px; background: #fff; border-radius: 22px; box-shadow: 0 18px 50px rgba(17,22,27,0.12); text-align: center; padding-top: 26px; }
+      .cmf-tag { display: inline-block; font-family: Inter, sans-serif; font-size: 30px; font-weight: 700; letter-spacing: 0.08em; color: #fff; border-radius: 12px; padding: 10px 22px; }
+      .cmf-face { position: relative; width: 130px; height: 130px; border-radius: 50%; margin: 26px auto 0; }
+      .cmf-eye { position: absolute; top: 48px; width: 16px; height: 22px; border-radius: 8px; background: #11161b; }
+      .cmf-mouth { position: absolute; left: 45px; top: 82px; width: 40px; height: 20px; border: 6px solid #11161b; border-top: none; border-left: none; border-right: none; border-radius: 0 0 40px 40px; }
+      .cmf-mouth.frown { top: 92px; border: 6px solid #11161b; border-bottom: none; border-left: none; border-right: none; border-radius: 40px 40px 0 0; }
+      .cmf-mouth.flat { top: 92px; border: none; background: #11161b; height: 6px; border-radius: 3px; }
+      .cmf-body { width: 120px; height: 130px; border-radius: 40px 40px 18px 18px; margin: 14px auto 0; }
+      .cmf-fx { position: absolute; left: 0; right: 0; top: 190px; }
+      .cmf-band { position: absolute; left: 0; right: 0; bottom: 0; height: 26px; border-radius: 0 0 22px 22px; }
+      .cmf-sweat { position: absolute; width: 22px; height: 30px; border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%; background: #4aa3df; opacity: 0; }
+      .cmf-snow { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: #bcd7f0; opacity: 0; }
+      .cmf-heat { position: absolute; width: 12px; height: 54px; border-radius: 6px; background: #ff7a2a; opacity: 0; }
+      .cmf-check { position: absolute; left: 112px; top: 300px; width: 76px; height: 76px; border-radius: 50%; background: #3f9e4d; color: #fff; font-size: 48px; font-weight: 700; line-height: 76px; opacity: 0; }
+      .cmf-tag2 { position: absolute; left: 0; right: 0; top: 26px; text-align: center; opacity: 0; }
+      #cmf-c0 { left: 80px; } #cmf-c1 { left: 390px; } #cmf-c2 { left: 700px; } #cmf-c3 { left: 1010px; } #cmf-c4 { left: 1320px; }
+      #cmf-foot { position: absolute; left: 150px; top: 850px; font-family: Inter, sans-serif; font-size: 33px; color: #5b6470; }
+      #cmf-foot .acc { color: #e8590c; font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <div id="cmf-root" data-composition-id="s-comfort" data-width="1920" data-height="1080">
+      <div id="cmf-kick" class="clip" data-start="0" data-duration="11.8">FIVE ROOMS, FIVE FEELINGS</div>
+      <div id="cmf-title" class="clip" data-start="0.1" data-duration="11.7">How people feel <span class="acc">right now</span></div>
+      <div id="cmf-c0" class="cmf-card clip" data-start="0.4" data-duration="11.4">
+        <div class="cmf-tag" id="tag0" style="background: #2e6fb7;">TOO COLD</div>
+        <div class="cmf-tag2" id="tag20"><div class="cmf-tag" style="background: #3f9e4d;">COMFORT</div></div>
+        <div class="cmf-face" id="face0" style="background: #bcd7f0;"><div class="cmf-eye" style="left: 36px;"></div><div class="cmf-eye" style="left: 78px;"></div><div class="cmf-mouth frown" id="mold0"></div><div class="cmf-mouth" id="mnew0" style="top: 92px; opacity: 0;"></div></div>
+        <div class="cmf-body" id="body0" style="background: #5b8fd6;"></div>
+        <div class="cmf-fx"><div class="cmf-snow" id="sn0a" style="left: 60px;"></div><div class="cmf-snow" id="sn0b" style="left: 210px;"></div></div>
+        <div class="cmf-check" id="chk0">✓</div><div class="cmf-band" id="band0" style="background: #2e6fb7;"></div>
+      </div>
+      <div id="cmf-c1" class="cmf-card clip" data-start="1" data-duration="10.8">
+        <div class="cmf-tag" id="tag1" style="background: #5b8fd6;">COLD</div>
+        <div class="cmf-tag2" id="tag21"><div class="cmf-tag" style="background: #3f9e4d;">COMFORT</div></div>
+        <div class="cmf-face" id="face1" style="background: #cfe3f5;"><div class="cmf-eye" style="left: 36px;"></div><div class="cmf-eye" style="left: 78px;"></div><div class="cmf-mouth flat" id="mold1"></div><div class="cmf-mouth" id="mnew1" style="top: 92px; opacity: 0;"></div></div>
+        <div class="cmf-body" id="body1" style="background: #7f96a8;"></div>
+        <div class="cmf-fx"><div class="cmf-snow" id="sn1a" style="left: 150px;"></div></div>
+        <div class="cmf-check" id="chk1">✓</div><div class="cmf-band" id="band1" style="background: #5b8fd6;"></div>
+      </div>
+      <div id="cmf-c2" class="cmf-card clip" data-start="1.6" data-duration="10.2">
+        <div class="cmf-tag" style="background: #3f9e4d;">COMFORT</div>
+        <div class="cmf-face" id="face2" style="background: #f2c9a4;"><div class="cmf-eye" style="left: 36px;"></div><div class="cmf-eye" style="left: 78px;"></div><div class="cmf-mouth"></div></div>
+        <div class="cmf-body" id="body2" style="background: #7f96a8;"></div>
+        <div class="cmf-check" id="chk2">✓</div><div class="cmf-band" style="background: #3f9e4d;"></div>
+      </div>
+      <div id="cmf-c3" class="cmf-card clip" data-start="2.2" data-duration="9.6">
+        <div class="cmf-tag" id="tag3" style="background: #d65b4a;">HOT</div>
+        <div class="cmf-tag2" id="tag23"><div class="cmf-tag" style="background: #3f9e4d;">COMFORT</div></div>
+        <div class="cmf-face" id="face3" style="background: #f0b08a;"><div class="cmf-eye" style="left: 36px;"></div><div class="cmf-eye" style="left: 78px;"></div><div class="cmf-mouth flat" id="mold3"></div><div class="cmf-mouth" id="mnew3" style="top: 92px; opacity: 0;"></div></div>
+        <div class="cmf-body" id="body3" style="background: #b87a5b;"></div>
+        <div class="cmf-fx"><div class="cmf-sweat" id="sw3a" style="left: 70px; top: 10px;"></div></div>
+        <div class="cmf-check" id="chk3">✓</div><div class="cmf-band" id="band3" style="background: #d65b4a;"></div>
+      </div>
+      <div id="cmf-c4" class="cmf-card clip" data-start="2.8" data-duration="9">
+        <div class="cmf-tag" id="tag4" style="background: #a83226;">TOO HOT</div>
+        <div class="cmf-tag2" id="tag24"><div class="cmf-tag" style="background: #3f9e4d;">COMFORT</div></div>
+        <div class="cmf-face" id="face4" style="background: #eda07e;"><div class="cmf-eye" style="left: 36px;"></div><div class="cmf-eye" style="left: 78px;"></div><div class="cmf-mouth frown" id="mold4"></div><div class="cmf-mouth" id="mnew4" style="top: 92px; opacity: 0;"></div></div>
+        <div class="cmf-body" id="body4" style="background: #d65b4a;"></div>
+        <div class="cmf-fx"><div class="cmf-sweat" id="sw4a" style="left: 60px; top: 5px;"></div><div class="cmf-sweat" id="sw4b" style="left: 210px; top: 0px;"></div><div class="cmf-heat" id="ht4a" style="left: 96px;"></div><div class="cmf-heat" id="ht4b" style="left: 190px;"></div></div>
+        <div class="cmf-check" id="chk4">✓</div><div class="cmf-band" id="band4" style="background: #a83226;"></div>
+      </div>
+      <div id="cmf-foot" class="clip" data-start="3.4" data-duration="8.4">The policy reads every room — <span class="acc">then answers, one room at a time.</span></div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#cmf-kick", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0);
+      tl.fromTo("#cmf-title", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 0.1);
+      const cards = ["#cmf-c0", "#cmf-c1", "#cmf-c2", "#cmf-c3", "#cmf-c4"];
+      cards.forEach((id, i) => {
+        tl.fromTo(id, { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 0.4 + i * 0.6);
+      });
+      // state life: shiver, sway, sweat, snow, heat (all end before the fixes)
+      tl.to("#face0", { x: 5, duration: 0.07, ease: "none", repeat: 88, yoyo: true }, 1);
+      tl.to("#body0", { x: -4, duration: 0.07, ease: "none", repeat: 88, yoyo: true }, 1);
+      tl.to("#face1", { x: 3, duration: 0.12, ease: "none", repeat: 50, yoyo: true }, 1.6);
+      tl.to("#face2", { rotation: 3, duration: 1.1, ease: "sine.inOut", repeat: 7, yoyo: true, transformOrigin: "50% 90%" }, 2.2);
+      for (const s of ["#sn0a", "#sn0b", "#sn1a"]) {
+        tl.fromTo(s, { opacity: 0, y: -10 }, { opacity: 1, y: 120, duration: 1.6, ease: "power1.in", repeat: 2 }, 1.2);
+      }
+      for (const s of ["#sw3a", "#sw4a", "#sw4b"]) {
+        tl.fromTo(s, { opacity: 0, y: -6 }, { opacity: 1, y: 90, duration: 1.1, ease: "power1.in", repeat: 3 }, 2.8);
+      }
+      for (const s of ["#ht4a", "#ht4b"]) {
+        tl.fromTo(s, { opacity: 0.1, scaleY: 0.7 }, { opacity: 0.75, scaleY: 1.1, duration: 0.5, ease: "sine.inOut", repeat: 7, yoyo: true, transformOrigin: "50% 100%" }, 3);
+      }
+      // all effects dissolve right as the fixes begin
+      tl.to(["#sn0a", "#sn0b", "#sn1a", "#sw3a", "#sw4a", "#sw4b", "#ht4a", "#ht4b"], { opacity: 0, duration: 0.25 }, 7.2);
+      // the policy answers: face warms + smiles, tag and band flip green, then the check lands
+      const fixes = [["0", 7.2], ["1", 7.7], ["3", 8.2], ["4", 8.7]];
+      fixes.forEach(([i, t]) => {
+        tl.to("#face" + i, { backgroundColor: "#f2c9a4", duration: 0.5 }, t);
+        tl.to("#body" + i, { backgroundColor: "#7f96a8", duration: 0.5 }, t);
+        tl.to("#band" + i, { backgroundColor: "#3f9e4d", duration: 0.5 }, t);
+        tl.to("#mold" + i, { opacity: 0, duration: 0.25 }, t + 0.1);
+        tl.to("#mnew" + i, { opacity: 1, duration: 0.25 }, t + 0.1);
+        tl.to("#tag" + i, { opacity: 0, duration: 0.25 }, t + 0.1);
+        tl.to("#tag2" + i, { opacity: 1, duration: 0.25 }, t + 0.1);
+      });
+      cards.forEach((id, i) => {
+        tl.fromTo("#chk" + i, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, 7.6 + i * 0.5);
+      });
+      tl.fromTo("#cmf-foot", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 3.4);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s-comfort"] = tl;
+    </script>
+  </body>
+</html>

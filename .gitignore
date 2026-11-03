@@ -15,3 +15,25 @@ venv/
 smart_buildings/results/
 smart_buildings/transfer_scenarios/
 *.npz
+
+# Secrets
+.env
+
+# HyperFrames video project local artifacts
+video/.tts-venv/
+video/.music-venv/
+video/.media/
+video/node_modules/
+video/chrome-headless-shell/
+video/.hyperframes/
+video/*.mp4
+video/renders/
+# Superseded music beds (only score_bed178.wav is referenced by index.html)
+video/assets/music/_seg*.wav
+video/assets/music/score.wav
+video/assets/music/score_bed.wav
+# Unused three.js builds (only lib/three/three.module.js is imported)
+video/lib/three/three.core*
+video/lib/three/three.module.min.js
+video/lib/three/three.tsl*
+video/lib/three/three.webgpu*

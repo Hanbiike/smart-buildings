@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>captions</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #cap-root { position: absolute; inset: 0; font-family: Inter, sans-serif; }
+      .cap-g { position: absolute; left: 0; right: 0; bottom: 56px; text-align: center; }
+      .cap-pill { display: inline-block; background: rgba(10,16,24,0.92); border-radius: 16px; padding: 20px 38px 24px; max-width: 1560px; }
+      .cap-w { display: inline-block; margin-right: 0.26em; color: #fff; font-weight: 600; font-size: 56px; line-height: 1.25; letter-spacing: -0.01em; }
+      .cap-w:last-child { margin-right: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="cap-root" data-composition-id="captions" data-width="1920" data-height="1080">
+      <div class="cap-g clip" id="capg-0" data-start="0.12" data-duration="1.49"><div class="cap-in" id="capin-0"><span class="cap-pill"><span class="cap-w" id="capw-0-0">Every</span> <span class="cap-w" id="capw-0-1">morning,</span> <span class="cap-w" id="capw-0-2">buildings</span> <span class="cap-w" id="capw-0-3">wake</span> <span class="cap-w" id="capw-0-4">up</span></span></div></div>
+      <div class="cap-g clip" id="capg-1" data-start="1.66" data-duration="0.35"><div class="cap-in" id="capin-1"><span class="cap-pill"><span class="cap-w" id="capw-1-0">hungry.</span></span></div></div>
+      <div class="cap-g clip" id="capg-2" data-start="2.06" data-duration="1.66"><div class="cap-in" id="capin-2"><span class="cap-pill"><span class="cap-w" id="capw-2-0">Forty</span> <span class="cap-w" id="capw-2-1">percent</span> <span class="cap-w" id="capw-2-2">of</span> <span class="cap-w" id="capw-2-3">America's</span> <span class="cap-w" id="capw-2-4">carbon</span></span></div></div>
+      <div class="cap-g clip" id="capg-3" data-start="3.77" data-duration="1.51"><div class="cap-in" id="capin-3"><span class="cap-pill"><span class="cap-w" id="capw-3-0">comes</span> <span class="cap-w" id="capw-3-1">from</span> <span class="cap-w" id="capw-3-2">buildings</span> <span class="cap-w" id="capw-3-3">like</span> <span class="cap-w" id="capw-3-4">this</span></span></div></div>
+      <div class="cap-g clip" id="capg-4" data-start="5.32" data-duration="0.67"><div class="cap-in" id="capin-4"><span class="cap-pill"><span class="cap-w" id="capw-4-0">one.</span></span></div></div>
+      <div class="cap-g clip" id="capg-5" data-start="6.20" data-duration="1.69"><div class="cap-in" id="capin-5"><span class="cap-pill"><span class="cap-w" id="capw-5-0">Heating</span> <span class="cap-w" id="capw-5-1">and</span> <span class="cap-w" id="capw-5-2">cooling</span> <span class="cap-w" id="capw-5-3">eats</span> <span class="cap-w" id="capw-5-4">forty</span></span></div></div>
+      <div class="cap-g clip" id="capg-6" data-start="7.94" data-duration="1.47"><div class="cap-in" id="capin-6"><span class="cap-pill"><span class="cap-w" id="capw-6-0">to</span> <span class="cap-w" id="capw-6-1">sixty</span> <span class="cap-w" id="capw-6-2">percent</span> <span class="cap-w" id="capw-6-3">of</span> <span class="cap-w" id="capw-6-4">that —</span></span></div></div>
+      <div class="cap-g clip" id="capg-7" data-start="9.46" data-duration="1.64"><div class="cap-in" id="capin-7"><span class="cap-pill"><span class="cap-w" id="capw-7-0">fifteen</span> <span class="cap-w" id="capw-7-1">percent</span> <span class="cap-w" id="capw-7-2">of</span> <span class="cap-w" id="capw-7-3">all</span> <span class="cap-w" id="capw-7-4">energy</span></span></div></div>
+      <div class="cap-g clip" id="capg-8" data-start="11.15" data-duration="0.51"><div class="cap-in" id="capin-8"><span class="cap-pill"><span class="cap-w" id="capw-8-0">on</span> <span class="cap-w" id="capw-8-1">Earth.</span></span></div></div>
+      <div class="cap-g clip" id="capg-9" data-start="11.71" data-duration="1.58"><div class="cap-in" id="capin-9"><span class="cap-pill"><span class="cap-w" id="capw-9-0">And</span> <span class="cap-w" id="capw-9-1">most</span> <span class="cap-w" id="capw-9-2">buildings</span> <span class="cap-w" id="capw-9-3">still</span> <span class="cap-w" id="capw-9-4">run</span></span></div></div>
+      <div class="cap-g clip" id="capg-10" data-start="13.34" data-duration="1.41"><div class="cap-in" id="capin-10"><span class="cap-pill"><span class="cap-w" id="capw-10-0">like</span> <span class="cap-w" id="capw-10-1">it's</span> <span class="cap-w" id="capw-10-2">1980,</span> <span class="cap-w" id="capw-10-3">because</span> <span class="cap-w" id="capw-10-4">a</span></span></div></div>
+      <div class="cap-g clip" id="capg-11" data-start="14.81" data-duration="1.86"><div class="cap-in" id="capin-11"><span class="cap-pill"><span class="cap-w" id="capw-11-0">controller</span> <span class="cap-w" id="capw-11-1">tuned</span> <span class="cap-w" id="capw-11-2">for</span> <span class="cap-w" id="capw-11-3">one</span> <span class="cap-w" id="capw-11-4">building</span></span></div></div>
+      <div class="cap-g clip" id="capg-12" data-start="16.72" data-duration="1.71"><div class="cap-in" id="capin-12"><span class="cap-pill"><span class="cap-w" id="capw-12-0">fails</span> <span class="cap-w" id="capw-12-1">everywhere</span> <span class="cap-w" id="capw-12-2">else.</span></span></div></div>
+      <div class="cap-g clip" id="capg-13" data-start="20.40" data-duration="1.40"><div class="cap-in" id="capin-13"><span class="cap-pill"><span class="cap-w" id="capw-13-0">Meet</span> <span class="cap-w" id="capw-13-1">the</span> <span class="cap-w" id="capw-13-2">facility</span> <span class="cap-w" id="capw-13-3">manager.</span></span></div></div>
+      <div class="cap-g clip" id="capg-14" data-start="21.85" data-duration="1.82"><div class="cap-in" id="capin-14"><span class="cap-pill"><span class="cap-w" id="capw-14-0">One</span> <span class="cap-w" id="capw-14-1">building,</span> <span class="cap-w" id="capw-14-2">one</span> <span class="cap-w" id="capw-14-3">headache —</span> <span class="cap-w" id="capw-14-4">until</span></span></div></div>
+      <div class="cap-g clip" id="capg-15" data-start="23.72" data-duration="1.29"><div class="cap-in" id="capin-15"><span class="cap-pill"><span class="cap-w" id="capw-15-0">one</span> <span class="cap-w" id="capw-15-1">policy</span> <span class="cap-w" id="capw-15-2">learns</span> <span class="cap-w" id="capw-15-3">to</span> <span class="cap-w" id="capw-15-4">run</span></span></div></div>
+      <div class="cap-g clip" id="capg-16" data-start="25.06" data-duration="0.96"><div class="cap-in" id="capin-16"><span class="cap-pill"><span class="cap-w" id="capw-16-0">them</span> <span class="cap-w" id="capw-16-1">all.</span></span></div></div>
+      <div class="cap-g clip" id="capg-17" data-start="30.40" data-duration="1.15"><div class="cap-in" id="capin-17"><span class="cap-pill"><span class="cap-w" id="capw-17-0">This</span> <span class="cap-w" id="capw-17-1">is</span> <span class="cap-w" id="capw-17-2">our</span> <span class="cap-w" id="capw-17-3">building:</span></span></div></div>
+      <div class="cap-g clip" id="capg-18" data-start="31.60" data-duration="2.02"><div class="cap-in" id="capin-18"><span class="cap-pill"><span class="cap-w" id="capw-18-0">three</span> <span class="cap-w" id="capw-18-1">floors,</span> <span class="cap-w" id="capw-18-2">thirty-nine</span> <span class="cap-w" id="capw-18-3">zones,</span> <span class="cap-w" id="capw-18-4">four</span></span></div></div>
+      <div class="cap-g clip" id="capg-19" data-start="33.66" data-duration="0.71"><div class="cap-in" id="capin-19"><span class="cap-pill"><span class="cap-w" id="capw-19-0">air</span> <span class="cap-w" id="capw-19-1">handlers.</span></span></div></div>
+      <div class="cap-g clip" id="capg-20" data-start="34.42" data-duration="1.25"><div class="cap-in" id="capin-20"><span class="cap-pill"><span class="cap-w" id="capw-20-0">Every</span> <span class="cap-w" id="capw-20-1">room</span> <span class="cap-w" id="capw-20-2">has</span> <span class="cap-w" id="capw-20-3">a</span> <span class="cap-w" id="capw-20-4">damper</span></span></div></div>
+      <div class="cap-g clip" id="capg-21" data-start="35.73" data-duration="1.04"><div class="cap-in" id="capin-21"><span class="cap-pill"><span class="cap-w" id="capw-21-0">and</span> <span class="cap-w" id="capw-21-1">a</span> <span class="cap-w" id="capw-21-2">reheat</span> <span class="cap-w" id="capw-21-3">valve.</span></span></div></div>
+      <div class="cap-g clip" id="capg-22" data-start="36.81" data-duration="1.42"><div class="cap-in" id="capin-22"><span class="cap-pill"><span class="cap-w" id="capw-22-0">The</span> <span class="cap-w" id="capw-22-1">policy</span> <span class="cap-w" id="capw-22-2">sees</span> <span class="cap-w" id="capw-22-3">them</span> <span class="cap-w" id="capw-22-4">all —</span></span></div></div>
+      <div class="cap-g clip" id="capg-23" data-start="38.28" data-duration="2.10"><div class="cap-in" id="capin-23"><span class="cap-pill"><span class="cap-w" id="capw-23-0">and</span> <span class="cap-w" id="capw-23-1">nothing</span> <span class="cap-w" id="capw-23-2">else</span> <span class="cap-w" id="capw-23-3">is</span> <span class="cap-w" id="capw-23-4">hardcoded.</span></span></div></div>
+      <div class="cap-g clip" id="capg-24" data-start="45.40" data-duration="0.38"><div class="cap-in" id="capin-24"><span class="cap-pill"><span class="cap-w" id="capw-24-0">Six</span> <span class="cap-w" id="capw-24-1">AM.</span></span></div></div>
+      <div class="cap-g clip" id="capg-25" data-start="45.83" data-duration="1.04"><div class="cap-in" id="capin-25"><span class="cap-pill"><span class="cap-w" id="capw-25-0">The</span> <span class="cap-w" id="capw-25-1">building</span> <span class="cap-w" id="capw-25-2">wakes.</span></span></div></div>
+      <div class="cap-g clip" id="capg-26" data-start="46.92" data-duration="1.58"><div class="cap-in" id="capin-26"><span class="cap-pill"><span class="cap-w" id="capw-26-0">Air</span> <span class="cap-w" id="capw-26-1">handlers</span> <span class="cap-w" id="capw-26-2">spin</span> <span class="cap-w" id="capw-26-3">up,</span> <span class="cap-w" id="capw-26-4">dampers</span></span></div></div>
+      <div class="cap-g clip" id="capg-27" data-start="48.55" data-duration="1.42"><div class="cap-in" id="capin-27"><span class="cap-pill"><span class="cap-w" id="capw-27-0">sweep</span> <span class="cap-w" id="capw-27-1">open,</span> <span class="cap-w" id="capw-27-2">and</span> <span class="cap-w" id="capw-27-3">every</span> <span class="cap-w" id="capw-27-4">zone</span></span></div></div>
+      <div class="cap-g clip" id="capg-28" data-start="50.02" data-duration="1.53"><div class="cap-in" id="capin-28"><span class="cap-pill"><span class="cap-w" id="capw-28-0">glides</span> <span class="cap-w" id="capw-28-1">into</span> <span class="cap-w" id="capw-28-2">its</span> <span class="cap-w" id="capw-28-3">comfort</span> <span class="cap-w" id="capw-28-4">band</span></span></div></div>
+      <div class="cap-g clip" id="capg-29" data-start="51.60" data-duration="1.42"><div class="cap-in" id="capin-29"><span class="cap-pill"><span class="cap-w" id="capw-29-0">before</span> <span class="cap-w" id="capw-29-1">the</span> <span class="cap-w" id="capw-29-2">first</span> <span class="cap-w" id="capw-29-3">coffee</span> <span class="cap-w" id="capw-29-4">is</span></span></div></div>
+      <div class="cap-g clip" id="capg-30" data-start="53.07" data-duration="0.85"><div class="cap-in" id="capin-30"><span class="cap-pill"><span class="cap-w" id="capw-30-0">poured.</span></span></div></div>
+      <div class="cap-g clip" id="capg-31" data-start="70.40" data-duration="0.29"><div class="cap-in" id="capin-31"><span class="cap-pill"><span class="cap-w" id="capw-31-0">Noon.</span></span></div></div>
+      <div class="cap-g clip" id="capg-32" data-start="70.74" data-duration="1.31"><div class="cap-in" id="capin-32"><span class="cap-pill"><span class="cap-w" id="capw-32-0">A</span> <span class="cap-w" id="capw-32-1">heat</span> <span class="cap-w" id="capw-32-2">wave</span> <span class="cap-w" id="capw-32-3">hammers</span> <span class="cap-w" id="capw-32-4">the</span></span></div></div>
+      <div class="cap-g clip" id="capg-33" data-start="72.09" data-duration="0.35"><div class="cap-in" id="capin-33"><span class="cap-pill"><span class="cap-w" id="capw-33-0">glass.</span></span></div></div>
+      <div class="cap-g clip" id="capg-34" data-start="72.49" data-duration="1.81"><div class="cap-in" id="capin-34"><span class="cap-pill"><span class="cap-w" id="capw-34-0">The</span> <span class="cap-w" id="capw-34-1">policy</span> <span class="cap-w" id="capw-34-2">pours</span> <span class="cap-w" id="capw-34-3">cooling</span> <span class="cap-w" id="capw-34-4">exactly</span></span></div></div>
+      <div class="cap-g clip" id="capg-35" data-start="74.35" data-duration="1.76"><div class="cap-in" id="capin-35"><span class="cap-pill"><span class="cap-w" id="capw-35-0">where</span> <span class="cap-w" id="capw-35-1">bodies</span> <span class="cap-w" id="capw-35-2">are,</span> <span class="cap-w" id="capw-35-3">trimming</span> <span class="cap-w" id="capw-35-4">each</span></span></div></div>
+      <div class="cap-g clip" id="capg-36" data-start="76.16" data-duration="2.15"><div class="cap-in" id="capin-36"><span class="cap-pill"><span class="cap-w" id="capw-36-0">damper</span> <span class="cap-w" id="capw-36-1">five-minute</span> <span class="cap-w" id="capw-36-2">step</span> <span class="cap-w" id="capw-36-3">by</span> <span class="cap-w" id="capw-36-4">five-minute</span></span></div></div>
+      <div class="cap-g clip" id="capg-37" data-start="78.36" data-duration="0.76"><div class="cap-in" id="capin-37"><span class="cap-pill"><span class="cap-w" id="capw-37-0">step.</span></span></div></div>
+      <div class="cap-g clip" id="capg-38" data-start="95.40" data-duration="1.43"><div class="cap-in" id="capin-38"><span class="cap-pill"><span class="cap-w" id="capw-38-0">Then</span> <span class="cap-w" id="capw-38-1">the</span> <span class="cap-w" id="capw-38-2">cold</span> <span class="cap-w" id="capw-38-3">snap</span> <span class="cap-w" id="capw-38-4">hits.</span></span></div></div>
+      <div class="cap-g clip" id="capg-39" data-start="96.88" data-duration="1.55"><div class="cap-in" id="capin-39"><span class="cap-pill"><span class="cap-w" id="capw-39-0">Reheat</span> <span class="cap-w" id="capw-39-1">answers</span> <span class="cap-w" id="capw-39-2">in</span> <span class="cap-w" id="capw-39-3">seconds.</span></span></div></div>
+      <div class="cap-g clip" id="capg-40" data-start="98.48" data-duration="0.66"><div class="cap-in" id="capin-40"><span class="cap-pill"><span class="cap-w" id="capw-40-0">Zero</span> <span class="cap-w" id="capw-40-1">drift.</span></span></div></div>
+      <div class="cap-g clip" id="capg-41" data-start="99.19" data-duration="1.43"><div class="cap-in" id="capin-41"><span class="cap-pill"><span class="cap-w" id="capw-41-0">Zero</span> <span class="cap-w" id="capw-41-1">complaints.</span></span></div></div>
+      <div class="cap-g clip" id="capg-42" data-start="105.40" data-duration="0.44"><div class="cap-in" id="capin-42"><span class="cap-pill"><span class="cap-w" id="capw-42-0">Evening.</span></span></div></div>
+      <div class="cap-g clip" id="capg-43" data-start="105.89" data-duration="0.71"><div class="cap-in" id="capin-43"><span class="cap-pill"><span class="cap-w" id="capw-43-0">People</span> <span class="cap-w" id="capw-43-1">leave;</span></span></div></div>
+      <div class="cap-g clip" id="capg-44" data-start="106.64" data-duration="1.36"><div class="cap-in" id="capin-44"><span class="cap-pill"><span class="cap-w" id="capw-44-0">the</span> <span class="cap-w" id="capw-44-1">policy</span> <span class="cap-w" id="capw-44-2">widens</span> <span class="cap-w" id="capw-44-3">the</span> <span class="cap-w" id="capw-44-4">eco</span></span></div></div>
+      <div class="cap-g clip" id="capg-45" data-start="108.05" data-duration="1.41"><div class="cap-in" id="capin-45"><span class="cap-pill"><span class="cap-w" id="capw-45-0">band</span> <span class="cap-w" id="capw-45-1">and</span> <span class="cap-w" id="capw-45-2">lets</span> <span class="cap-w" id="capw-45-3">the</span> <span class="cap-w" id="capw-45-4">building</span></span></div></div>
+      <div class="cap-g clip" id="capg-46" data-start="109.51" data-duration="1.63"><div class="cap-in" id="capin-46"><span class="cap-pill"><span class="cap-w" id="capw-46-0">sleep —</span> <span class="cap-w" id="capw-46-1">warm</span> <span class="cap-w" id="capw-46-2">where</span> <span class="cap-w" id="capw-46-3">it</span> <span class="cap-w" id="capw-46-4">matters,</span></span></div></div>
+      <div class="cap-g clip" id="capg-47" data-start="111.19" data-duration="1.19"><div class="cap-in" id="capin-47"><span class="cap-pill"><span class="cap-w" id="capw-47-0">dark</span> <span class="cap-w" id="capw-47-1">where</span> <span class="cap-w" id="capw-47-2">it</span> <span class="cap-w" id="capw-47-3">doesn't.</span></span></div></div>
+      <div class="cap-g clip" id="capg-48" data-start="112.43" data-duration="1.25"><div class="cap-in" id="capin-48"><span class="cap-pill"><span class="cap-w" id="capw-48-0">One</span> <span class="cap-w" id="capw-48-1">day,</span> <span class="cap-w" id="capw-48-2">one</span> <span class="cap-w" id="capw-48-3">policy,</span> <span class="cap-w" id="capw-48-4">no</span></span></div></div>
+      <div class="cap-g clip" id="capg-49" data-start="113.73" data-duration="0.85"><div class="cap-in" id="capin-49"><span class="cap-pill"><span class="cap-w" id="capw-49-0">tuning.</span></span></div></div>
+      <div class="cap-g clip" id="capg-50" data-start="135.40" data-duration="0.23"><div class="cap-in" id="capin-50"><span class="cap-pill"><span class="cap-w" id="capw-50-0">How?</span></span></div></div>
+      <div class="cap-g clip" id="capg-51" data-start="135.68" data-duration="1.51"><div class="cap-in" id="capin-51"><span class="cap-pill"><span class="cap-w" id="capw-51-0">One</span> <span class="cap-w" id="capw-51-1">neural</span> <span class="cap-w" id="capw-51-2">policy</span> <span class="cap-w" id="capw-51-3">reads</span> <span class="cap-w" id="capw-51-4">the</span></span></div></div>
+      <div class="cap-g clip" id="capg-52" data-start="137.24" data-duration="1.57"><div class="cap-in" id="capin-52"><span class="cap-pill"><span class="cap-w" id="capw-52-0">floor</span> <span class="cap-w" id="capw-52-1">plan</span> <span class="cap-w" id="capw-52-2">and</span> <span class="cap-w" id="capw-52-3">live</span> <span class="cap-w" id="capw-52-4">sensors,</span></span></div></div>
+      <div class="cap-g clip" id="capg-53" data-start="138.86" data-duration="1.96"><div class="cap-in" id="capin-53"><span class="cap-pill"><span class="cap-w" id="capw-53-0">then</span> <span class="cap-w" id="capw-53-1">commands</span> <span class="cap-w" id="capw-53-2">every</span> <span class="cap-w" id="capw-53-3">handler,</span> <span class="cap-w" id="capw-53-4">valve,</span></span></div></div>
+      <div class="cap-g clip" id="capg-54" data-start="140.87" data-duration="1.57"><div class="cap-in" id="capin-54"><span class="cap-pill"><span class="cap-w" id="capw-54-0">and</span> <span class="cap-w" id="capw-54-1">boiler —</span> <span class="cap-w" id="capw-54-2">same</span> <span class="cap-w" id="capw-54-3">brain,</span> <span class="cap-w" id="capw-54-4">any</span></span></div></div>
+      <div class="cap-g clip" id="capg-55" data-start="142.48" data-duration="0.98"><div class="cap-in" id="capin-55"><span class="cap-pill"><span class="cap-w" id="capw-55-0">building.</span></span></div></div>
+      <div class="cap-g clip" id="capg-56" data-start="155.40" data-duration="0.50"><div class="cap-in" id="capin-56"><span class="cap-pill"><span class="cap-w" id="capw-56-0">The</span> <span class="cap-w" id="capw-56-1">test:</span></span></div></div>
+      <div class="cap-g clip" id="capg-57" data-start="155.95" data-duration="2.04"><div class="cap-in" id="capin-57"><span class="cap-pill"><span class="cap-w" id="capw-57-0">full</span> <span class="cap-w" id="capw-57-1">thirty-day</span> <span class="cap-w" id="capw-57-2">episodes</span> <span class="cap-w" id="capw-57-3">across</span> <span class="cap-w" id="capw-57-4">heat,</span></span></div></div>
+      <div class="cap-g clip" id="capg-58" data-start="158.03" data-duration="1.32"><div class="cap-in" id="capin-58"><span class="cap-pill"><span class="cap-w" id="capw-58-0">cold,</span> <span class="cap-w" id="capw-58-1">and</span> <span class="cap-w" id="capw-58-2">swing</span> <span class="cap-w" id="capw-58-3">weather.</span></span></div></div>
+      <div class="cap-g clip" id="capg-59" data-start="159.41" data-duration="1.98"><div class="cap-in" id="capin-59"><span class="cap-pill"><span class="cap-w" id="capw-59-0">Comfort,</span> <span class="cap-w" id="capw-59-1">energy,</span> <span class="cap-w" id="capw-59-2">carbon —</span> <span class="cap-w" id="capw-59-3">every</span> <span class="cap-w" id="capw-59-4">step</span></span></div></div>
+      <div class="cap-g clip" id="capg-60" data-start="161.44" data-duration="0.86"><div class="cap-in" id="capin-60"><span class="cap-pill"><span class="cap-w" id="capw-60-0">scored.</span></span></div></div>
+      <div class="cap-g clip" id="capg-61" data-start="168.40" data-duration="0.65"><div class="cap-in" id="capin-61"><span class="cap-pill"><span class="cap-w" id="capw-61-0">One</span> <span class="cap-w" id="capw-61-1">policy.</span></span></div></div>
+      <div class="cap-g clip" id="capg-62" data-start="169.10" data-duration="1.36"><div class="cap-in" id="capin-62"><span class="cap-pill"><span class="cap-w" id="capw-62-0">Every</span> <span class="cap-w" id="capw-62-1">building.</span></span></div></div>
+      <div class="cap-g clip" id="capg-63" data-start="173.40" data-duration="0.36"><div class="cap-in" id="capin-63"><span class="cap-pill"><span class="cap-w" id="capw-63-0">Try</span> <span class="cap-w" id="capw-63-1">it.</span></span></div></div>
+      <div class="cap-g clip" id="capg-64" data-start="173.81" data-duration="0.72"><div class="cap-in" id="capin-64"><span class="cap-pill"><span class="cap-w" id="capw-64-0">Star</span> <span class="cap-w" id="capw-64-1">the</span> <span class="cap-w" id="capw-64-2">repo.</span></span></div></div>
+      <div class="cap-g clip" id="capg-65" data-start="174.58" data-duration="1.55"><div class="cap-in" id="capin-65"><span class="cap-pill"><span class="cap-w" id="capw-65-0">Run</span> <span class="cap-w" id="capw-65-1">your</span> <span class="cap-w" id="capw-65-2">own</span> <span class="cap-w" id="capw-65-3">weather.</span></span></div></div>
+      <div class="cap-g clip" id="capg-66" data-start="147.40" data-duration="1.54"><div class="cap-in" id="capin-66"><span class="cap-pill"><span class="cap-w" id="capw-66-0">Meta</span> <span class="cap-w" id="capw-66-1">AI</span> <span class="cap-w" id="capw-66-2">did</span> <span class="cap-w" id="capw-66-3">the</span> <span class="cap-w" id="capw-66-4">building:</span></span></div></div>
+      <div class="cap-g clip" id="capg-67" data-start="149.02" data-duration="1.83"><div class="cap-in" id="capin-67"><span class="cap-pill"><span class="cap-w" id="capw-67-0">rules</span> <span class="cap-w" id="capw-67-1">and</span> <span class="cap-w" id="capw-67-2">neural</span> <span class="cap-w" id="capw-67-3">nets</span> <span class="cap-w" id="capw-67-4">in</span> <span class="cap-w" id="capw-67-5">PyTorch</span> —</span></div></div>
+      <div class="cap-g clip" id="capg-68" data-start="150.92" data-duration="2.49"><div class="cap-in" id="capin-68"><span class="cap-pill"><span class="cap-w" id="capw-68-0">written</span> <span class="cap-w" id="capw-68-1">with</span> <span class="cap-w" id="capw-68-2">Muse,</span> <span class="cap-w" id="capw-68-3">down</span> <span class="cap-w" id="capw-68-4">to</span> <span class="cap-w" id="capw-68-5">this</span> <span class="cap-w" id="capw-68-6">video.</span></span></div></div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#capin-0", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0.12);
+      tl.to("#capw-0-0", { color: "#e8590c" }, 0.12);
+      tl.to("#capw-0-1", { color: "#e8590c" }, 0.42);
+      tl.to("#capw-0-2", { color: "#e8590c" }, 0.87);
+      tl.to("#capw-0-3", { color: "#e8590c" }, 1.38);
+      tl.to("#capw-0-4", { color: "#e8590c" }, 1.63);
+      tl.to("#capin-0", { opacity: 0, duration: 0.1, ease: "power2.in" }, 1.51);
+      tl.set("#capin-0", { opacity: 0, visibility: "hidden" }, 1.61);
+      tl.fromTo("#capin-1", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 1.66);
+      tl.to("#capw-1-0", { color: "#e8590c" }, 1.78);
+      tl.to("#capin-1", { opacity: 0, duration: 0.1, ease: "power2.in" }, 1.91);
+      tl.set("#capin-1", { opacity: 0, visibility: "hidden" }, 2.01);
+      tl.fromTo("#capin-2", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 2.06);
+      tl.to("#capw-2-0", { color: "#e8590c" }, 2.18);
+      tl.to("#capw-2-1", { color: "#e8590c" }, 2.48);
+      tl.to("#capw-2-2", { color: "#e8590c" }, 2.88);
+      tl.to("#capw-2-3", { color: "#e8590c" }, 3.03);
+      tl.to("#capw-2-4", { color: "#e8590c" }, 3.54);
+      tl.to("#capin-2", { opacity: 0, duration: 0.1, ease: "power2.in" }, 3.62);
+      tl.set("#capin-2", { opacity: 0, visibility: "hidden" }, 3.72);
+      tl.fromTo("#capin-3", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 3.77);
+      tl.to("#capw-3-0", { color: "#e8590c" }, 3.89);
+      tl.to("#capw-3-1", { color: "#e8590c" }, 4.19);
+      tl.to("#capw-3-2", { color: "#e8590c" }, 4.44);
+      tl.to("#capw-3-3", { color: "#e8590c" }, 4.94);
+      tl.to("#capw-3-4", { color: "#e8590c" }, 5.19);
+      tl.to("#capin-3", { opacity: 0, duration: 0.1, ease: "power2.in" }, 5.17);
+      tl.set("#capin-3", { opacity: 0, visibility: "hidden" }, 5.27);
+      tl.fromTo("#capin-4", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 5.32);
+      tl.to("#capw-4-0", { color: "#e8590c" }, 5.44);
+      tl.to("#capin-4", { opacity: 0, duration: 0.1, ease: "power2.in" }, 5.90);
+      tl.set("#capin-4", { opacity: 0, visibility: "hidden" }, 6.00);
+      tl.fromTo("#capin-5", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 6.20);
+      tl.to("#capw-5-0", { color: "#e8590c" }, 6.32);
+      tl.to("#capw-5-1", { color: "#e8590c" }, 6.77);
+      tl.to("#capw-5-2", { color: "#e8590c" }, 6.99);
+      tl.to("#capw-5-3", { color: "#e8590c" }, 7.44);
+      tl.to("#capw-5-4", { color: "#e8590c" }, 7.73);
+      tl.to("#capin-5", { opacity: 0, duration: 0.1, ease: "power2.in" }, 7.79);
+      tl.set("#capin-5", { opacity: 0, visibility: "hidden" }, 7.89);
+      tl.fromTo("#capin-6", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 7.94);
+      tl.to("#capw-6-0", { color: "#e8590c" }, 8.06);
+      tl.to("#capw-6-1", { color: "#e8590c" }, 8.23);
+      tl.to("#capw-6-2", { color: "#e8590c" }, 8.57);
+      tl.to("#capw-6-3", { color: "#e8590c" }, 9.02);
+      tl.to("#capw-6-4", { color: "#e8590c" }, 9.19);
+      tl.to("#capin-6", { opacity: 0, duration: 0.1, ease: "power2.in" }, 9.31);
+      tl.set("#capin-6", { opacity: 0, visibility: "hidden" }, 9.41);
+      tl.fromTo("#capin-7", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 9.46);
+      tl.to("#capw-7-0", { color: "#e8590c" }, 9.58);
+      tl.to("#capw-7-1", { color: "#e8590c" }, 10.03);
+      tl.to("#capw-7-2", { color: "#e8590c" }, 10.48);
+      tl.to("#capw-7-3", { color: "#e8590c" }, 10.65);
+      tl.to("#capw-7-4", { color: "#e8590c" }, 10.88);
+      tl.to("#capin-7", { opacity: 0, duration: 0.1, ease: "power2.in" }, 11.00);
+      tl.set("#capin-7", { opacity: 0, visibility: "hidden" }, 11.10);
+      tl.fromTo("#capin-8", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 11.15);
+      tl.to("#capw-8-0", { color: "#e8590c" }, 11.27);
+      tl.to("#capw-8-1", { color: "#e8590c" }, 11.44);
+      tl.to("#capin-8", { opacity: 0, duration: 0.1, ease: "power2.in" }, 11.56);
+      tl.set("#capin-8", { opacity: 0, visibility: "hidden" }, 11.66);
+      tl.fromTo("#capin-9", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 11.71);
+      tl.to("#capw-9-0", { color: "#e8590c" }, 11.83);
+      tl.to("#capw-9-1", { color: "#e8590c" }, 12.06);
+      tl.to("#capw-9-2", { color: "#e8590c" }, 12.34);
+      tl.to("#capw-9-3", { color: "#e8590c" }, 12.90);
+      tl.to("#capw-9-4", { color: "#e8590c" }, 13.24);
+      tl.to("#capin-9", { opacity: 0, duration: 0.1, ease: "power2.in" }, 13.19);
+      tl.set("#capin-9", { opacity: 0, visibility: "hidden" }, 13.29);
+      tl.fromTo("#capin-10", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 13.34);
+      tl.to("#capw-10-0", { color: "#e8590c" }, 13.46);
+      tl.to("#capw-10-1", { color: "#e8590c" }, 13.74);
+      tl.to("#capw-10-2", { color: "#e8590c" }, 14.03);
+      tl.to("#capw-10-3", { color: "#e8590c" }, 14.36);
+      tl.to("#capw-10-4", { color: "#e8590c" }, 14.81);
+      tl.to("#capin-10", { opacity: 0, duration: 0.1, ease: "power2.in" }, 14.66);
+      tl.set("#capin-10", { opacity: 0, visibility: "hidden" }, 14.76);
+      tl.fromTo("#capin-11", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 14.81);
+      tl.to("#capw-11-0", { color: "#e8590c" }, 14.93);
+      tl.to("#capw-11-1", { color: "#e8590c" }, 15.54);
+      tl.to("#capw-11-2", { color: "#e8590c" }, 15.88);
+      tl.to("#capw-11-3", { color: "#e8590c" }, 16.11);
+      tl.to("#capw-11-4", { color: "#e8590c" }, 16.33);
+      tl.to("#capin-11", { opacity: 0, duration: 0.1, ease: "power2.in" }, 16.57);
+      tl.set("#capin-11", { opacity: 0, visibility: "hidden" }, 16.67);
+      tl.fromTo("#capin-12", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 16.72);
+      tl.to("#capw-12-0", { color: "#e8590c" }, 16.84);
+      tl.to("#capw-12-1", { color: "#e8590c" }, 17.17);
+      tl.to("#capw-12-2", { color: "#e8590c" }, 17.79);
+      tl.to("#capin-12", { opacity: 0, duration: 0.1, ease: "power2.in" }, 18.33);
+      tl.set("#capin-12", { opacity: 0, visibility: "hidden" }, 18.43);
+      tl.fromTo("#capin-13", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 20.40);
+      tl.to("#capw-13-0", { color: "#e8590c" }, 20.52);
+      tl.to("#capw-13-1", { color: "#e8590c" }, 20.79);
+      tl.to("#capw-13-2", { color: "#e8590c" }, 21.00);
+      tl.to("#capw-13-3", { color: "#e8590c" }, 21.48);
+      tl.to("#capin-13", { opacity: 0, duration: 0.1, ease: "power2.in" }, 21.70);
+      tl.set("#capin-13", { opacity: 0, visibility: "hidden" }, 21.80);
+      tl.fromTo("#capin-14", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 21.85);
+      tl.to("#capw-14-0", { color: "#e8590c" }, 21.97);
+      tl.to("#capw-14-1", { color: "#e8590c" }, 22.18);
+      tl.to("#capw-14-2", { color: "#e8590c" }, 22.72);
+      tl.to("#capw-14-3", { color: "#e8590c" }, 22.93);
+      tl.to("#capw-14-4", { color: "#e8590c" }, 23.52);
+      tl.to("#capin-14", { opacity: 0, duration: 0.1, ease: "power2.in" }, 23.57);
+      tl.set("#capin-14", { opacity: 0, visibility: "hidden" }, 23.67);
+      tl.fromTo("#capin-15", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 23.72);
+      tl.to("#capw-15-0", { color: "#e8590c" }, 23.84);
+      tl.to("#capw-15-1", { color: "#e8590c" }, 24.05);
+      tl.to("#capw-15-2", { color: "#e8590c" }, 24.43);
+      tl.to("#capw-15-3", { color: "#e8590c" }, 24.80);
+      tl.to("#capw-15-4", { color: "#e8590c" }, 24.96);
+      tl.to("#capin-15", { opacity: 0, duration: 0.1, ease: "power2.in" }, 24.91);
+      tl.set("#capin-15", { opacity: 0, visibility: "hidden" }, 25.01);
+      tl.fromTo("#capin-16", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 25.06);
+      tl.to("#capw-16-0", { color: "#e8590c" }, 25.18);
+      tl.to("#capw-16-1", { color: "#e8590c" }, 25.45);
+      tl.to("#capin-16", { opacity: 0, duration: 0.1, ease: "power2.in" }, 25.91);
+      tl.set("#capin-16", { opacity: 0, visibility: "hidden" }, 26.01);
+      tl.fromTo("#capin-17", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 30.40);
+      tl.to("#capw-17-0", { color: "#e8590c" }, 30.52);
+      tl.to("#capw-17-1", { color: "#e8590c" }, 30.79);
+      tl.to("#capw-17-2", { color: "#e8590c" }, 30.95);
+      tl.to("#capw-17-3", { color: "#e8590c" }, 31.17);
+      tl.to("#capin-17", { opacity: 0, duration: 0.1, ease: "power2.in" }, 31.45);
+      tl.set("#capin-17", { opacity: 0, visibility: "hidden" }, 31.55);
+      tl.fromTo("#capin-18", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 31.60);
+      tl.to("#capw-18-0", { color: "#e8590c" }, 31.72);
+      tl.to("#capw-18-1", { color: "#e8590c" }, 32.04);
+      tl.to("#capw-18-2", { color: "#e8590c" }, 32.48);
+      tl.to("#capw-18-3", { color: "#e8590c" }, 33.13);
+      tl.to("#capw-18-4", { color: "#e8590c" }, 33.51);
+      tl.to("#capin-18", { opacity: 0, duration: 0.1, ease: "power2.in" }, 33.51);
+      tl.set("#capin-18", { opacity: 0, visibility: "hidden" }, 33.61);
+      tl.fromTo("#capin-19", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 33.66);
+      tl.to("#capw-19-0", { color: "#e8590c" }, 33.78);
+      tl.to("#capw-19-1", { color: "#e8590c" }, 34.00);
+      tl.to("#capin-19", { opacity: 0, duration: 0.1, ease: "power2.in" }, 34.27);
+      tl.set("#capin-19", { opacity: 0, visibility: "hidden" }, 34.37);
+      tl.fromTo("#capin-20", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 34.42);
+      tl.to("#capw-20-0", { color: "#e8590c" }, 34.54);
+      tl.to("#capw-20-1", { color: "#e8590c" }, 34.87);
+      tl.to("#capw-20-2", { color: "#e8590c" }, 35.14);
+      tl.to("#capw-20-3", { color: "#e8590c" }, 35.36);
+      tl.to("#capw-20-4", { color: "#e8590c" }, 35.47);
+      tl.to("#capin-20", { opacity: 0, duration: 0.1, ease: "power2.in" }, 35.58);
+      tl.set("#capin-20", { opacity: 0, visibility: "hidden" }, 35.68);
+      tl.fromTo("#capin-21", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 35.73);
+      tl.to("#capw-21-0", { color: "#e8590c" }, 35.85);
+      tl.to("#capw-21-1", { color: "#e8590c" }, 36.06);
+      tl.to("#capw-21-2", { color: "#e8590c" }, 36.17);
+      tl.to("#capw-21-3", { color: "#e8590c" }, 36.55);
+      tl.to("#capin-21", { opacity: 0, duration: 0.1, ease: "power2.in" }, 36.66);
+      tl.set("#capin-21", { opacity: 0, visibility: "hidden" }, 36.76);
+      tl.fromTo("#capin-22", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 36.81);
+      tl.to("#capw-22-0", { color: "#e8590c" }, 36.93);
+      tl.to("#capw-22-1", { color: "#e8590c" }, 37.15);
+      tl.to("#capw-22-2", { color: "#e8590c" }, 37.53);
+      tl.to("#capw-22-3", { color: "#e8590c" }, 37.80);
+      tl.to("#capw-22-4", { color: "#e8590c" }, 38.07);
+      tl.to("#capin-22", { opacity: 0, duration: 0.1, ease: "power2.in" }, 38.13);
+      tl.set("#capin-22", { opacity: 0, visibility: "hidden" }, 38.23);
+      tl.fromTo("#capin-23", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 38.28);
+      tl.to("#capw-23-0", { color: "#e8590c" }, 38.40);
+      tl.to("#capw-23-1", { color: "#e8590c" }, 38.62);
+      tl.to("#capw-23-2", { color: "#e8590c" }, 39.05);
+      tl.to("#capw-23-3", { color: "#e8590c" }, 39.32);
+      tl.to("#capw-23-4", { color: "#e8590c" }, 39.49);
+      tl.to("#capin-23", { opacity: 0, duration: 0.1, ease: "power2.in" }, 40.29);
+      tl.set("#capin-23", { opacity: 0, visibility: "hidden" }, 40.39);
+      tl.fromTo("#capin-24", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 45.40);
+      tl.to("#capw-24-0", { color: "#e8590c" }, 45.52);
+      tl.to("#capw-24-1", { color: "#e8590c" }, 45.74);
+      tl.to("#capin-24", { opacity: 0, duration: 0.1, ease: "power2.in" }, 45.68);
+      tl.set("#capin-24", { opacity: 0, visibility: "hidden" }, 45.78);
+      tl.fromTo("#capin-25", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 45.83);
+      tl.to("#capw-25-0", { color: "#e8590c" }, 45.95);
+      tl.to("#capw-25-1", { color: "#e8590c" }, 46.17);
+      tl.to("#capw-25-2", { color: "#e8590c" }, 46.66);
+      tl.to("#capin-25", { opacity: 0, duration: 0.1, ease: "power2.in" }, 46.77);
+      tl.set("#capin-25", { opacity: 0, visibility: "hidden" }, 46.87);
+      tl.fromTo("#capin-26", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 46.92);
+      tl.to("#capw-26-0", { color: "#e8590c" }, 47.04);
+      tl.to("#capw-26-1", { color: "#e8590c" }, 47.26);
+      tl.to("#capw-26-2", { color: "#e8590c" }, 47.75);
+      tl.to("#capw-26-3", { color: "#e8590c" }, 48.02);
+      tl.to("#capw-26-4", { color: "#e8590c" }, 48.24);
+      tl.to("#capin-26", { opacity: 0, duration: 0.1, ease: "power2.in" }, 48.40);
+      tl.set("#capin-26", { opacity: 0, visibility: "hidden" }, 48.50);
+      tl.fromTo("#capin-27", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 48.55);
+      tl.to("#capw-27-0", { color: "#e8590c" }, 48.67);
+      tl.to("#capw-27-1", { color: "#e8590c" }, 49.00);
+      tl.to("#capw-27-2", { color: "#e8590c" }, 49.33);
+      tl.to("#capw-27-3", { color: "#e8590c" }, 49.54);
+      tl.to("#capw-27-4", { color: "#e8590c" }, 49.87);
+      tl.to("#capin-27", { opacity: 0, duration: 0.1, ease: "power2.in" }, 49.87);
+      tl.set("#capin-27", { opacity: 0, visibility: "hidden" }, 49.97);
+      tl.fromTo("#capin-28", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 50.02);
+      tl.to("#capw-28-0", { color: "#e8590c" }, 50.14);
+      tl.to("#capw-28-1", { color: "#e8590c" }, 50.52);
+      tl.to("#capw-28-2", { color: "#e8590c" }, 50.79);
+      tl.to("#capw-28-3", { color: "#e8590c" }, 51.01);
+      tl.to("#capw-28-4", { color: "#e8590c" }, 51.45);
+      tl.to("#capin-28", { opacity: 0, duration: 0.1, ease: "power2.in" }, 51.45);
+      tl.set("#capin-28", { opacity: 0, visibility: "hidden" }, 51.55);
+      tl.fromTo("#capin-29", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 51.60);
+      tl.to("#capw-29-0", { color: "#e8590c" }, 51.72);
+      tl.to("#capw-29-1", { color: "#e8590c" }, 52.10);
+      tl.to("#capw-29-2", { color: "#e8590c" }, 52.32);
+      tl.to("#capw-29-3", { color: "#e8590c" }, 52.64);
+      tl.to("#capw-29-4", { color: "#e8590c" }, 53.02);
+      tl.to("#capin-29", { opacity: 0, duration: 0.1, ease: "power2.in" }, 52.92);
+      tl.set("#capin-29", { opacity: 0, visibility: "hidden" }, 53.02);
+      tl.fromTo("#capin-30", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 53.07);
+      tl.to("#capw-30-0", { color: "#e8590c" }, 53.19);
+      tl.to("#capin-30", { opacity: 0, duration: 0.1, ease: "power2.in" }, 53.82);
+      tl.set("#capin-30", { opacity: 0, visibility: "hidden" }, 53.92);
+      tl.fromTo("#capin-31", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 70.40);
+      tl.to("#capw-31-0", { color: "#e8590c" }, 70.52);
+      tl.to("#capin-31", { opacity: 0, duration: 0.1, ease: "power2.in" }, 70.59);
+      tl.set("#capin-31", { opacity: 0, visibility: "hidden" }, 70.69);
+      tl.fromTo("#capin-32", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 70.74);
+      tl.to("#capw-32-0", { color: "#e8590c" }, 70.86);
+      tl.to("#capw-32-1", { color: "#e8590c" }, 70.97);
+      tl.to("#capw-32-2", { color: "#e8590c" }, 71.25);
+      tl.to("#capw-32-3", { color: "#e8590c" }, 71.54);
+      tl.to("#capw-32-4", { color: "#e8590c" }, 71.99);
+      tl.to("#capin-32", { opacity: 0, duration: 0.1, ease: "power2.in" }, 71.94);
+      tl.set("#capin-32", { opacity: 0, visibility: "hidden" }, 72.04);
+      tl.fromTo("#capin-33", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 72.09);
+      tl.to("#capw-33-0", { color: "#e8590c" }, 72.21);
+      tl.to("#capin-33", { opacity: 0, duration: 0.1, ease: "power2.in" }, 72.34);
+      tl.set("#capin-33", { opacity: 0, visibility: "hidden" }, 72.44);
+      tl.fromTo("#capin-34", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 72.49);
+      tl.to("#capw-34-0", { color: "#e8590c" }, 72.61);
+      tl.to("#capw-34-1", { color: "#e8590c" }, 72.84);
+      tl.to("#capw-34-2", { color: "#e8590c" }, 73.23);
+      tl.to("#capw-34-3", { color: "#e8590c" }, 73.57);
+      tl.to("#capw-34-4", { color: "#e8590c" }, 74.02);
+      tl.to("#capin-34", { opacity: 0, duration: 0.1, ease: "power2.in" }, 74.20);
+      tl.set("#capin-34", { opacity: 0, visibility: "hidden" }, 74.30);
+      tl.fromTo("#capin-35", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 74.35);
+      tl.to("#capw-35-0", { color: "#e8590c" }, 74.47);
+      tl.to("#capw-35-1", { color: "#e8590c" }, 74.81);
+      tl.to("#capw-35-2", { color: "#e8590c" }, 75.21);
+      tl.to("#capw-35-3", { color: "#e8590c" }, 75.49);
+      tl.to("#capw-35-4", { color: "#e8590c" }, 76.00);
+      tl.to("#capin-35", { opacity: 0, duration: 0.1, ease: "power2.in" }, 76.01);
+      tl.set("#capin-35", { opacity: 0, visibility: "hidden" }, 76.11);
+      tl.fromTo("#capin-36", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 76.16);
+      tl.to("#capw-36-0", { color: "#e8590c" }, 76.28);
+      tl.to("#capw-36-1", { color: "#e8590c" }, 76.68);
+      tl.to("#capw-36-2", { color: "#e8590c" }, 77.35);
+      tl.to("#capw-36-3", { color: "#e8590c" }, 77.64);
+      tl.to("#capw-36-4", { color: "#e8590c" }, 77.81);
+      tl.to("#capin-36", { opacity: 0, duration: 0.1, ease: "power2.in" }, 78.21);
+      tl.set("#capin-36", { opacity: 0, visibility: "hidden" }, 78.31);
+      tl.fromTo("#capin-37", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 78.36);
+      tl.to("#capw-37-0", { color: "#e8590c" }, 78.48);
+      tl.to("#capin-37", { opacity: 0, duration: 0.1, ease: "power2.in" }, 79.02);
+      tl.set("#capin-37", { opacity: 0, visibility: "hidden" }, 79.12);
+      tl.fromTo("#capin-38", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 95.40);
+      tl.to("#capw-38-0", { color: "#e8590c" }, 95.52);
+      tl.to("#capw-38-1", { color: "#e8590c" }, 95.82);
+      tl.to("#capw-38-2", { color: "#e8590c" }, 96.05);
+      tl.to("#capw-38-3", { color: "#e8590c" }, 96.35);
+      tl.to("#capw-38-4", { color: "#e8590c" }, 96.64);
+      tl.to("#capin-38", { opacity: 0, duration: 0.1, ease: "power2.in" }, 96.73);
+      tl.set("#capin-38", { opacity: 0, visibility: "hidden" }, 96.83);
+      tl.fromTo("#capin-39", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 96.88);
+      tl.to("#capw-39-0", { color: "#e8590c" }, 97.00);
+      tl.to("#capw-39-1", { color: "#e8590c" }, 97.41);
+      tl.to("#capw-39-2", { color: "#e8590c" }, 97.89);
+      tl.to("#capw-39-3", { color: "#e8590c" }, 98.06);
+      tl.to("#capin-39", { opacity: 0, duration: 0.1, ease: "power2.in" }, 98.33);
+      tl.set("#capin-39", { opacity: 0, visibility: "hidden" }, 98.43);
+      tl.fromTo("#capin-40", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 98.48);
+      tl.to("#capw-40-0", { color: "#e8590c" }, 98.60);
+      tl.to("#capw-40-1", { color: "#e8590c" }, 98.89);
+      tl.to("#capin-40", { opacity: 0, duration: 0.1, ease: "power2.in" }, 99.04);
+      tl.set("#capin-40", { opacity: 0, visibility: "hidden" }, 99.14);
+      tl.fromTo("#capin-41", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 99.19);
+      tl.to("#capw-41-0", { color: "#e8590c" }, 99.31);
+      tl.to("#capw-41-1", { color: "#e8590c" }, 99.60);
+      tl.to("#capin-41", { opacity: 0, duration: 0.1, ease: "power2.in" }, 100.51);
+      tl.set("#capin-41", { opacity: 0, visibility: "hidden" }, 100.61);
+      tl.fromTo("#capin-42", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 105.40);
+      tl.to("#capw-42-0", { color: "#e8590c" }, 105.52);
+      tl.to("#capin-42", { opacity: 0, duration: 0.1, ease: "power2.in" }, 105.74);
+      tl.set("#capin-42", { opacity: 0, visibility: "hidden" }, 105.84);
+      tl.fromTo("#capin-43", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 105.89);
+      tl.to("#capw-43-0", { color: "#e8590c" }, 106.01);
+      tl.to("#capw-43-1", { color: "#e8590c" }, 106.39);
+      tl.to("#capin-43", { opacity: 0, duration: 0.1, ease: "power2.in" }, 106.49);
+      tl.set("#capin-43", { opacity: 0, visibility: "hidden" }, 106.59);
+      tl.fromTo("#capin-44", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 106.64);
+      tl.to("#capw-44-0", { color: "#e8590c" }, 106.76);
+      tl.to("#capw-44-1", { color: "#e8590c" }, 106.98);
+      tl.to("#capw-44-2", { color: "#e8590c" }, 107.36);
+      tl.to("#capw-44-3", { color: "#e8590c" }, 107.74);
+      tl.to("#capw-44-4", { color: "#e8590c" }, 107.95);
+      tl.to("#capin-44", { opacity: 0, duration: 0.1, ease: "power2.in" }, 107.90);
+      tl.set("#capin-44", { opacity: 0, visibility: "hidden" }, 108.00);
+      tl.fromTo("#capin-45", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 108.05);
+      tl.to("#capw-45-0", { color: "#e8590c" }, 108.17);
+      tl.to("#capw-45-1", { color: "#e8590c" }, 108.44);
+      tl.to("#capw-45-2", { color: "#e8590c" }, 108.66);
+      tl.to("#capw-45-3", { color: "#e8590c" }, 108.93);
+      tl.to("#capw-45-4", { color: "#e8590c" }, 109.14);
+      tl.to("#capin-45", { opacity: 0, duration: 0.1, ease: "power2.in" }, 109.36);
+      tl.set("#capin-45", { opacity: 0, visibility: "hidden" }, 109.46);
+      tl.fromTo("#capin-46", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 109.51);
+      tl.to("#capw-46-0", { color: "#e8590c" }, 109.63);
+      tl.to("#capw-46-1", { color: "#e8590c" }, 110.06);
+      tl.to("#capw-46-2", { color: "#e8590c" }, 110.33);
+      tl.to("#capw-46-3", { color: "#e8590c" }, 110.66);
+      tl.to("#capw-46-4", { color: "#e8590c" }, 110.82);
+      tl.to("#capin-46", { opacity: 0, duration: 0.1, ease: "power2.in" }, 111.04);
+      tl.set("#capin-46", { opacity: 0, visibility: "hidden" }, 111.14);
+      tl.fromTo("#capin-47", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 111.19);
+      tl.to("#capw-47-0", { color: "#e8590c" }, 111.31);
+      tl.to("#capw-47-1", { color: "#e8590c" }, 111.58);
+      tl.to("#capw-47-2", { color: "#e8590c" }, 111.90);
+      tl.to("#capw-47-3", { color: "#e8590c" }, 112.07);
+      tl.to("#capin-47", { opacity: 0, duration: 0.1, ease: "power2.in" }, 112.28);
+      tl.set("#capin-47", { opacity: 0, visibility: "hidden" }, 112.38);
+      tl.fromTo("#capin-48", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 112.43);
+      tl.to("#capw-48-0", { color: "#e8590c" }, 112.55);
+      tl.to("#capw-48-1", { color: "#e8590c" }, 112.77);
+      tl.to("#capw-48-2", { color: "#e8590c" }, 113.04);
+      tl.to("#capw-48-3", { color: "#e8590c" }, 113.26);
+      tl.to("#capw-48-4", { color: "#e8590c" }, 113.69);
+      tl.to("#capin-48", { opacity: 0, duration: 0.1, ease: "power2.in" }, 113.58);
+      tl.set("#capin-48", { opacity: 0, visibility: "hidden" }, 113.68);
+      tl.fromTo("#capin-49", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 113.73);
+      tl.to("#capw-49-0", { color: "#e8590c" }, 113.85);
+      tl.to("#capin-49", { opacity: 0, duration: 0.1, ease: "power2.in" }, 114.48);
+      tl.set("#capin-49", { opacity: 0, visibility: "hidden" }, 114.58);
+      tl.fromTo("#capin-50", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 135.40);
+      tl.to("#capw-50-0", { color: "#e8590c" }, 135.52);
+      tl.to("#capin-50", { opacity: 0, duration: 0.1, ease: "power2.in" }, 135.53);
+      tl.set("#capin-50", { opacity: 0, visibility: "hidden" }, 135.63);
+      tl.fromTo("#capin-51", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 135.68);
+      tl.to("#capw-51-0", { color: "#e8590c" }, 135.80);
+      tl.to("#capw-51-1", { color: "#e8590c" }, 136.02);
+      tl.to("#capw-51-2", { color: "#e8590c" }, 136.41);
+      tl.to("#capw-51-3", { color: "#e8590c" }, 136.80);
+      tl.to("#capw-51-4", { color: "#e8590c" }, 137.14);
+      tl.to("#capin-51", { opacity: 0, duration: 0.1, ease: "power2.in" }, 137.09);
+      tl.set("#capin-51", { opacity: 0, visibility: "hidden" }, 137.19);
+      tl.fromTo("#capin-52", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 137.24);
+      tl.to("#capw-52-0", { color: "#e8590c" }, 137.36);
+      tl.to("#capw-52-1", { color: "#e8590c" }, 137.69);
+      tl.to("#capw-52-2", { color: "#e8590c" }, 137.97);
+      tl.to("#capw-52-3", { color: "#e8590c" }, 138.20);
+      tl.to("#capw-52-4", { color: "#e8590c" }, 138.48);
+      tl.to("#capin-52", { opacity: 0, duration: 0.1, ease: "power2.in" }, 138.71);
+      tl.set("#capin-52", { opacity: 0, visibility: "hidden" }, 138.81);
+      tl.fromTo("#capin-53", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 138.86);
+      tl.to("#capw-53-0", { color: "#e8590c" }, 138.98);
+      tl.to("#capw-53-1", { color: "#e8590c" }, 139.26);
+      tl.to("#capw-53-2", { color: "#e8590c" }, 139.76);
+      tl.to("#capw-53-3", { color: "#e8590c" }, 140.09);
+      tl.to("#capw-53-4", { color: "#e8590c" }, 140.59);
+      tl.to("#capin-53", { opacity: 0, duration: 0.1, ease: "power2.in" }, 140.72);
+      tl.set("#capin-53", { opacity: 0, visibility: "hidden" }, 140.82);
+      tl.fromTo("#capin-54", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 140.87);
+      tl.to("#capw-54-0", { color: "#e8590c" }, 140.99);
+      tl.to("#capw-54-1", { color: "#e8590c" }, 141.21);
+      tl.to("#capw-54-2", { color: "#e8590c" }, 141.71);
+      tl.to("#capw-54-3", { color: "#e8590c" }, 141.99);
+      tl.to("#capw-54-4", { color: "#e8590c" }, 142.38);
+      tl.to("#capin-54", { opacity: 0, duration: 0.1, ease: "power2.in" }, 142.33);
+      tl.set("#capin-54", { opacity: 0, visibility: "hidden" }, 142.43);
+      tl.fromTo("#capin-55", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 142.48);
+      tl.to("#capw-55-0", { color: "#e8590c" }, 142.60);
+      tl.to("#capin-55", { opacity: 0, duration: 0.1, ease: "power2.in" }, 143.36);
+      tl.set("#capin-55", { opacity: 0, visibility: "hidden" }, 143.46);
+      tl.fromTo("#capin-56", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 155.40);
+      tl.to("#capw-56-0", { color: "#e8590c" }, 155.52);
+      tl.to("#capw-56-1", { color: "#e8590c" }, 155.74);
+      tl.to("#capin-56", { opacity: 0, duration: 0.1, ease: "power2.in" }, 155.80);
+      tl.set("#capin-56", { opacity: 0, visibility: "hidden" }, 155.90);
+      tl.fromTo("#capin-57", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 155.95);
+      tl.to("#capw-57-0", { color: "#e8590c" }, 156.07);
+      tl.to("#capw-57-1", { color: "#e8590c" }, 156.34);
+      tl.to("#capw-57-2", { color: "#e8590c" }, 156.95);
+      tl.to("#capw-57-3", { color: "#e8590c" }, 157.44);
+      tl.to("#capw-57-4", { color: "#e8590c" }, 157.83);
+      tl.to("#capin-57", { opacity: 0, duration: 0.1, ease: "power2.in" }, 157.88);
+      tl.set("#capin-57", { opacity: 0, visibility: "hidden" }, 157.98);
+      tl.fromTo("#capin-58", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 158.03);
+      tl.to("#capw-58-0", { color: "#e8590c" }, 158.15);
+      tl.to("#capw-58-1", { color: "#e8590c" }, 158.48);
+      tl.to("#capw-58-2", { color: "#e8590c" }, 158.70);
+      tl.to("#capw-58-3", { color: "#e8590c" }, 159.03);
+      tl.to("#capin-58", { opacity: 0, duration: 0.1, ease: "power2.in" }, 159.26);
+      tl.set("#capin-58", { opacity: 0, visibility: "hidden" }, 159.36);
+      tl.fromTo("#capin-59", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 159.41);
+      tl.to("#capw-59-0", { color: "#e8590c" }, 159.53);
+      tl.to("#capw-59-1", { color: "#e8590c" }, 160.02);
+      tl.to("#capw-59-2", { color: "#e8590c" }, 160.46);
+      tl.to("#capw-59-3", { color: "#e8590c" }, 160.95);
+      tl.to("#capw-59-4", { color: "#e8590c" }, 161.28);
+      tl.to("#capin-59", { opacity: 0, duration: 0.1, ease: "power2.in" }, 161.29);
+      tl.set("#capin-59", { opacity: 0, visibility: "hidden" }, 161.39);
+      tl.fromTo("#capin-60", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 161.44);
+      tl.to("#capw-60-0", { color: "#e8590c" }, 161.56);
+      tl.to("#capin-60", { opacity: 0, duration: 0.1, ease: "power2.in" }, 162.20);
+      tl.set("#capin-60", { opacity: 0, visibility: "hidden" }, 162.30);
+      tl.fromTo("#capin-61", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 168.40);
+      tl.to("#capw-61-0", { color: "#e8590c" }, 168.52);
+      tl.to("#capw-61-1", { color: "#e8590c" }, 168.75);
+      tl.to("#capin-61", { opacity: 0, duration: 0.1, ease: "power2.in" }, 168.95);
+      tl.set("#capin-61", { opacity: 0, visibility: "hidden" }, 169.05);
+      tl.fromTo("#capin-62", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 169.10);
+      tl.to("#capw-62-0", { color: "#e8590c" }, 169.22);
+      tl.to("#capw-62-1", { color: "#e8590c" }, 169.58);
+      tl.to("#capin-62", { opacity: 0, duration: 0.1, ease: "power2.in" }, 170.36);
+      tl.set("#capin-62", { opacity: 0, visibility: "hidden" }, 170.46);
+      tl.fromTo("#capin-63", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 173.40);
+      tl.to("#capw-63-0", { color: "#e8590c" }, 173.52);
+      tl.to("#capw-63-1", { color: "#e8590c" }, 173.72);
+      tl.to("#capin-63", { opacity: 0, duration: 0.1, ease: "power2.in" }, 173.66);
+      tl.set("#capin-63", { opacity: 0, visibility: "hidden" }, 173.76);
+      tl.fromTo("#capin-64", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 173.81);
+      tl.to("#capw-64-0", { color: "#e8590c" }, 173.93);
+      tl.to("#capw-64-1", { color: "#e8590c" }, 174.19);
+      tl.to("#capw-64-2", { color: "#e8590c" }, 174.39);
+      tl.to("#capin-64", { opacity: 0, duration: 0.1, ease: "power2.in" }, 174.43);
+      tl.set("#capin-64", { opacity: 0, visibility: "hidden" }, 174.53);
+      tl.fromTo("#capin-65", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 174.58);
+      tl.to("#capw-65-0", { color: "#e8590c" }, 174.70);
+      tl.to("#capw-65-1", { color: "#e8590c" }, 174.90);
+      tl.to("#capw-65-2", { color: "#e8590c" }, 175.16);
+      tl.to("#capw-65-3", { color: "#e8590c" }, 175.36);
+      tl.to("#capin-65", { opacity: 0, duration: 0.1, ease: "power2.in" }, 176.03);
+      tl.set("#capin-65", { opacity: 0, visibility: "hidden" }, 176.13);
+      tl.fromTo("#capin-66", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 147.40);
+      tl.to("#capw-66-0", { color: "#e8590c" }, 147.52);
+      tl.to("#capw-66-1", { color: "#e8590c" }, 147.92);
+      tl.to("#capw-66-2", { color: "#e8590c" }, 148.32);
+      tl.to("#capw-66-3", { color: "#e8590c" }, 148.56);
+      tl.to("#capw-66-4", { color: "#e8590c" }, 148.64);
+      tl.to("#capin-66", { opacity: 0, duration: 0.1, ease: "power2.in" }, 148.84);
+      tl.set("#capin-66", { opacity: 0, visibility: "hidden" }, 148.94);
+      tl.fromTo("#capin-67", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 149.02);
+      tl.to("#capw-67-0", { color: "#e8590c" }, 149.08);
+      tl.to("#capw-67-1", { color: "#e8590c" }, 149.56);
+      tl.to("#capw-67-2", { color: "#e8590c" }, 149.72);
+      tl.to("#capw-67-3", { color: "#e8590c" }, 150.12);
+      tl.to("#capw-67-4", { color: "#e8590c" }, 150.44);
+      tl.to("#capw-67-5", { color: "#e8590c" }, 150.60);
+      tl.to("#capin-67", { opacity: 0, duration: 0.1, ease: "power2.in" }, 150.75);
+      tl.set("#capin-67", { opacity: 0, visibility: "hidden" }, 150.85);
+      tl.fromTo("#capin-68", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 150.92);
+      tl.to("#capw-68-0", { color: "#e8590c" }, 151.64);
+      tl.to("#capw-68-1", { color: "#e8590c" }, 151.96);
+      tl.to("#capw-68-2", { color: "#e8590c" }, 152.12);
+      tl.to("#capw-68-3", { color: "#e8590c" }, 152.68);
+      tl.to("#capw-68-4", { color: "#e8590c" }, 152.92);
+      tl.to("#capw-68-5", { color: "#e8590c" }, 153.00);
+      tl.to("#capw-68-6", { color: "#e8590c" }, 153.16);
+      tl.to("#capin-68", { opacity: 0, duration: 0.1, ease: "power2.in" }, 153.31);
+      tl.set("#capin-68", { opacity: 0, visibility: "hidden" }, 153.41);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["captions"] = tl;
+    </script>
+  </body>
+</html>

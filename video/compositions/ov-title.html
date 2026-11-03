@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>ov-title</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #ovt-root { position: absolute; inset: 0; font-family: Outfit, Inter, sans-serif; }
+      #ovt-card { position: absolute; left: 150px; top: 400px; background: rgba(10,16,24,0.72); border-radius: 18px; padding: 36px 52px 44px; }
+      .ovt-line { color: #fff; font-weight: 700; font-size: 128px; line-height: 1.04; letter-spacing: -0.02em; overflow: hidden; }
+      .ovt-line > span { display: inline-block; }
+      .ovt-acc { color: #e8590c; }
+    </style>
+  </head>
+  <body>
+    <div id="ovt-root" data-composition-id="ov-title" data-width="1920" data-height="1080">
+      <div id="ovt-card" class="clip" data-start="0.6" data-duration="5.4">
+        <div class="ovt-line"><span id="ovt-l1">one policy,</span></div>
+        <div class="ovt-line"><span id="ovt-l2"><span class="ovt-acc">every</span> building.</span></div>
+      </div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#ovt-card", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.6);
+      tl.fromTo("#ovt-l1", { yPercent: 110 }, { yPercent: 0, duration: 0.5, ease: "power3.out" }, 0.7);
+      tl.fromTo("#ovt-l2", { yPercent: 110 }, { yPercent: 0, duration: 0.5, ease: "power3.out" }, 0.85);
+      tl.to("#ovt-card", { opacity: 0, duration: 0.4, ease: "power2.in" }, 5.5);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["ov-title"] = tl;
+    </script>
+  </body>
+</html>

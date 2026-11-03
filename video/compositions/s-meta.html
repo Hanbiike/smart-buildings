@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>s-meta</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #edf0f3; }
+      #mta-root { position: absolute; inset: 0; font-family: Outfit, Inter, sans-serif; color: #11161b; }
+      #mta-kicker { position: absolute; left: 150px; top: 105px; font-family: Inter, sans-serif; font-size: 40px; font-weight: 700; letter-spacing: 0.14em; color: #5b6470; }
+      #mta-title { position: absolute; left: 150px; top: 160px; font-size: 72px; font-weight: 700; letter-spacing: -0.02em; }
+      #mta-title .acc { color: #e8590c; }
+      #mta-code { position: absolute; left: 150px; top: 300px; width: 900px; height: 500px; background: #11161b; border-radius: 20px; box-shadow: 0 18px 50px rgba(17,22,27,0.25); }
+      #mta-chead { position: absolute; left: 0; right: 0; top: 0; height: 62px; border-bottom: 2px solid #2a323b; font-family: "JetBrains Mono", monospace; font-size: 26px; font-weight: 700; color: #fff; padding: 16px 36px; }
+      #mta-chead .dim { color: #8b949e; font-weight: 400; }
+      #mta-cbody { position: absolute; left: 36px; top: 82px; font-family: "JetBrains Mono", monospace; font-size: 29px; line-height: 40px; color: #e8ebee; white-space: pre; }
+      #mta-cbody .ln { color: #4a545e; }
+      #mta-cbody .kw { color: #e8590c; font-weight: 700; }
+      #mta-cbody .st { color: #7fd08a; }
+      #mta-cursor { display: inline-block; width: 18px; height: 30px; background: #e8590c; vertical-align: -4px; }
+      .mta-chip { position: absolute; left: 1100px; width: 620px; height: 110px; background: #fff; border-radius: 18px; box-shadow: 0 18px 50px rgba(17,22,27,0.12); padding: 16px 36px; }
+      .mta-chip h3 { margin: 0; font-size: 34px; font-weight: 700; letter-spacing: 0.02em; }
+      .mta-chip h3 .dot { display: inline-block; width: 18px; height: 18px; border-radius: 50%; background: #3f9e4d; margin-right: 14px; }
+      .mta-chip .sub { font-family: Inter, sans-serif; font-size: 25px; color: #5b6470; margin-top: 2px; }
+      #mta-c1 { top: 300px; } #mta-c2 { top: 430px; } #mta-c3 { top: 560px; } #mta-c4 { top: 690px; }
+    </style>
+  </head>
+  <body>
+    <div id="mta-root" data-composition-id="s-meta" data-width="1920" data-height="1080">
+      <div id="mta-kicker" class="clip" data-start="0" data-duration="7.8">BUILT WITH META AI</div>
+      <div id="mta-title" class="clip" data-start="0.1" data-duration="7.7">Every controller, <span class="acc">written with Muse</span></div>
+      <div id="mta-code" class="clip" data-start="0.3" data-duration="7.5">
+        <div id="mta-chead">occ_gated7.py <span class="dim">— shipped rule stack</span></div>
+        <div id="mta-cbody"><div class="mta-line"><span class="ln">01 </span><span class="kw">class</span> OccGated7Policy(OccGated4Policy):</div><div class="mta-line"><span class="ln">02 </span>    KEY = <span class="st">"occ_gated7"</span></div><div class="mta-line"><span class="ln">03 </span></div><div class="mta-line"><span class="ln">04 </span>    <span class="kw">def</span> _base_action(self, obs):</div><div class="mta-line"><span class="ln">05 </span>        active = self._occupied(obs)</div><div class="mta-line"><span class="ln">06 </span>        lo, hi = self.comfort_temp_window</div><div class="mta-line"><span class="ln">07 </span>        <span class="kw">for</span> i, ctrl <span class="kw">in</span> enumerate(ctrls):</div><div class="mta-line"><span class="ln">08 </span>            <span class="kw">if</span> <span class="kw">not</span> active:</div><div class="mta-line"><span class="ln">09 </span>                <span class="kw">continue</span></div><div class="mta-line"><span class="ln">10 </span><span id="mta-cursor"></span></div></div>
+      </div>
+      <div id="mta-c1" class="mta-chip clip" data-start="1" data-duration="6.8"><h3><span class="dot"></span>RULE-BASED</h3><div class="sub">occ · pid · bang-bang policies</div></div>
+      <div id="mta-c2" class="mta-chip clip" data-start="1.4" data-duration="6.4"><h3><span class="dot"></span>NEURAL NETS</h3><div class="sub">PyTorch behavior cloning</div></div>
+      <div id="mta-c3" class="mta-chip clip" data-start="1.8" data-duration="6"><h3><span class="dot"></span>PYTORCH</h3><div class="sub">d=64 transformer · 72-step window</div></div>
+      <div id="mta-c4" class="mta-chip clip" data-start="2.2" data-duration="5.6"><h3><span class="dot"></span>THIS VIDEO</h3><div class="sub">scripted · cut · mixed by Muse</div></div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#mta-kicker", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0);
+      tl.fromTo("#mta-title", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.1);
+      tl.fromTo("#mta-code", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.3);
+      tl.fromTo(".mta-line", { opacity: 0 }, { opacity: 1, duration: 0.2, stagger: 0.18 }, 0.6);
+      tl.fromTo("#mta-cursor", { opacity: 1 }, { opacity: 0, duration: 0.5, ease: "none", repeat: 10, yoyo: true }, 2.6);
+      const chips = [["#mta-c1", 1.0], ["#mta-c2", 1.4], ["#mta-c3", 1.8], ["#mta-c4", 2.2]];
+      for (const [id, t] of chips) {
+        tl.fromTo(id, { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }, t);
+      }
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s-meta"] = tl;
+    </script>
+  </body>
+</html>

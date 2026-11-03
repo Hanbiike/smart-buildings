@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>s11-claim</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #edf0f3; }
+      #s11-root { position: absolute; inset: 0; font-family: Outfit, Inter, sans-serif; }
+      #s11-line { position: absolute; left: 150px; top: 400px; color: #11161b; font-weight: 700; font-size: 148px; line-height: 1.05; letter-spacing: -0.02em; }
+      #s11-line .acc { color: #e8590c; }
+    </style>
+  </head>
+  <body>
+    <div id="s11-root" data-composition-id="s11-claim" data-width="1920" data-height="1080">
+      <div id="s11-line" class="clip" data-start="0.1" data-duration="4.7" data-hold>One policy. <span class="acc">Every</span> building.</div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#s11-line", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.1);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s11-claim"] = tl;
+    </script>
+  </body>
+</html>

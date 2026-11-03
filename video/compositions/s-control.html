@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>s-control</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #edf0f3; }
+      #ctl-root { position: absolute; inset: 0; font-family: Outfit, Inter, sans-serif; color: #11161b; }
+      #ctl-kicker, #bld-kicker { position: absolute; left: 150px; top: 88px; font-family: Inter, sans-serif; font-size: 40px; font-weight: 700; letter-spacing: 0.14em; color: #5b6470; }
+      #ctl-title, #bld-title { position: absolute; left: 150px; top: 143px; font-size: 72px; font-weight: 700; letter-spacing: -0.02em; }
+      #ctl-title .acc, #bld-title .acc { color: #e8590c; }
+      /* ---- phase A: the building card ---- */
+      #bld-card { position: absolute; left: 150px; top: 248px; width: 1420px; height: 470px; background: #fff; border-radius: 20px; box-shadow: 0 18px 50px rgba(17,22,27,0.12); }
+      .bld-slab { position: absolute; left: 70px; width: 620px; height: 110px; background: #e8ebee; border-radius: 14px; display: flex; gap: 6px; padding: 24px 20px; }
+      .bld-cell { width: 39px; height: 62px; border-radius: 8px; background: #2e6fb7; opacity: 0.25; flex: none; }
+      .bld-cell:nth-child(even) { background: #5b8fd6; }
+      .bld-flab { position: absolute; left: 30px; font-family: "JetBrains Mono", monospace; font-size: 28px; font-weight: 700; color: #5b6470; }
+      .bld-ahu { position: absolute; top: 40px; width: 130px; height: 100px; background: #6b7280; border-radius: 14px; }
+      .bld-fan { position: absolute; left: 47px; top: 43px; width: 36px; height: 14px; border-radius: 7px; background: #ffb35c; }
+      #bld-ahlab { position: absolute; left: 760px; top: 152px; font-family: "JetBrains Mono", monospace; font-size: 30px; font-weight: 700; color: #5b6470; }
+      .bld-count { position: absolute; left: 760px; }
+      .bld-num { font-family: "JetBrains Mono", monospace; font-size: 72px; font-weight: 700; font-variant-numeric: tabular-nums; }
+      .bld-clab { font-family: Inter, sans-serif; font-size: 28px; color: #5b6470; margin-left: 18px; }
+      #bld-live { position: absolute; right: 44px; top: 38px; font-family: Inter, sans-serif; font-size: 26px; font-weight: 700; letter-spacing: 0.14em; color: #8b949e; }
+      #bld-dot { display: inline-block; width: 18px; height: 18px; border-radius: 50%; background: #3f9e4d; margin-right: 12px; }
+      #bld-strip { position: absolute; left: 150px; top: 736px; width: 1420px; background: #11161b; border-radius: 18px; color: #fff; padding: 18px 44px; font-family: "JetBrains Mono", monospace; font-size: 32px; font-weight: 700; }
+      #bld-strip .ft { font-family: Inter, sans-serif; font-size: 29px; font-weight: 400; color: #8b949e; margin-top: 12px; }
+      /* ---- phase B: equipment tiles ---- */
+      .ctl-tile { position: absolute; top: 248px; width: 340px; height: 336px; background: #fff; border-radius: 20px; box-shadow: 0 18px 50px rgba(17,22,27,0.12); padding: 24px; }
+      .ctl-tile h3 { margin: 0; font-size: 34px; font-weight: 700; }
+      .ctl-tile .sub { font-family: Inter, sans-serif; font-size: 23px; color: #5b6470; margin-top: 4px; }
+      .ctl-viz { position: relative; height: 112px; margin-top: 10px; }
+      .ctl-slider { position: relative; height: 14px; border-radius: 7px; background: #dfe3e7; margin-top: 12px; }
+      .ctl-knob { position: absolute; top: -9px; left: 0; width: 32px; height: 32px; border-radius: 50%; background: #e8590c; box-shadow: 0 4px 14px rgba(232,89,12,0.45); }
+      .ctl-val { font-family: "JetBrains Mono", monospace; font-size: 36px; font-weight: 700; margin-top: 10px; font-variant-numeric: tabular-nums; }
+      .ctl-val .unit { color: #5b6470; font-size: 23px; }
+      #ctl-t1 { left: 90px; } #ctl-t2 { left: 460px; } #ctl-t3 { left: 830px; } #ctl-t4 { left: 1200px; }
+      #cfan { position: absolute; left: 96px; top: 4px; width: 100px; height: 100px; border-radius: 50%; border: 7px solid #3a3f45; }
+      .cfan-blade { position: absolute; left: 43px; top: 8px; width: 14px; height: 36px; border-radius: 7px; background: #5b6470; transform-origin: 50% 42px; }
+      #cdmp-box { position: absolute; left: 61px; top: 10px; width: 170px; height: 90px; border: 7px solid #3a3f45; border-radius: 8px; }
+      #cdmp-blade { position: absolute; left: 73px; top: 48px; width: 146px; height: 14px; border-radius: 7px; background: #e8590c; transform-origin: 50% 50%; }
+      .ccoil-row { position: absolute; left: 36px; width: 220px; height: 16px; border-radius: 8px; background: #8a4a2c; }
+      #ccoil-glow { position: absolute; left: 0; top: 0; width: 292px; height: 112px; border-radius: 20px; background: radial-gradient(ellipse at center, rgba(255,110,40,0.85), rgba(255,110,40,0) 70%); opacity: 0; }
+      #cblr-body { position: absolute; left: 91px; top: 4px; width: 110px; height: 102px; border-radius: 18px; background: #6b7280; }
+      #cblr-flame { position: absolute; left: 40px; top: 40px; width: 30px; height: 42px; border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%; background: #ffb35c; }
+      /* state -> NN -> control pipeline band */
+      #ctl-band { position: absolute; left: 150px; top: 600px; width: 1420px; height: 120px; background: #fff; border-radius: 18px; box-shadow: 0 18px 50px rgba(17,22,27,0.12); }
+      .pb-lab { font-family: Inter, sans-serif; font-size: 26px; font-weight: 700; letter-spacing: 0.14em; color: #5b6470; }
+      #ctl-state { position: absolute; left: 44px; top: 14px; }
+      #ctl-state .pb-val { font-family: "JetBrains Mono", monospace; font-size: 30px; font-weight: 700; margin-top: 6px; }
+      #ctl-state .dot { display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: #3f9e4d; margin-right: 14px; }
+      #ctl-net { position: absolute; left: 360px; top: 2px; }
+      #ctl-net line { stroke: #8b949e; stroke-width: 3; opacity: 0.25; }
+      #ctl-net circle { fill: #3a3f45; }
+      #ctl-cmd { position: absolute; left: 1080px; top: 14px; }
+      #ctl-cmd .pb-val2 { font-family: "JetBrains Mono", monospace; font-size: 28px; font-weight: 700; margin-top: 4px; line-height: 1.25; }
+      #ctl-strip { position: absolute; left: 150px; top: 736px; width: 1420px; background: #11161b; border-radius: 18px; color: #fff; padding: 18px 44px; font-family: "JetBrains Mono", monospace; font-size: 32px; font-weight: 700; }
+      #ctl-strip .ro { color: #8b949e; }
+      #ctl-strip .dot { display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: #3f9e4d; margin-right: 18px; }
+      #ctl-dis { margin-top: 8px; }
+      #ctl-dis .dot2 { display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: #e8590c; margin-right: 18px; }
+      #ctl-dis .ro2 { color: #ffb35c; }
+    </style>
+  </head>
+  <body>
+    <div id="ctl-root" data-composition-id="s-control" data-width="1920" data-height="1080">
+      <div id="bld-kicker" class="clip" data-start="0" data-duration="8.4">THE BUILDING</div>
+      <div id="bld-title" class="clip" data-start="0.1" data-duration="8.3">One building, <span class="acc">every zone visible</span></div>
+      <div id="bld-card" class="clip" data-start="0.4" data-duration="8">
+        <div class="bld-flab" style="top: 78px;">F1</div>
+        <div class="bld-flab" style="top: 218px;">F2</div>
+        <div class="bld-flab" style="top: 358px;">F3</div>
+        <div class="bld-slab" id="bslab0" style="top: 40px;"><div class="bld-cell" id="bzc00"></div><div class="bld-cell" id="bzc01"></div><div class="bld-cell" id="bzc02"></div><div class="bld-cell" id="bzc03"></div><div class="bld-cell" id="bzc04"></div><div class="bld-cell" id="bzc05"></div><div class="bld-cell" id="bzc06"></div><div class="bld-cell" id="bzc07"></div><div class="bld-cell" id="bzc08"></div><div class="bld-cell" id="bzc09"></div><div class="bld-cell" id="bzc10"></div><div class="bld-cell" id="bzc11"></div><div class="bld-cell" id="bzc12"></div></div>
+        <div class="bld-slab" id="bslab1" style="top: 180px;"><div class="bld-cell" id="bzc13"></div><div class="bld-cell" id="bzc14"></div><div class="bld-cell" id="bzc15"></div><div class="bld-cell" id="bzc16"></div><div class="bld-cell" id="bzc17"></div><div class="bld-cell" id="bzc18"></div><div class="bld-cell" id="bzc19"></div><div class="bld-cell" id="bzc20"></div><div class="bld-cell" id="bzc21"></div><div class="bld-cell" id="bzc22"></div><div class="bld-cell" id="bzc23"></div><div class="bld-cell" id="bzc24"></div><div class="bld-cell" id="bzc25"></div></div>
+        <div class="bld-slab" id="bslab2" style="top: 320px;"><div class="bld-cell" id="bzc26"></div><div class="bld-cell" id="bzc27"></div><div class="bld-cell" id="bzc28"></div><div class="bld-cell" id="bzc29"></div><div class="bld-cell" id="bzc30"></div><div class="bld-cell" id="bzc31"></div><div class="bld-cell" id="bzc32"></div><div class="bld-cell" id="bzc33"></div><div class="bld-cell" id="bzc34"></div><div class="bld-cell" id="bzc35"></div><div class="bld-cell" id="bzc36"></div><div class="bld-cell" id="bzc37"></div><div class="bld-cell" id="bzc38"></div></div>
+        <div class="bld-ahu" style="left: 760px;"><div class="bld-fan"></div></div>
+        <div class="bld-ahu" style="left: 910px;"><div class="bld-fan"></div></div>
+        <div class="bld-ahu" style="left: 1060px;"><div class="bld-fan"></div></div>
+        <div class="bld-ahu" style="left: 1210px;"><div class="bld-fan"></div></div>
+        <div id="bld-ahlab">4 AIR HANDLERS</div>
+        <div class="bld-count" style="top: 200px;"><span class="bld-num" id="bnum1">0</span><span class="bld-clab">FLOORS</span></div>
+        <div class="bld-count" style="top: 290px;"><span class="bld-num" id="bnum2">0</span><span class="bld-clab">ZONES</span></div>
+        <div class="bld-count" style="top: 380px;"><span class="bld-num" id="bnum3">0</span><span class="bld-clab">AIR HANDLERS</span></div>
+      </div>
+      <div id="bld-strip" class="clip" data-start="2" data-duration="6.4"><div id="bld-live"><span id="bld-dot"></span>LIVE</div>every zone metered · every handler commanded.<div class="ft" id="bld-foot">One state vector for the whole building.</div></div>
+      <div id="ctl-kicker" class="clip" data-start="8.5" data-duration="6.3">THE EQUIPMENT</div>
+      <div id="ctl-title" class="clip" data-start="8.6" data-duration="6.2">What we <span class="acc">control</span>, what we don't</div>
+      <div id="ctl-t1" class="ctl-tile clip" data-start="8.7" data-duration="6.1">
+        <h3>Air handler</h3><div class="sub">moves the air</div>
+        <div class="ctl-viz"><div id="cfan"><div class="cfan-blade"></div><div class="cfan-blade" style="transform: rotate(120deg);"></div><div class="cfan-blade" style="transform: rotate(240deg);"></div></div></div>
+        <div class="ctl-slider"><div class="ctl-knob" id="cknob1"></div></div>
+        <div class="ctl-val"><span id="cval1">0</span><span class="unit"> % fan speed</span></div>
+      </div>
+      <div id="ctl-t2" class="ctl-tile clip" data-start="8.9" data-duration="5.9">
+        <h3>VAV damper</h3><div class="sub">meters air per zone</div>
+        <div class="ctl-viz"><div id="cdmp-box"></div><div id="cdmp-blade"></div></div>
+        <div class="ctl-slider"><div class="ctl-knob" id="cknob2"></div></div>
+        <div class="ctl-val"><span id="cval2">0</span><span class="unit"> % open</span></div>
+      </div>
+      <div id="ctl-t3" class="ctl-tile clip" data-start="9.1" data-duration="5.7">
+        <h3>Reheat coil</h3><div class="sub">trims zone heat</div>
+        <div class="ctl-viz"><div id="ccoil-glow"></div>
+          <div class="ccoil-row" style="top: 8px;"></div><div class="ccoil-row" style="top: 46px;"></div><div class="ccoil-row" style="top: 84px;"></div></div>
+        <div class="ctl-slider"><div class="ctl-knob" id="cknob3"></div></div>
+        <div class="ctl-val"><span id="cval3">0</span><span class="unit"> % valve</span></div>
+      </div>
+      <div id="ctl-t4" class="ctl-tile clip" data-start="9.3" data-duration="5.5">
+        <h3>Boiler</h3><div class="sub">makes the hot water</div>
+        <div class="ctl-viz"><div id="cblr-body"><div id="cblr-flame"></div></div></div>
+        <div class="ctl-slider"><div class="ctl-knob" id="cknob4"></div></div>
+        <div class="ctl-val"><span id="cval4">0</span><span class="unit"> % firing rate</span></div>
+      </div>
+      <div id="ctl-band" class="clip" data-start="9.5" data-duration="5.3">
+        <div id="ctl-state"><div class="pb-lab">STATE</div><div class="pb-val"><span class="dot" id="cns-dot"></span>39 zone sensors</div></div>
+        <svg id="ctl-net" width="700" height="116" viewBox="0 0 700 116">
+          <g id="cn-w1">
+            <line x1="40" y1="28" x2="350" y2="16" /><line x1="40" y1="28" x2="350" y2="38" /><line x1="40" y1="28" x2="350" y2="60" /><line x1="40" y1="28" x2="350" y2="82" /><line x1="40" y1="28" x2="350" y2="104" />
+            <line x1="40" y1="58" x2="350" y2="16" /><line x1="40" y1="58" x2="350" y2="38" /><line x1="40" y1="58" x2="350" y2="60" /><line x1="40" y1="58" x2="350" y2="82" /><line x1="40" y1="58" x2="350" y2="104" />
+            <line x1="40" y1="88" x2="350" y2="16" /><line x1="40" y1="88" x2="350" y2="38" /><line x1="40" y1="88" x2="350" y2="60" /><line x1="40" y1="88" x2="350" y2="82" /><line x1="40" y1="88" x2="350" y2="104" />
+          </g>
+          <g id="cn-w2">
+            <line x1="350" y1="16" x2="660" y2="22" /><line x1="350" y1="38" x2="660" y2="22" /><line x1="350" y1="60" x2="660" y2="22" /><line x1="350" y1="82" x2="660" y2="22" /><line x1="350" y1="104" x2="660" y2="22" />
+            <line x1="350" y1="16" x2="660" y2="48" /><line x1="350" y1="38" x2="660" y2="48" /><line x1="350" y1="60" x2="660" y2="48" /><line x1="350" y1="82" x2="660" y2="48" /><line x1="350" y1="104" x2="660" y2="48" />
+            <line x1="350" y1="16" x2="660" y2="74" /><line x1="350" y1="38" x2="660" y2="74" /><line x1="350" y1="60" x2="660" y2="74" /><line x1="350" y1="82" x2="660" y2="74" /><line x1="350" y1="104" x2="660" y2="74" />
+            <line x1="350" y1="16" x2="660" y2="100" /><line x1="350" y1="38" x2="660" y2="100" /><line x1="350" y1="60" x2="660" y2="100" /><line x1="350" y1="82" x2="660" y2="100" /><line x1="350" y1="104" x2="660" y2="100" />
+          </g>
+          <g id="cn-l1"><circle cx="40" cy="28" r="13" /><circle cx="40" cy="58" r="13" /><circle cx="40" cy="88" r="13" /></g>
+          <g id="cn-l2"><circle cx="350" cy="16" r="11" /><circle cx="350" cy="38" r="11" /><circle cx="350" cy="60" r="11" /><circle cx="350" cy="82" r="11" /><circle cx="350" cy="104" r="11" /></g>
+          <g id="cn-l3"><circle cx="660" cy="22" r="13" /><circle cx="660" cy="48" r="13" /><circle cx="660" cy="74" r="13" /><circle cx="660" cy="100" r="13" /></g>
+        </svg>
+        <div id="ctl-cmd"><div class="pb-lab">CONTROL</div><div class="pb-val2">damper · reheat<br />fan · boiler</div></div>
+      </div>
+      <div id="ctl-strip" class="clip" data-start="10" data-duration="4.8"><span class="dot" id="csns-dot"></span>zone sensors <span class="ro">— read only; the policy listens, never rewrites.</span><div id="ctl-dis"><span class="dot2"></span>sun · weather · people <span class="ro2">— not controlled; the policy absorbs them.</span></div></div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      // ---- phase A: the building (local 0-8.4, voice sentence 1) ----
+      tl.fromTo("#bld-kicker", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0);
+      tl.fromTo("#bld-title", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 0.1);
+      tl.fromTo("#bld-card", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 0.4);
+      tl.fromTo(".bld-slab", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.4, ease: "power2.out", stagger: 0.3 }, 0.6);
+      tl.to(".bld-cell", { opacity: 1, duration: 0.2, stagger: 0.05 }, 1.2);
+      tl.fromTo(".bld-ahu", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)", stagger: 0.2 }, 1);
+      tl.to(".bld-fan", { rotation: 1800, duration: 7, ease: "none" }, 0.9);
+      function countUp(sel, end, t0, dur) {
+        const o = { v: 0 };
+        tl.fromTo(o, { v: 0 }, { v: end, duration: dur, ease: "power1.out",
+          onUpdate: () => { document.querySelector(sel).textContent = Math.round(o.v); } }, t0);
+      }
+      countUp("#bnum1", 3, 1.5, 2);
+      countUp("#bnum2", 39, 1.5, 2);
+      countUp("#bnum3", 4, 1.5, 2);
+      tl.fromTo("#bld-strip", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 2);
+      tl.fromTo("#bld-foot", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 2.6);
+      tl.fromTo("#bld-dot", { opacity: 1 }, { opacity: 0.25, duration: 0.5, ease: "sine.inOut", repeat: 11, yoyo: true }, 2.2);
+      tl.to(".bld-cell", { opacity: 0.55, duration: 0.4, stagger: 0.04, repeat: 1, yoyo: true }, 4.2);
+      // phase A exit on the sentence boundary
+      tl.to("#bld-kicker", { opacity: 0, duration: 0.4 }, 7.9);
+      tl.to("#bld-title", { opacity: 0, duration: 0.4 }, 7.9);
+      tl.to("#bld-card", { opacity: 0, duration: 0.4 }, 7.9);
+      tl.to("#bld-strip", { opacity: 0, duration: 0.4 }, 7.9);
+      // ---- phase B: equipment (local 8.5-15, voice sentences 2-3) ----
+      tl.fromTo("#ctl-kicker", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 8.5);
+      tl.fromTo("#ctl-title", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 8.6);
+      const tiles = [["#ctl-t1", 8.7], ["#ctl-t2", 8.9], ["#ctl-t3", 9.1], ["#ctl-t4", 9.3]];
+      for (const [id, t] of tiles) {
+        tl.fromTo(id, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, t);
+      }
+      tl.to("#cfan", { rotation: 1500, duration: 6.3, ease: "power1.in" }, 8.7);
+      tl.to("#cdmp-blade", { rotation: 62, duration: 2.8, ease: "sine.inOut" }, 9);
+      tl.to("#cdmp-blade", { rotation: 18, duration: 2.7, ease: "sine.inOut" }, 11.8);
+      tl.to("#ccoil-glow", { opacity: 1, duration: 3, ease: "sine.inOut" }, 9.2);
+      tl.fromTo("#cblr-flame", { scaleY: 0.55 }, { scaleY: 1.25, duration: 0.32, ease: "sine.inOut", repeat: 12, yoyo: true, transformOrigin: "50% 100%" }, 9.6);
+      function slider(knob, val, end, t0, dur) {
+        const o = { v: 0 };
+        tl.fromTo(knob, { x: 0 }, { x: 260, duration: dur, ease: "sine.inOut" }, t0);
+        tl.fromTo(o, { v: 0 }, { v: end, duration: dur, ease: "sine.inOut",
+          onUpdate: () => { document.querySelector(val).textContent = Math.round(o.v); } }, t0);
+      }
+      slider("#cknob1", "#cval1", 82, 9, 4);
+      slider("#cknob2", "#cval2", 74, 9.1, 4);
+      slider("#cknob3", "#cval3", 46, 9.2, 4);
+      slider("#cknob4", "#cval4", 63, 9.3, 4);
+      tl.fromTo("#ctl-band", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 9.5);
+      for (const t0 of [10.0, 12.8]) {
+        tl.to("#cn-l1 circle", { fill: "#3f9e4d", duration: 0.3 }, t0);
+        tl.to("#cn-w1 line", { opacity: 0.8, duration: 0.4 }, t0 + 0.3);
+        tl.to("#cn-l2 circle", { fill: "#e8590c", duration: 0.3 }, t0 + 0.6);
+        tl.to("#cn-w2 line", { opacity: 0.8, duration: 0.4 }, t0 + 0.9);
+        tl.to("#cn-l3 circle", { fill: "#e8590c", duration: 0.3 }, t0 + 1.2);
+      }
+      tl.set(["#cn-l1 circle", "#cn-l2 circle", "#cn-l3 circle"], { fill: "#3a3f45" }, 12.3);
+      tl.set(["#cn-w1 line", "#cn-w2 line"], { opacity: 0.25 }, 12.3);
+      tl.fromTo("#cns-dot", { opacity: 1 }, { opacity: 0.25, duration: 0.5, ease: "sine.inOut", repeat: 8, yoyo: true }, 10.2);
+      tl.fromTo("#ctl-strip", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 10);
+      tl.fromTo("#csns-dot", { opacity: 1 }, { opacity: 0.25, duration: 0.5, ease: "sine.inOut", repeat: 8, yoyo: true }, 10.2);
+      tl.fromTo("#ctl-dis", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 10.5);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s-control"] = tl;
+    </script>
+  </body>
+</html>

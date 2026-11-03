@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>s-how</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #edf0f3; }
+      #how-root { position: absolute; inset: 0; font-family: Outfit, Inter, sans-serif; color: #11161b; }
+      #how-kicker { position: absolute; left: 150px; top: 105px; font-family: Inter, sans-serif; font-size: 40px; font-weight: 700; letter-spacing: 0.14em; color: #5b6470; }
+      #how-title { position: absolute; left: 150px; top: 160px; font-size: 76px; font-weight: 700; letter-spacing: -0.02em; }
+      #how-title .acc { color: #e8590c; }
+      .how-tile { position: absolute; top: 318px; width: 480px; height: 400px; background: #fff; border-radius: 20px; box-shadow: 0 18px 50px rgba(17,22,27,0.12); padding: 30px 32px; }
+      .how-tile h3 { margin: 0; font-size: 38px; font-weight: 700; }
+      .how-tile h3 .n { display: inline-block; width: 52px; height: 52px; border-radius: 50%; background: #11161b; color: #fff; font-size: 32px; line-height: 52px; text-align: center; margin-right: 14px; }
+      .how-tile .sub { font-family: Inter, sans-serif; font-size: 26px; color: #5b6470; margin-top: 8px; }
+      .how-viz { position: relative; height: 210px; margin-top: 14px; }
+      #how-t1 { left: 150px; } #how-t2 { left: 690px; } #how-t3 { left: 1230px; }
+      .how-arrow { position: absolute; top: 452px; font-size: 72px; font-weight: 700; color: #e8590c; }
+      #how-a1 { left: 628px; } #how-a2 { left: 1168px; }
+      /* read: zone grid + live readout */
+      .how-cell { position: absolute; width: 62px; height: 62px; border-radius: 10px; background: #2e6fb7; opacity: 0.25; }
+      #how-read { position: absolute; left: 230px; top: 18px; font-family: "JetBrains Mono", monospace; font-size: 30px; font-weight: 700; }
+      #how-read .lab { color: #5b6470; font-size: 28px; font-weight: 400; font-family: Inter, sans-serif; }
+      #how-sdot { display: inline-block; width: 18px; height: 18px; border-radius: 50%; background: #3f9e4d; margin-right: 12px; }
+      /* think: neural net */
+      #how-net line { stroke: #8b949e; stroke-width: 3; opacity: 0.25; }
+      #how-net circle { fill: #3a3f45; }
+      /* command: actuator rows */
+      .how-row { position: relative; height: 62px; margin-top: 8px; }
+      .how-row .nm { position: absolute; left: 0; top: 0; font-family: Inter, sans-serif; font-size: 26px; font-weight: 700; }
+      .how-row .vl { position: absolute; right: 0; top: 0; font-family: "JetBrains Mono", monospace; font-size: 30px; font-weight: 700; }
+      .how-track { position: absolute; left: 0; top: 38px; width: 416px; height: 12px; border-radius: 6px; background: #dfe3e7; }
+      .how-fill { position: absolute; left: 0; top: 0; width: 416px; height: 12px; border-radius: 6px; background: #e8590c; transform: scaleX(0); transform-origin: 0 50%; }
+      #how-strip { position: absolute; left: 150px; top: 733px; width: 1620px; background: #11161b; border-radius: 18px; color: #fff; padding: 22px 44px; font-family: "JetBrains Mono", monospace; font-size: 34px; font-weight: 700; }
+      #how-strip .acc { color: #e8590c; }
+      #how-strip .ft { font-family: Inter, sans-serif; font-size: 29px; font-weight: 400; color: #8b949e; margin-top: 14px; }
+    </style>
+  </head>
+  <body>
+    <div id="how-root" data-composition-id="s-how" data-width="1920" data-height="1080">
+      <div id="how-kicker" class="clip" data-start="0" data-duration="11.8">HOW IT WORKS</div>
+      <div id="how-title" class="clip" data-start="0.1" data-duration="11.7">One brain <span class="acc">reads, then commands</span></div>
+      <div id="how-t1" class="how-tile clip" data-start="0.4" data-duration="11.4">
+        <h3><span class="n">1</span>Read</h3><div class="sub">floor plan + live sensors</div>
+        <div class="how-viz">
+          <div class="how-cell" style="left: 0; top: 0;"></div><div class="how-cell" style="left: 70px; top: 0;"></div><div class="how-cell" style="left: 140px; top: 0;"></div>
+          <div class="how-cell" style="left: 0; top: 70px;"></div><div class="how-cell" style="left: 70px; top: 70px;"></div><div class="how-cell" style="left: 140px; top: 70px;"></div>
+          <div class="how-cell" style="left: 0; top: 140px;"></div><div class="how-cell" style="left: 70px; top: 140px;"></div><div class="how-cell" style="left: 140px; top: 140px;"></div>
+          <div id="how-read"><span id="how-sdot"></span><span id="how-temp">21.4</span>°<div class="lab">39 zones</div></div>
+        </div>
+      </div>
+      <div id="how-a1" class="how-arrow clip" data-start="0.9" data-duration="10.9">»</div>
+      <div id="how-t2" class="how-tile clip" data-start="1" data-duration="10.8">
+        <h3><span class="n">2</span>Think</h3><div class="sub">one neural policy</div>
+        <div class="how-viz">
+          <svg id="how-net" width="416" height="210" viewBox="0 0 416 210">
+            <g id="how-w1">
+              <line x1="40" y1="45" x2="208" y2="30" /><line x1="40" y1="45" x2="208" y2="80" /><line x1="40" y1="45" x2="208" y2="130" /><line x1="40" y1="45" x2="208" y2="180" />
+              <line x1="40" y1="105" x2="208" y2="30" /><line x1="40" y1="105" x2="208" y2="80" /><line x1="40" y1="105" x2="208" y2="130" /><line x1="40" y1="105" x2="208" y2="180" />
+              <line x1="40" y1="165" x2="208" y2="30" /><line x1="40" y1="165" x2="208" y2="80" /><line x1="40" y1="165" x2="208" y2="130" /><line x1="40" y1="165" x2="208" y2="180" />
+            </g>
+            <g id="how-w2">
+              <line x1="208" y1="30" x2="376" y2="70" /><line x1="208" y1="80" x2="376" y2="70" /><line x1="208" y1="130" x2="376" y2="70" /><line x1="208" y1="180" x2="376" y2="70" />
+              <line x1="208" y1="30" x2="376" y2="140" /><line x1="208" y1="80" x2="376" y2="140" /><line x1="208" y1="130" x2="376" y2="140" /><line x1="208" y1="180" x2="376" y2="140" />
+            </g>
+            <g id="how-l1"><circle cx="40" cy="45" r="17" /><circle cx="40" cy="105" r="17" /><circle cx="40" cy="165" r="17" /></g>
+            <g id="how-l2"><circle cx="208" cy="30" r="17" /><circle cx="208" cy="80" r="17" /><circle cx="208" cy="130" r="17" /><circle cx="208" cy="180" r="17" /></g>
+            <g id="how-l3"><circle cx="376" cy="70" r="19" /><circle cx="376" cy="140" r="19" /></g>
+          </svg>
+        </div>
+      </div>
+      <div id="how-a2" class="how-arrow clip" data-start="1.5" data-duration="10.3">»</div>
+      <div id="how-t3" class="how-tile clip" data-start="1.6" data-duration="10.2">
+        <h3><span class="n">3</span>Command</h3><div class="sub">handlers · valves · boiler</div>
+        <div class="how-viz">
+          <div class="how-row"><div class="nm">AHU fan</div><div class="vl"><span id="how-v1">0</span> %</div><div class="how-track"><div class="how-fill" id="how-f1"></div></div></div>
+          <div class="how-row"><div class="nm">VAV + reheat</div><div class="vl"><span id="how-v2">0</span> %</div><div class="how-track"><div class="how-fill" id="how-f2"></div></div></div>
+          <div class="how-row"><div class="nm">Boiler</div><div class="vl"><span id="how-v3">0</span> %</div><div class="how-track"><div class="how-fill" id="how-f3"></div></div></div>
+        </div>
+      </div>
+      <div id="how-strip" class="clip" data-start="3" data-duration="8.8">same brain, <span class="acc">any building.</span><div class="ft" id="how-foot">No per-building tuning — the policy reads the floor plan, not a manual.</div></div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#how-kicker", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0);
+      tl.fromTo("#how-title", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 0.1);
+      const tiles = [["#how-t1", 0.4], ["#how-t2", 1.0], ["#how-t3", 1.6]];
+      for (const [id, t] of tiles) {
+        tl.fromTo(id, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, t);
+      }
+      tl.fromTo("#how-a1", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.9);
+      tl.fromTo("#how-a2", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.5);
+      tl.to("#how-a1", { x: 8, duration: 0.5, ease: "sine.inOut", repeat: 19, yoyo: true }, 1.2);
+      tl.to("#how-a2", { x: 8, duration: 0.5, ease: "sine.inOut", repeat: 18, yoyo: true }, 1.8);
+      // read: zones light up, temperature ticks live
+      tl.to(".how-cell", { opacity: 1, duration: 0.25, stagger: 0.18 }, 0.8);
+      tl.fromTo("#how-sdot", { opacity: 1 }, { opacity: 0.25, duration: 0.5, ease: "sine.inOut", repeat: 19, yoyo: true }, 0.8);
+      const tmp = { v: 21.4 };
+      tl.to(tmp, { v: 22.1, duration: 9, ease: "none",
+        onUpdate: () => { document.querySelector("#how-temp").textContent = tmp.v.toFixed(1); } }, 1);
+      // think: three activation waves left to right (reset at wave end, last wave stays lit)
+      for (let w = 0; w < 3; w++) {
+        const t0 = 1.6 + w * 3.2;
+        tl.to("#how-l1 circle", { fill: "#e8590c", duration: 0.3 }, t0);
+        tl.to("#how-w1 line", { opacity: 0.8, duration: 0.4 }, t0 + 0.3);
+        tl.to("#how-l2 circle", { fill: "#e8590c", duration: 0.3 }, t0 + 0.6);
+        tl.to("#how-w2 line", { opacity: 0.8, duration: 0.4 }, t0 + 0.9);
+        tl.to("#how-l3 circle", { fill: "#3f9e4d", duration: 0.3 }, t0 + 1.2);
+        if (w < 2) {
+          tl.set(["#how-l1 circle", "#how-l2 circle", "#how-l3 circle"], { fill: "#3a3f45" }, t0 + 2.9);
+          tl.set(["#how-w1 line", "#how-w2 line"], { opacity: 0.25 }, t0 + 2.9);
+        }
+      }
+      // command: bars fill, values count
+      function cmd(fill, val, end, frac, t0) {
+        const o = { v: 0 };
+        tl.fromTo(fill, { scaleX: 0 }, { scaleX: frac, duration: 3, ease: "sine.inOut" }, t0);
+        tl.fromTo(o, { v: 0 }, { v: end, duration: 3, ease: "sine.inOut",
+          onUpdate: () => { document.querySelector(val).textContent = Math.round(o.v); } }, t0);
+      }
+      cmd("#how-f1", "#how-v1", 82, 0.82, 2.2);
+      cmd("#how-f2", "#how-v2", 74, 0.74, 2.6);
+      cmd("#how-f3", "#how-v3", 63, 0.63, 3.0);
+      tl.fromTo("#how-strip", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 3);
+      tl.fromTo("#how-foot", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 3.8);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s-how"] = tl;
+    </script>
+  </body>
+</html>

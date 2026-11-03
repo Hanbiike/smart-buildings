@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>ov-drift</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #ovd-root { position: absolute; inset: 0; font-family: "JetBrains Mono", monospace; }
+      #ovd-card { position: absolute; left: 150px; top: 170px; background: rgba(10,16,24,0.78); border-radius: 18px; padding: 30px 46px 36px; }
+      #ovd-num { color: #fff; font-weight: 700; font-size: 148px; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+      #ovd-num .ovd-ok { color: #7ddf8e; }
+      #ovd-cap { color: #cfd6dd; font-family: Inter, sans-serif; font-size: 38px; margin-top: 12px; }
+    </style>
+  </head>
+  <body>
+    <div id="ovd-root" data-composition-id="ov-drift" data-width="1920" data-height="1080">
+      <div id="ovd-card" class="clip" data-start="0.5" data-duration="8">
+        <div id="ovd-num"><span id="ovd-v">2.4</span> <span class="ovd-ok">K drift</span></div>
+        <div id="ovd-cap">cold snap · simulated readout</div>
+      </div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#ovd-card", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.5);
+      const o = { v: 2.4 };
+      tl.fromTo(o, { v: 2.4 }, { v: 0.0, duration: 2.6, ease: "power2.inOut",
+        onUpdate: () => { document.querySelector("#ovd-v").textContent = o.v.toFixed(1); } }, 0.7);
+      tl.to("#ovd-card", { opacity: 0, duration: 0.4, ease: "power2.in" }, 8.0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["ov-drift"] = tl;
+    </script>
+  </body>
+</html>

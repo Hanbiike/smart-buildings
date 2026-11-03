@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>ov-spike1</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #sp1-root { position: absolute; inset: 0; font-family: Outfit, Inter, sans-serif; }
+      #sp1-card { position: absolute; left: 460px; top: 648px; background: rgba(10,16,24,0.78); border-radius: 18px; padding: 26px 46px 32px; border-left: 10px solid #e8590c; }
+      #sp1-card .q { color: #fff; font-weight: 700; font-size: 58px; letter-spacing: -0.01em; }
+      #sp1-card .q .acc { color: #e8590c; }
+      #sp1-card .s { color: #cfd6dd; font-family: Inter, sans-serif; font-size: 32px; margin-top: 8px; }
+    </style>
+  </head>
+  <body>
+    <div id="sp1-root" data-composition-id="ov-spike1" data-width="1920" data-height="1080">
+      <div id="sp1-card" class="clip" data-start="0" data-duration="6">
+        <div class="q">A storm is coming. <span class="acc">Will the policy hold?</span></div>
+        <div class="s">heat wave at noon — cold snap by evening</div>
+      </div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#sp1-card", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.1);
+      tl.to("#sp1-card", { opacity: 0, duration: 0.4, ease: "power2.in" }, 5.5);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["ov-spike1"] = tl;
+    </script>
+  </body>
+</html>

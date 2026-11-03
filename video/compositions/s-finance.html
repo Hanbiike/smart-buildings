@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>s-finance</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #edf0f3; }
+      #fin-root { position: absolute; inset: 0; font-family: Outfit, Inter, sans-serif; color: #11161b; overflow: hidden; }
+      #fin-kick { position: absolute; left: 150px; top: 110px; font-family: Inter, sans-serif; font-size: 40px; font-weight: 700; letter-spacing: 0.14em; color: #5b6470; }
+      #fin-title { position: absolute; left: 150px; top: 165px; font-size: 92px; font-weight: 700; letter-spacing: -0.02em; }
+      #fin-title .acc { color: #c22525; }
+      /* character */
+      #fin-man { position: absolute; left: 300px; top: 470px; width: 220px; height: 430px; }
+      #fin-head { position: absolute; left: 55px; top: 0; width: 110px; height: 110px; border-radius: 50%; background: #d9a583; }
+      #fin-hair { position: absolute; left: 55px; top: -6px; width: 110px; height: 52px; border-radius: 55px 55px 0 0; background: #3a3f45; }
+      #fin-body { position: absolute; left: 25px; top: 118px; width: 170px; height: 240px; border-radius: 60px 60px 18px 18px; background: #2e4a63; }
+      #fin-arm { position: absolute; left: 168px; top: 128px; width: 34px; height: 170px; border-radius: 17px; background: #2e4a63; transform-origin: 50% 12%; }
+      #fin-hand { position: absolute; left: 160px; top: -38px; width: 50px; height: 50px; border-radius: 50%; background: #d9a583; }
+      #fin-desk { position: absolute; left: -60px; top: 356px; width: 360px; height: 26px; border-radius: 8px; background: #8a6f4d; }
+      /* money */
+      #fin-stack { position: absolute; left: 620px; top: 560px; width: 260px; height: 190px; }
+      .fin-bill { position: absolute; width: 240px; height: 104px; border-radius: 10px; background: #3f9e4d; border: 4px solid #2f7a3b; }
+      .fin-bill::after { content: ""; position: absolute; left: 88px; top: 20px; width: 60px; height: 60px; border-radius: 50%; border: 4px solid #2f7a3b; background: #57b568; }
+      /* hvac furnace */
+      #fin-hvac { position: absolute; left: 1235px; top: 415px; width: 330px; height: 300px; border-radius: 18px; background: #3a3f45; }
+      #fin-hvac .lbl { position: absolute; left: 0; right: 0; top: 22px; text-align: center; color: #cfd6dd; font-family: "JetBrains Mono", monospace; font-size: 34px; font-weight: 700; letter-spacing: 0.08em; }
+      #fin-mouth { position: absolute; left: 55px; top: 120px; width: 220px; height: 110px; border-radius: 12px; background: #141a21; overflow: hidden; }
+      #fin-flame { position: absolute; left: 70px; bottom: -10px; width: 80px; height: 90px; border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%; background: #e8590c; }
+      .fin-coin { position: absolute; width: 54px; height: 54px; border-radius: 50%; background: #e8b93c; border: 4px solid #c79a26; color: #7a5c10; font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 30px; display: flex; align-items: center; justify-content: center; }
+      /* counter + badges */
+      #fin-count { position: absolute; left: 150px; top: 790px; font-family: "JetBrains Mono", monospace; font-size: 54px; font-weight: 700; color: #c22525; font-variant-numeric: tabular-nums; }
+      #fin-count .cap { display: block; font-family: Inter, sans-serif; font-size: 32px; font-weight: 600; color: #5b6470; margin-top: 8px; letter-spacing: 0.04em; }
+      #fin-ladder { display: block; font-family: "JetBrains Mono", monospace; font-size: 26px; font-weight: 700; color: #11161b; margin-top: 4px; }
+      #fin-ladder .arr { color: #c22525; }
+      #fin-illust { position: absolute; left: 150px; top: 64px; font-family: Inter, sans-serif; font-size: 26px; font-weight: 700; letter-spacing: 0.2em; color: #5b6470; }
+      #fin-pct { position: absolute; left: 1120px; top: 742px; font-size: 96px; font-weight: 700; color: #c22525; letter-spacing: -0.02em; }
+      #fin-pct .cap { display: block; font-family: Inter, sans-serif; font-size: 34px; font-weight: 600; color: #5b6470; letter-spacing: 0.02em; }
+      #fin-cal { position: absolute; left: 880px; top: 300px; width: 210px; height: 190px; background: #fff; border-radius: 14px; box-shadow: 0 16px 44px rgba(17,22,27,0.14); text-align: center; }
+      #fin-cal .hd { background: #c22525; color: #fff; font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 28px; padding: 12px 0; border-radius: 14px 14px 0 0; letter-spacing: 0.2em; }
+      #fin-cal .yr { font-size: 74px; font-weight: 700; margin-top: 22px; }
+    </style>
+  </head>
+  <body>
+    <div id="fin-root" data-composition-id="s-finance" data-width="1920" data-height="1080" data-layout-allow-overlap="true">
+      <div id="fin-kick" class="clip" data-start="0" data-duration="14">WHERE THE MONEY GOES</div>
+      <div id="fin-title" class="clip" data-start="0.2" data-duration="13.8">The energy bill<br />eats the <span class="acc">budget.</span></div>
+      <div id="fin-man" class="clip" data-start="0.6" data-duration="13.4">
+        <div id="fin-head"></div><div id="fin-hair"></div><div id="fin-body"></div>
+        <div id="fin-arm"><div id="fin-hand"></div></div><div id="fin-desk"></div>
+      </div>
+      <div id="fin-stack" class="clip" data-start="0.8" data-duration="13.2"></div>
+      <div id="fin-hvac" class="clip" data-start="1" data-duration="13"><div class="lbl">HVAC</div><div id="fin-mouth"><div id="fin-flame"></div></div></div>
+      <div id="fin-cal" class="clip" data-start="9.6" data-duration="4.4"><div class="hd">SINCE</div><div class="yr" id="fin-yr26">2026</div><div class="yr" id="fin-yr80" style="opacity: 0; margin-top: -102px;">1980</div></div>
+      <div id="fin-illust" class="clip" data-start="0" data-duration="14">ILLUSTRATIVE</div>
+      <div id="fin-count" class="clip" data-start="1.2" data-duration="12.8"><span id="fin-n">0</span><span class="cap">dollars burned on HVAC</span><span id="fin-ladder">$132<span class="arr">/d</span> → $4k<span class="arr">/mo</span> → $48k<span class="arr">/yr</span></span></div>
+      <div id="fin-pct" class="clip" data-start="3.4" data-duration="10.6">40–60%<span class="cap">of the bill is heating and cooling</span></div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      const stack = document.getElementById("fin-stack");
+      const bills = [];
+      for (let i = 0; i < 7; i++) {
+        const b = document.createElement("div");
+        b.className = "fin-bill";
+        b.textContent = "";
+        b.style.left = (i % 3) * 8 + "px";
+        b.style.top = (120 - i * 20) + "px";
+        stack.appendChild(b);
+        bills.push(b);
+      }
+      const coins = [];
+      for (let i = 0; i < 6; i++) {
+        const c = document.createElement("div");
+        c.className = "fin-coin";
+        c.textContent = "$";
+        c.style.left = (615 + i * 74) + "px";
+        c.style.top = "760px";
+        c.style.opacity = "0";
+        document.getElementById("fin-root").appendChild(c);
+        coins.push(c);
+      }
+      tl.fromTo("#fin-kick", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0);
+      tl.fromTo("#fin-title", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.2);
+      tl.fromTo("#fin-man", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }, 0.6);
+      tl.fromTo("#fin-hvac", { opacity: 0, x: 50 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }, 1.0);
+      tl.fromTo("#fin-flame", { scaleY: 0.6 }, { scaleY: 1.15, duration: 0.35, ease: "sine.inOut", repeat: 30, yoyo: true, transformOrigin: "50% 100%" }, 1.2);
+      // bills fly into the furnace, one by one
+      bills.forEach((b, i) => {
+        const t0 = 1.6 + i * 1.25;
+        tl.to(b, { x: 560, y: -60 + i * 6, rotation: 24, opacity: 0, duration: 0.9, ease: "power2.in" }, t0);
+      });
+      // coins drop and vanish
+      coins.forEach((c, i) => {
+        const t0 = 2 + i * 1.5;
+        tl.fromTo(c, { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.3 }, t0);
+        tl.to(c, { y: 130, opacity: 0, duration: 0.8, ease: "power2.in" }, t0 + 0.7);
+      });
+      // the bill counter
+      const o = { v: 0 };
+      tl.fromTo(o, { v: 0 }, { v: 48200, duration: 11.5, ease: "power1.in",
+        onUpdate: () => { document.getElementById("fin-n").textContent = "$" + Math.round(o.v).toLocaleString("en-US"); } }, 1.4);
+      tl.fromTo("#fin-pct", { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, 3.4);
+      tl.fromTo("#fin-ladder", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }, 4);
+      tl.fromTo("#fin-illust", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.6);
+      // head-scratch while the percentage lands
+      tl.to("#fin-arm", { rotation: -128, duration: 0.4, ease: "power2.out" }, 3.6);
+      tl.to("#fin-arm", { rotation: -104, duration: 0.22, ease: "sine.inOut", repeat: 7, yoyo: true }, 4.0);
+      tl.to("#fin-arm", { rotation: 0, duration: 0.45, ease: "power2.inOut" }, 6.1);
+      // calendar flips back to 1980
+      tl.fromTo("#fin-cal", { opacity: 0, y: -30, rotation: -4 }, { opacity: 1, y: 0, rotation: 0, duration: 0.45, ease: "power2.out" }, 9.6);
+      tl.set("#fin-yr26", { opacity: 0 }, 10.7);
+      tl.set("#fin-yr80", { opacity: 1 }, 10.7);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s-finance"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>ov-hook</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #ovh-root { position: absolute; inset: 0; font-family: Outfit, Inter, sans-serif; }
+      .ovh-beat { position: absolute; left: 150px; top: 560px; }
+      .ovh-chip { background: rgba(10,16,24,0.72); border-radius: 18px; padding: 28px 44px 34px; }
+      .ovh-num { color: #fff; font-weight: 700; font-size: 200px; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+      .ovh-num .pct { color: #e8590c; }
+      .ovh-cap { color: #cfd6dd; font-family: Inter, sans-serif; font-weight: 400; font-size: 44px; margin-top: 10px; }
+      #ovh-proof { position: absolute; right: 360px; top: 96px; width: 600px; background: rgba(10,16,24,0.72); border-radius: 18px; padding: 24px 36px 30px; }
+      #ovh-proof .kick { font-family: Inter, sans-serif; font-size: 30px; font-weight: 700; letter-spacing: 0.14em; color: #ffd9a0; }
+      #ovh-proof .big { color: #fff; font-weight: 700; font-size: 64px; letter-spacing: -0.02em; margin-top: 6px; }
+      #ovh-proof .big .acc { color: #e8590c; }
+      .ovh-bar-row { display: flex; align-items: center; gap: 16px; margin-top: 12px; }
+      .ovh-bar-num { font-family: "JetBrains Mono", monospace; font-size: 30px; font-weight: 700; color: #cfd6dd; width: 160px; }
+      .ovh-bar-track { flex: 1; height: 22px; border-radius: 11px; background: rgba(255,255,255,0.14); }
+      .ovh-bar-fill { height: 22px; border-radius: 11px; width: 0; }
+      #ovh-fill-old { background: #8b949e; }
+      #ovh-fill-new { background: #e8590c; }
+    </style>
+  </head>
+  <body>
+    <div id="ovh-root" data-composition-id="ov-hook" data-width="1920" data-height="1080">
+      <div id="ovh-proof" class="clip" data-start="1.2" data-duration="4.6">
+        <div class="kick">THE PAYOFF</div>
+        <div class="big"><span class="acc">5.2×</span> lower loss</div>
+        <div class="ovh-bar-row"><div class="ovh-bar-num">0.06439</div><div class="ovh-bar-track"><div class="ovh-bar-fill" id="ovh-fill-old"></div></div></div>
+        <div class="ovh-bar-row"><div class="ovh-bar-num" style="color: #e8590c;">0.01236</div><div class="ovh-bar-track"><div class="ovh-bar-fill" id="ovh-fill-new"></div></div></div>
+      </div>
+      <div id="ovh-b1" class="ovh-beat clip" data-start="2" data-duration="5"><div class="ovh-chip"><div class="ovh-num"><span id="ovh-n1">0</span><span class="pct">%</span></div><div class="ovh-cap">of US carbon is buildings</div></div></div>
+      <div id="ovh-b2" class="ovh-beat clip" data-start="8" data-duration="5.5"><div class="ovh-chip"><div class="ovh-num"><span id="ovh-n2">0</span><span class="pct">%</span></div><div class="ovh-cap">of it is HVAC</div></div></div>
+      <div id="ovh-b3" class="ovh-beat clip" data-start="14" data-duration="5.5"><div class="ovh-chip"><div class="ovh-num"><span id="ovh-n3">0</span><span class="pct">%</span></div><div class="ovh-cap">of all energy on Earth</div></div></div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      function beat(sel, num, end, t0) {
+        tl.fromTo(sel + " .ovh-chip", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, t0);
+        const o = { v: 0 };
+        tl.fromTo(o, { v: 0 }, { v: end, duration: 1.4, ease: "power2.out",
+          onUpdate: () => { document.querySelector(num).textContent = Math.round(o.v); } }, t0 + 0.15);
+        tl.to(sel + " .ovh-chip", { opacity: 0, duration: 0.3, ease: "power2.in" }, t0 + 4.4);
+      }
+      beat("#ovh-b1", "#ovh-n1", 40, 2.05);
+      tl.fromTo("#ovh-proof", { opacity: 0, y: -26 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 1.2);
+      tl.fromTo("#ovh-fill-old", { width: 0 }, { width: "100%", duration: 0.7, ease: "power2.out" }, 1.5);
+      tl.fromTo("#ovh-fill-new", { width: 0 }, { width: "19%", duration: 0.7, ease: "power2.out" }, 1.9);
+      tl.to("#ovh-proof", { opacity: 0, duration: 0.35, ease: "power2.in" }, 5.45);
+      beat("#ovh-b2", "#ovh-n2", 60, 8.05);
+      beat("#ovh-b3", "#ovh-n3", 15, 14.05);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["ov-hook"] = tl;
+    </script>
+  </body>
+</html>

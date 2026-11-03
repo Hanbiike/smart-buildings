@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>ov-spike2</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #sp2-root { position: absolute; inset: 0; font-family: Outfit, Inter, sans-serif; }
+      #sp2-card { position: absolute; left: 520px; top: 120px; background: rgba(10,16,24,0.78); border-radius: 18px; padding: 26px 46px 32px; border-left: 10px solid #3f9e4d; }
+      #sp2-card .q { color: #fff; font-weight: 700; font-size: 58px; letter-spacing: -0.01em; }
+      #sp2-card .q .acc { color: #3f9e4d; }
+      #sp2-card .s { color: #cfd6dd; font-family: Inter, sans-serif; font-size: 32px; margin-top: 8px; }
+    </style>
+  </head>
+  <body>
+    <div id="sp2-root" data-composition-id="ov-spike2" data-width="1920" data-height="1080">
+      <div id="sp2-card" class="clip" data-start="0" data-duration="9">
+        <div class="q">Peak load at night. <span class="acc">Watch it answer.</span></div>
+        <div class="s">31 of 39 zones asleep — the rest stay in band</div>
+      </div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#sp2-card", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.1);
+      tl.to("#sp2-card", { opacity: 0, duration: 0.4, ease: "power2.in" }, 8.5);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["ov-spike2"] = tl;
+    </script>
+  </body>
+</html>

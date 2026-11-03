@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>s10-metrics</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #edf0f3; }
+      #s10-root { position: absolute; inset: 0; font-family: Outfit, Inter, sans-serif; color: #11161b; }
+      #s10-kicker { position: absolute; left: 150px; top: 110px; font-family: Inter, sans-serif; font-size: 40px; font-weight: 700; letter-spacing: 0.14em; color: #5b6470; }
+      .s10-row { position: absolute; left: 150px; display: flex; align-items: baseline; gap: 48px; }
+      #s10-r1 { top: 270px; } #s10-r2 { top: 520px; } #s10-r3 { top: 770px; }
+      .s10-num { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 132px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+      .s10-lab { font-family: Inter, sans-serif; font-size: 44px; color: #3d454e; }
+      .s10-acc { color: #e8590c; }
+      #s10-rule { position: absolute; left: 150px; top: 990px; width: 1560px; height: 6px; background: #e8590c; border-radius: 3px; transform-origin: left center; }
+    </style>
+  </head>
+  <body>
+    <div id="s10-root" data-composition-id="s10-metrics" data-width="1920" data-height="1080">
+      <div id="s10-kicker" class="clip" data-start="0" data-duration="12.8">MEASURED · LOWER LOSS IS BETTER</div>
+      <div id="s10-r1" class="s10-row clip" data-start="0.3" data-duration="12.5"><div class="s10-num"><span id="s10-v1">0.06439</span></div><div class="s10-lab">public loss <span class="s10-acc">0.06439 → 0.01236</span></div></div>
+      <div id="s10-r2" class="s10-row clip" data-start="3.8" data-duration="9"><div class="s10-num"><span id="s10-v2">1.0</span><span class="s10-acc">×</span></div><div class="s10-lab">lower loss than the starter baseline</div></div>
+      <div id="s10-r3" class="s10-row clip" data-start="7.8" data-duration="5"><div class="s10-num"><span id="s10-v3">0/30</span> <span class="s10-acc">·</span> <span id="s10-v4">0/16</span></div><div class="s10-lab">train wins · holdout wins</div></div>
+      <div id="s10-rule" class="clip" data-start="9.4" data-duration="3.4"></div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#s10-kicker", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0);
+      const rows = [["#s10-r1", 0.3], ["#s10-r2", 3.8], ["#s10-r3", 7.8]];
+      for (const [id, t] of rows) {
+        tl.fromTo(id, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, t);
+      }
+      const a = { v: 0.06439 };
+      tl.to(a, { v: 0.01236, duration: 2.4, ease: "power2.inOut",
+        onUpdate: () => { document.querySelector("#s10-v1").textContent = a.v.toFixed(5); } }, 0.5);
+      const b = { v: 1.0 };
+      tl.to(b, { v: 5.2, duration: 2.0, ease: "power2.out",
+        onUpdate: () => { document.querySelector("#s10-v2").textContent = b.v.toFixed(1); } }, 4);
+      const c = { v: 0 };
+      tl.to(c, { v: 29, duration: 1.6, ease: "power2.out",
+        onUpdate: () => { document.querySelector("#s10-v3").textContent = Math.round(c.v) + "/30"; } }, 8);
+      const d = { v: 0 };
+      tl.to(d, { v: 16, duration: 1.6, ease: "power2.out",
+        onUpdate: () => { document.querySelector("#s10-v4").textContent = Math.round(d.v) + "/16"; } }, 8.2);
+      window.__timelines = window.__timelines || {};
+      tl.fromTo("#s10-rule", { scaleX: 0 }, { scaleX: 1, duration: 2.8, ease: "power1.inOut" }, 9.4);
+      window.__timelines["s10-metrics"] = tl;
+    </script>
+  </body>
+</html>
