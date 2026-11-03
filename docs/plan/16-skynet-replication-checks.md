@@ -103,3 +103,96 @@ re-run) in any proposal touching those levers.
 P0 (blocks Online-RL start): A1-A5, B1-B3, C1, D1-D3, E4, F1-F2, G8.
 P1 (first learning runs): A6, C2-C3, D4-D5, E1-E3, E5, F3.
 P2 (only if cheap): C4, G1-G7.
+
+## Execution log
+
+- 2026-11-02 A1 GREEN (day note `docs/2026/11/02/README.md`): all 7
+  means within 1e-5 via `/tmp/opencode/sb-rl/curves.json` (plan path
+  `/tmp/rl_zip/curves.json` missing, substituted same dataset).
+- 2026-11-02 A2 GREEN (same day note): blow-up rows [11..13] and the
+  3.75M recovery value match research 9.8 to <4e-06.
+- 2026-11-02 A3 GREEN (same day note): all 20 zone-target means
+  within 1e-5 of doc table 8.2, best at 4002816, refs match.
+- 2026-11-02 A4 GREEN (same day note): canonical bundle restored
+  from updated Kaggle dataset to `/tmp/rl_zip`; ckpt metadata
+  10/10 vs MANIFEST/research 3.1/9.6. A1-A3 re-verified GREEN on
+  the canonical `curves.json` (dup-tail quirks confirmed present).
+- 2026-11-02 A5 GREEN-intent with deviation (same day note): all
+  three script-read paths still FileNotFoundError (rerun blocked),
+  but the updated bundle ships `selection_*.json` at root — gap is
+  now layout + `data/gen` absence, not wholly missing files.
+- 2026-11-02 A6 GREEN (same day note): 2 identical rows at 5001216
+  confirmed; dedupe-on-steps rule + second dup instance
+  (zone_target row 21) recorded. Group A complete.
+- 2026-11-02 B1 GREEN (same day note): `tools/honest_bill.py`
+  ports `sbrl.py::honest_bill` onto the vendored boiler
+  (local-only, out of baselines); `tools/test_honest_bill.py`
+  6/6 OK.
+- 2026-11-02 B2 GREEN (same day note): occ_gated7 train-30 shipped
+  0.00962975 vs honest 0.00954945 (-0.83%, same direction as
+  Skynet, ~4x smaller); per-climate deltas + full table logged.
+- 2026-11-02 B3 GREEN (same day note): train + compare on honest
+  bill, screen promotions on shipped too. Group B complete.
+- 2026-11-02 C1 GREEN by citation (same day note): B2 shipped
+  suite (30/30, mean 0.00962975) satisfies C1; no rerun
+  (deterministic sim, no edits in flight); ladder Rung 11 entry
+  added.
+- 2026-11-02 C2 GREEN (same day note): Fairbanks 40.0% of loss,
+  b8/fairbanks_8 97.8% fuel, warm-up shares 45.3%/40.3% vs
+  their 61%/73%; gas hourly table logged.
+- 2026-11-02 C3 CLOSED-negative (same day note): occ_ramp
+  train-30 +0.60% vs gated7 (13/30; heating climates win,
+  phoenix/singapore lose); gate failed, no ladder rung.
+- 2026-11-02 C4 SKIPPED-not-cheap (same day note): each ablation
+  needs >=30 jobs for an honest verdict at P2 with expected
+  null/worse. Group C complete.
+- 2026-11-02 D1 GREEN (same day note): existing probe_xres@0.0
+  is the spike; 2x8640 parity runs bit-identical (all columns,
+  both pairs).
+- 2026-11-02 D2 GREEN (same day note): all 21/34/22 groups map
+  (table in note); discrete/pump/occ/OAT verified live; band
+  drift + missing target interface explicit.
+- 2026-11-02 D3 GREEN (same day note): fr gap found + fixed
+  (single free() source, masked pg/KL verbatim); 8/8 new tests;
+  parity re-verified bit-identical post-refactor.
+- 2026-11-02 E1 GREEN (same day note): spawn-pool rollouts,
+  bit-identical to serial; behavior-weights staleness fixed;
+  92.2 steps/s at 8w (short trajs), real number from smoke.
+- 2026-11-02 D4-smoke GREEN (same day note): 216k parallel
+  (153.4/s at 24w), KL-guarded step, 4-combo screen; shipped
+  transfer real (-17.3% b8 mean), ~half is billing exploit;
+  1-cycle update nil. D4-full (3-5M) pending user call.
+- 2026-11-02 D5 GO (same day note): settable zone-target path
+  exists (override point C3-proven); hook = _cur_vav context +
+  per-step offset dict + in-band clip; gain needs own loop.
+- 2026-11-02 E2 GREEN (same day note): per-traj adv norm over
+  free steps factored into `ppo.normalize_adv` + `NormalizeAdvTest`
+  (100x-scale separation); fr-masked losses since D3; 38/38.
+- 2026-11-02 E3 GREEN (same day note): linear LR decay + per-update
+  LR log verified pre-existing; best-ckpt retention added
+  (`{out}.best` with cycle/lr/best_r) + `BestCkptTest`; 45/45.
+- 2026-11-02 E4 GREEN (same day note): `pool_checksum` (SHA-256
+  over sorted pool) logged before cycle 0 + `PoolChecksumTest`;
+  46/46.
+- 2026-11-02 E5 GREEN (same day note): `clip_frac` helper,
+  `ppo_epoch` returns mean clip_frac, driver aborts if > 0.15 in
+  first 10 updates + `ClipFracTest`; std/LR half vacuous (no std
+  knob); ppo self-test PASS; 47/47. Group E complete.
+- 2026-11-02 F1 GREEN (same day note): transfer-12 fully SEEN,
+  xfer_4 confirmed 125-zone monster; `gen_transfer.py 4 6` built
+  24/24 new scenarios (xfer_5..10, seeds 50004-50009, 18-84 zones,
+  all <= 10/AHU); judge list + sha256 e71ea1a7...; pool ignored.
+- 2026-11-02 F2 GREEN (same day note): g7/g6/ramp on judge-24
+  (72/72) + b8 (15/15); judge g7 < ramp < g6 agrees with train-30
+  history and contradicts nothing (b8 gaps below 0.0002 floor);
+  resolves the g6/g7 pair b8 ties exactly. Judge VALIDATED.
+- 2026-11-02 F3 GREEN (same day note): judge-first/b8-second
+  promotion rule written into `docs/TEMPLATE.md` + `docs/ladder.md`
+  entry rule (`judge-24` coverage defined). Group F complete.
+- 2026-11-02 G8 GREEN (same day note): `tools/promote_screen.py`
+  (exit 1 if any pair > 3x rule, exit 2 on missing data) +
+  4 committed tests; F2 candidates PASS vs g7 (worst 1.175);
+  51/51.
+- 2026-11-02 G1-G7 CITED (same day note): failure-table guards
+  recorded as closed doors per DoD(G), no runs. Checklist done
+  except D4-full (pending user compute-budget call).

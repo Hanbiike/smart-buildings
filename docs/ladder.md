@@ -11,7 +11,12 @@ episodes (30 days x 5 min). Computed from CSV as
 `train-30` = the 6 released buildings x 5 weathers
 (`building_train_{1,2,4,5,7,8}`); `subset-8` = the 8-pair probe subset;
 `transfer-12` = 3 sampled buildings x 4 unseen weathers;
+`judge-24` = the F1 holdout (`building_xfer_{5..10}` x 4 unseen
+weathers, sha256 in `docs/2026/11/02/`, validated in F2);
 `public` = Kaggle public LB (mean over 30 hidden pairs).
+Entry rule (plan F/F3): new rungs need judge-24 first,
+b8/train second — nothing promoted on b8 alone (their m3r/m4
+reversal); gaps below 0.0002 do not resolve.
 All `occ*`/`probe_*`/`dsat_*`/`slot_*`/`bc_*` names are `POLICY_MAP`
 keys in `smart_buildings/evaluate.py`.
 
@@ -206,7 +211,7 @@ all dampers < 0.5.
 `GUARD_K=3.0`/`GUARD_RELEASE_K=2.0`) is a structural no-op: occupied mode
 is already normal. Never shipped.
 
-## Rung 10 — occ_gated6 (transfer -13.0%, submitted PENDING)
+## Rung 10 — occ_gated6 (transfer -13.0%, public 0.01337)
 
 `smart_buildings/baselines/occ_gated6.py`: v4 with fixed constants
 (`PTR_DB=1.0`, `PTR_DB_SLOPE=0.1`, `PTR_DB_REF=10.0`, `PTR_PERSIST=4`).
@@ -214,12 +219,56 @@ Train-30 0.009695 (+0.7% vs occ4, cold-only); transfer-12 -13.0%
 (xfer_3: -20% to -34% in ALL weathers, 42 runs). Notebook assembled +
 300-step exec check + kernel pushed (v1 ERRORed on missing
 `STEPS_PER_HOUR`, fixed in v2 — see `docs/2026/10/27/`).
+Public 0.01337 COMPLETE (+1.1% vs occ4 — prestart misfire;
+see `docs/2026/10/28/`).
 
-## Rung 11 — occ_gated7 (6/6 clean, submitted PENDING)
+## Rung 11 — occ_gated7 (6/6 clean, public 0.01323)
 
 `smart_buildings/baselines/occ_gated7.py`: v5 (occupied-only, same PTR
 constants). Tails -23%/-34%, zero regressions anywhere measured (6/6
-misfire checks bit-equal). Current best, awaiting public score.
+misfire checks bit-equal). Public 0.01323 COMPLETE (exact tie with
+occ4 — trim ≡ 0 on hidden; see `docs/2026/10/28/`).
+Train-30: mean 0.00962975, median 0.00716661 (30/30 full-8640,
+measured 2026-11-02, per-scenario table in `docs/2026/11/02/`;
+agrees with the 10-30 train-30 to 1.2e-07). RL baseline: every
+residual must beat this mean (plan F/C1). Superseded on the board
+by the occ8/occ9 stack (rungs 12-13), kept as the residual base.
+
+## Rung 12 — occ_econdbh7 / occ8 (econ+dbh, public 0.01260)
+
+`smart_buildings/baselines/occ_econdbh7.py` (shipped as occ8):
+occ_gated7 + econ (OAT-driven economizer trim) + dbh
+(heating-side-only deadband 0.15K + leak 0.97). Local full-8640:
+fb1 -2.1%, fb2 -7.3%, atl2 -19.1%, den2 -11.3%; tails are dbh
+midnight-family. Public 0.01260 COMPLETE (-4.8% vs occ7).
+Assembly trap fixed: lowercase `_SAT_*` module consts are NOT
+copied by the assembler — econ mixin made self-contained (class
+attrs). See `docs/2026/10/28/`.
+
+## Rung 13 — occ_econdbhhot9 / occ9 (full stack, public 0.01236)
+
+`smart_buildings/baselines/occ_econdbhhot9.py` (shipped as occ9):
+occ8 + heatopt (coil-physics pressure trim). Train-30:
+0.009630 -> 0.008782 (-8.80%), wins 29/30 (only phx5 +0.6%);
+best phx1 -28.6%, fb4 -27.4%, denver_7 -26.9%. Component
+ablations (90x8640): econ -1.67%, dbh -5.39% (29/30), heatopt
+-2.21% — near-additive stack. Fresh holdout 16/16 (-11.47%,
+stronger than train). Public 0.01236 COMPLETE (-6.6% vs occ7);
+transfer ≈ 75% of local. Known cost: dbh midnight tails grow
+(fb1 1.5%->2.6%) — no morning failures. Current best overall.
+See `docs/2026/10/28/`.
+
+## Closed — i2 residual (PPO branch, no learning)
+
+`probe_xres` @ `/tmp/i2.pt.best` (cycle-0 best of a clean 3.02M
+PPO run, H-repaired protocol): I2 curve flat-to-down (best =
+cycle 0, -0.009502; cycles 1-13 all worse), so nothing learned.
+I3: beats occ_gated7 on judge-24 + b8 on both bills (shipped
+-10.5%/-13.5%, honest -5.0%/-7.4% — transfer is real), but does
+not beat occ9 (honest judge +1.32%, knife-edge below the 0.0002
+floor; b8 +3.26% resolved). G8 PASS everywhere. CLOSED for this
+cycle — do not re-run this recipe without a new mechanism.
+See `docs/2026/11/03/`.
 
 ## Submission log
 
@@ -229,8 +278,10 @@ misfire checks bit-equal). Current best, awaiting public score.
 | occ_gated3 | (10-26) submitted 17:20 UTC | COMPLETE | 0.01330 |
 | occ_gated4 | occ4 notebook | COMPLETE | 0.01323 |
 | occ_gated5 | occ5 notebook | COMPLETE | 0.01352 |
-| occ_gated6 | occ6 v2 (v1 ERROR) | PENDING | — |
-| occ_gated7 | occ7 v1 | PENDING | — |
+| occ_gated6 | occ6 v2 (v1 ERROR) | COMPLETE | 0.01337 |
+| occ_gated7 | occ7 v1 | COMPLETE | 0.01323 |
+| occ_econdbh7 (occ8) | smart-buildings-submission-occ8 | COMPLETE | 0.01260 |
+| occ_econdbhhot9 (occ9) | occ9 kernel v1 | COMPLETE | 0.01236 |
 | leader (Joe Penn) | — | LB | 0.00521 |
 
 Scoring queue is slow (~14h). Watch the daily submission budget

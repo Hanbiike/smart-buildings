@@ -2,9 +2,10 @@
 
 Collects fixed-length trajectories with the surgery-expanded FlatNets:
 stochastic actions (mu + exp(log_std) * eps per entity head), critic
-values, shipped-sim rewards, and padding masks over variable-size
-buildings. Switches stay frozen (continuous-head logprobs only);
-Bernoulli switch heads are a later step.
+values, sim rewards on the driver's bill (honest by default per B3),
+and padding masks over variable-size buildings. Switches stay frozen
+(continuous-head logprobs only); Bernoulli switch heads are a later
+step. Gated steps record exact-zero corrections with fr=0 (D3).
 
 Self-test: ./.venv/bin/python -B tools/skynet_rollout.py
 Collects 2 scenarios x 256 steps sequentially and checks shapes, masks,
@@ -22,25 +23,36 @@ import torch
 N_ZONE_X = 23  # 21 base + err + integral saturation (see probe_xres)
 
 
-def build_policy(meta, spec):
+DEFAULT_WEIGHTS = "/tmp/opencode/sb-rl/skynet.pt"
+
+
+def build_policy(meta, spec, weights=DEFAULT_WEIGHTS):
     """Deterministic harness parts (features + expanded net), no env."""
     import importlib.util as _ilu
     from pathlib import Path as _P
     _surg = (_P(__file__).resolve().parent
              / "skynet_surgery.py")
-    _spec = _ilu.spec_from_file_location("skynet_surgery", _surg)
-    _mod = _ilu.module_from_spec(_spec)
-    sys.modules["skynet_surgery"] = _mod
-    _spec.loader.exec_module(_mod)
+    if "skynet_surgery" not in sys.modules:
+        _spec = _ilu.spec_from_file_location("skynet_surgery", _surg)
+        _mod = _ilu.module_from_spec(_spec)
+        sys.modules["skynet_surgery"] = _mod
+        _spec.loader.exec_module(_mod)
+    else:
+        _mod = sys.modules["skynet_surgery"]
     from skynet.policy import load as _load
     from skynet.features import BuildingIndex as _BI
-    net, _params, _scale, _latch = _load("/tmp/opencode/sb-rl/skynet.pt")
-    xnet, _rep = _mod.expand_net(net)
+    ck = torch.load(weights, map_location="cpu", weights_only=False)
+    if "zone.0.adapter.weight" in ck.get("model", {}):
+        xnet, _rep = _mod.expand_net_from_ckpt(ck)
+    else:
+        net, _params, _scale, _latch = _load(weights)
+        xnet, _rep = _mod.expand_net(net)
     xnet.eval()
     return xnet, _BI(meta)
 
 
-def rollout_env(env, meta, spec, base_policy, steps, seed=0):
+def rollout_env(env, meta, spec, base_policy, steps, seed=0,
+                weights=DEFAULT_WEIGHTS):
     """Rollout driving a live env with the base policy + residual sample."""
     from skynet.features import N_AHU, N_PLANT
     from smart_buildings.smart_control.utils.scenario_generator import (
@@ -49,13 +61,13 @@ def rollout_env(env, meta, spec, base_policy, steps, seed=0):
     torch.manual_seed(seed)
     np.random.seed(seed)
     torch.set_num_threads(1)
-    xnet, ix = build_policy(meta, spec)
+    xnet, ix = build_policy(meta, spec, weights)
     trk = SimulationTracker(env, vmin=280, vmax=310, capture_snapshots=False)
     trk.reset()
     obs = trk.last_obs
     T = {"zone": [], "ahu": [], "plant": [], "zmask": [], "amask": [],
          "za": [], "aa": [], "pa": [], "lpz": [], "lpa": [], "lpp": [],
-         "gated": [], "v": [], "r": []}
+         "gated": [], "fr": [], "v": [], "r": []}
     t0 = time.time()
     for _ in range(steps):
         base = base_policy.get_action(obs)
@@ -64,12 +76,13 @@ def rollout_env(env, meta, spec, base_policy, steps, seed=0):
         # Mirror deployment gating (probe_xres): shutdown/floor/cold steps
         # take the base action. They are still recorded, with the
         # actually-applied zero correction and its logprob, so the update
-        # sees exactly the deployed behavior.
-        from smart_buildings.baselines.probe_modes import any_cold
-        gated = bool(getattr(base_policy, "_shutdown", False)
-                     or getattr(base_policy, "_floor_mode", None) is not
-                     None
-                     or any_cold(base_policy, ix, obs, 1.0))
+        # sees exactly the deployed behavior. fr=0 marks gated steps for
+        # the PPO loss (their env.py::step semantics, plan F/D3).
+        from smart_buildings.baselines.probe_modes import residual_free
+        from smart_buildings.baselines.probe_modes import (
+            ExpandedResidualProbe as _X)
+        free = residual_free(base_policy, ix, obs, _X.COLD_GATE_K)
+        gated = not free
         zf, af, pf = ix.features(obs, pc, pd)
         extra = sys.modules["skynet_surgery"].expanded_zone_cols(
             base_policy, ix, obs)
@@ -108,6 +121,7 @@ def rollout_env(env, meta, spec, base_policy, steps, seed=0):
         T["lpa"].append(lpa)
         T["lpp"].append(float(lpp))
         T["gated"].append(gated)
+        T["fr"].append(0.0 if gated else 1.0)
         T["v"].append(float(v.reshape(-1)[0].item()))
         T["r"].append(float(trk.rewards[-1]))
         if done or trunc:
@@ -116,6 +130,75 @@ def rollout_env(env, meta, spec, base_policy, steps, seed=0):
     T["amask"] = np.ones(len(T["ahu"]), dtype=np.float32)
     T["steps_per_sec"] = len(T["r"]) / max(time.time() - t0, 1e-6)
     return T
+
+
+# ---------------------------------------------------------------- workers
+# Parallel rollout collection (plan F/E1): spawn pool, envs cached per
+# worker by scenario (any workers/scenarios ratio), fresh base policy
+# per task. Seeds match the serial driver exactly, so serial and
+# parallel trajectories are bit-identical.
+
+_WORKER = {}
+
+
+def _worker_env(gin_path):
+    from pathlib import Path as _P
+    from smart_buildings import evaluate as _E
+    envs = _WORKER.setdefault("envs", {})
+    if gin_path not in envs:
+        env = _E.load_hybrid_environment(_P(gin_path))
+        env.metrics_path = None
+        meta = _E.create_building_meta_data(env, _P(gin_path).parent)
+        envs[gin_path] = (env, meta, env.action_spec())
+    return envs[gin_path]
+
+
+def _rollout_task(task):
+    scenario_idx, gin_path, steps, seed, weights, bill = task
+    from smart_buildings import evaluate as _E
+    from smart_buildings.evaluate import POLICY_MAP
+    if bill == "honest" and not _WORKER.get("billed", False):
+        from tools.honest_bill import apply_honest_bill
+        apply_honest_bill()
+        _WORKER["billed"] = True
+    env, meta, spec = _worker_env(gin_path)
+    base = _E.initialize_policy(POLICY_MAP["occ_gated7"], meta, spec)
+    tr = rollout_env(env, meta, spec, base, steps, seed=seed,
+                     weights=weights)
+    tr["scenario_idx"] = scenario_idx
+    return stack_traj(tr)
+
+
+def stack_traj(tr):
+    """Lists-of-arrays -> stacked arrays (cheap IPC; collate-compatible)."""
+    out = dict(tr)
+    for k in ("zone", "ahu", "plant", "za", "aa", "pa", "lpz", "lpa",
+              "lpp", "r", "v", "fr"):
+        out[k] = np.stack(tr[k])
+    out["gated"] = np.array(tr["gated"], dtype=bool)
+    out["zmask"] = np.ones(len(out["r"]), dtype=np.float32)
+    out["amask"] = np.ones(len(out["r"]), dtype=np.float32)
+    return out
+
+
+def rollout_parallel(gin_paths, steps, seeds, weights, bill, workers):
+    """One trajectory per scenario across a spawn pool (E1).
+
+    gin_paths/seeds align with the scenario list; returns trajectories
+    in scenario order. Deterministic: same seeds as the serial driver.
+    """
+    import multiprocessing as _mp
+    ctx = _mp.get_context("spawn")
+    pool = ctx.Pool(workers)
+    try:
+        tasks = [(i, gin_paths[i], steps, seeds[i], weights, bill)
+                 for i in range(len(gin_paths))]
+        out = pool.map(_rollout_task, tasks)
+    finally:
+        pool.close()
+        pool.join()
+    out.sort(key=lambda t: t.pop("scenario_idx"))
+    return out
 
 
 def self_test():

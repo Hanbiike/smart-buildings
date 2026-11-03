@@ -22,6 +22,10 @@
 ## Decisions
 
 - Claim. Proof: numbers/file. Consequence: ship/close/probe.
+- Promotion rule (plan F/F3): no checkpoint promoted on b8 or
+  train alone — judge-first (F1 pool, 24 pairs, sha256 in
+  `docs/2026/11/02/`), b8-second; gaps below the 0.0002 floor
+  do not resolve (F2).
 
 ## Open
 

@@ -155,6 +155,8 @@ from smart_buildings.baselines.occ_econdbhhot9 import OccEconDbhHot9Policy
 from smart_buildings.baselines.occ_dcv import OccDcv7Policy
 from smart_buildings.baselines.occ_satcap import OccSatCap7Policy
 from smart_buildings.baselines.occ_gated7 import OccGated7Policy
+from smart_buildings.baselines.occ_ramp import OccRampPolicy
+from smart_buildings.baselines.occ_rampgated9 import OccRampGated9Policy
 from smart_buildings.baselines.slot_linear import SlotLinearPolicy
 from smart_buildings.baselines.slot_hybrid import (
     SlotHybridPolicy, SlotPPOPolicy)
@@ -163,9 +165,16 @@ from smart_buildings.baselines.occ_duty import (
     OccDutyLeanPolicy,
 )
 from smart_buildings.baselines.probe_modes import (
-    EconProbe, ExpandedResidualProbe, GuardProbe, MarginProbe,
+    Csh9Kp06Probe, Csh9Probe,
+    Dbh9Db10Probe, Dbh9Leak100Probe, Dbh9LeakNightProbe,
+    EconProbe, ExpandedResidualProbe, GuardProbe,
+    Hopt9SatU07Probe, Kp069Probe, MarginProbe,
+    Ps9H0Probe, Ps9H1Probe, Ps9H2Probe, Ps9H3Probe,
     PressureTrimRespondProbe,
+    Ptr9Db20Probe, Ptr9Persist8Probe, Ptr9Up15Probe, Ptr9Up35Probe,
     PtrFastTrimProbe, PtrHighCeilProbe, PtrPropKickProbe, SATProbe,
+    SlotT1HardProbe, SlotT1SoftProbe,
+    Zss05Probe, Zss10Probe, Zssc05Probe,
     SetpointProbe, SkynetResidualProbe, TodShiftProbe, WeekendFloorProbe)
 from smart_buildings.baselines.transfer_policy import TransferPolicy
 from smart_buildings.baselines.nn_policy import (  # noqa: F401
@@ -327,6 +336,8 @@ POLICY_MAP: dict[str, type[Any]] = {
     "occ_gated5": OccGated5Policy,
     "occ_gated6": OccGated6Policy,
     "occ_gated7": OccGated7Policy,
+    "occ_ramp": OccRampPolicy,
+    "occ_rampgated9": OccRampGated9Policy,
     "occ_dualmax7": OccDualMax7Policy,
     "occ_hdamp085_7": OccHDamp085G7Policy,
     "occ_edge7": OccEdge7Policy,
@@ -353,6 +364,26 @@ POLICY_MAP: dict[str, type[Any]] = {
     "occ_duty_lean": OccDutyLeanPolicy,
     "probe_guard": GuardProbe,
     "probe_ptr": PressureTrimRespondProbe,
+    "probe_ptr9_up15": Ptr9Up15Probe,
+    "probe_ptr9_db20": Ptr9Db20Probe,
+    "probe_ptr9_persist8": Ptr9Persist8Probe,
+    "probe_ptr9_up35": Ptr9Up35Probe,
+    "probe_hopt9_satu07": Hopt9SatU07Probe,
+    "probe_dbh9_db10": Dbh9Db10Probe,
+    "probe_dbh9_leak100": Dbh9Leak100Probe,
+    "probe_dbh9_leaknight": Dbh9LeakNightProbe,
+    "probe_csh9": Csh9Probe,
+    "probe_kp069": Kp069Probe,
+    "probe_csh9_kp06": Csh9Kp06Probe,
+    "probe_ps9_h0": Ps9H0Probe,
+    "probe_ps9_h1": Ps9H1Probe,
+    "probe_ps9_h2": Ps9H2Probe,
+    "probe_ps9_h3": Ps9H3Probe,
+    "probe_zss05": Zss05Probe,
+    "probe_zss10": Zss10Probe,
+    "probe_zssc05": Zssc05Probe,
+    "probe_slot_soft7": SlotT1SoftProbe,
+    "probe_slot_hard7": SlotT1HardProbe,
     "probe_ptr_pa": PtrFastTrimProbe,
     "probe_ptr_pb": PtrPropKickProbe,
     "probe_ptr_pc": PtrHighCeilProbe,
@@ -1232,6 +1263,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> None:
     args = build_arg_parser().parse_args(argv)
+
+    # B2 measurement hook (default off): HONEST_BILL=1 bills the boiler
+    # flow at tank temperature via tools/honest_bill.py (local only).
+    import os
+    if os.environ.get("HONEST_BILL") == "1":
+        from tools.honest_bill import apply_honest_bill
+        apply_honest_bill()
+        print("HONEST_BILL=1: honest boiler billing applied (local only).")
 
     args.results_dir.mkdir(parents=True, exist_ok=True)
 

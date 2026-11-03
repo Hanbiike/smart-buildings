@@ -31,6 +31,16 @@ CLIP = 0.2
 V_COEF = 0.5
 KL_STOP = 0.01
 V_PRETRAIN_STEPS = 100
+# Logstd floor (H5, slot_ppo-style): shipped logstds sit at -1.1..-1.5,
+# so -2.0 (std 0.135) is init-minus-~0.5 and a no-op at start.
+MIN_LOGSTD = -2.0
+
+
+def clamp_logstd(net, floor=MIN_LOGSTD):
+    """In-place floor on the three head logstds (no-op above floor)."""
+    with torch.no_grad():
+        for s in net.stds():
+            s.clamp_(min=floor)
 
 
 def critic_params(net):
@@ -47,7 +57,7 @@ def masked_lp(net, zone, zmask, ahu, amask, plant, za, aa, pa):
     """
     import torch.distributions as _D
     (mz, ma, mp), _v = net(zone, zmask, ahu, amask, plant)
-    stds = net.stds()
+    stds = [torch.clamp(s, min=MIN_LOGSTD) for s in net.stds()]
     outs = []
     total = torch.zeros(zone.shape[0])
     # Zone damper/reheat heads.
@@ -76,26 +86,76 @@ def predict_v(net, zone, zmask, ahu, amask, plant):
         return net(zone, zmask, ahu, amask, plant)[1]
 
 
-def compute_gae(rewards, values, gamma=GAMMA, lam=LAM):
-    """rewards/values [T] numpy; returns (advantages, returns)."""
+def compute_gae(rewards, values, gamma=GAMMA, lam=LAM, bootstrap=0.0):
+    """rewards/values [T] numpy; returns (advantages, returns).
+
+    bootstrap is V beyond the traj end: 0.0 is correct for our
+    full-episode terminal rollouts (H7); pass the last value for
+    truncated rollouts (slot_ppo-style).
+    """
     T = len(rewards)
     adv = np.zeros(T, dtype=np.float64)
     gae = 0.0
     for t in range(T - 1, -1, -1):
-        nxt = values[t + 1] if t + 1 < T else 0.0
+        nxt = values[t + 1] if t + 1 < T else bootstrap
         delta = rewards[t] + gamma * nxt - values[t]
         gae = delta + gamma * lam * gae
         adv[t] = gae
     return adv, adv + np.asarray(values, dtype=np.float64)
 
 
-def ppo_epoch(net, opt, batch, clip=CLIP, kl_stop=KL_STOP, mb=32):
-    """One shuffled epoch; returns (ran_minibatches, stopped_early)."""
+def normalize_adv(adv, fr):
+    """Per-traj advantage norm over free steps (their 5.3, plan F/E2).
+
+    adv is modified in place on free entries only; gated entries keep
+    raw values (the fr mask zeroes their PG contribution anyway).
+    With no free steps the array is returned untouched. Cold-climate
+    rewards can never set the scale for other trajs: each traj is
+    normalized against itself.
+    """
+    m = np.asarray(fr) > 0
+    if m.any():
+        a = np.asarray(adv, dtype=np.float64)
+        adv[m] = (a[m] - a[m].mean()) / (a[m].std() + 1e-8)
+    return adv
+
+
+def clip_frac(ratio, fr, clip=CLIP):
+    """Fr-masked fraction of ratios outside the [1-c, 1+c] band (E5)."""
+    fr = torch.as_tensor(fr, dtype=ratio.dtype, device=ratio.device)
+    out = (ratio - 1.0).abs() > clip
+    return float((out.float() * fr).sum() / fr.sum().clamp(min=1.0))
+
+
+def pg_objective(ratio, adv, fr, clip=CLIP):
+    """Masked-mean clipped policy objective (their skynet_train.py:199).
+
+    fr=0 steps (rule alone, plan F/D3) contribute exactly 0; the mean
+    runs over free steps only. All-fr-0 returns 0.0, never NaN.
+    """
+    pol = -torch.minimum(ratio * adv,
+                         torch.clamp(ratio, 1 - clip, 1 + clip) * adv)
+    return (pol * fr).sum() / fr.sum().clamp(min=1.0)
+
+
+def mean_kl(old_lp, old_nd, new_lp, new_nd, fr):
+    """Masked-mean per-dim KL for the early-stop probe (fr as above)."""
+    kl = old_lp / old_nd - new_lp / new_nd
+    return float((kl * fr).sum() / fr.sum().clamp(min=1.0))
+
+
+def ppo_epoch(net, opt, batch, clip=CLIP, kl_stop=KL_STOP, mb=32,
+              trace=False):
+    """One shuffled epoch; returns (ran_minibatches, stopped_early,
+    mean clip_frac over ran minibatches). trace=True prints a per-mb
+    H1 diagnostic line (frsum, grad norm, k1/k3 KL, clip_frac, |dmu|,
+    dlogstd)."""
     (zone, zmask, ahu, amask, plant, za, aa, pa, old_lp, old_nd,
-     adv, ret) = batch
+     adv, ret, fr) = batch
     T = zone.shape[0]
     idx = torch.randperm(T)
     ran = 0
+    cf_sum = 0.0
     for s in range(0, T, mb):
         ii = idx[s:s + mb]
         sl = lambda t: t[ii]
@@ -105,24 +165,47 @@ def ppo_epoch(net, opt, batch, clip=CLIP, kl_stop=KL_STOP, mb=32):
         # Mean-field per-dim ratio (slot_ppo convention).
         r = torch.exp(new_lp / new_nd - old_lp[ii] / old_nd[ii])
         a = adv[ii]
-        pol = -torch.minimum(r * a, torch.clamp(r, 1 - clip, 1 + clip) * a)
-        v = net(sl(zone), sl(zmask), sl(ahu), sl(amask), sl(plant))[1]
-        loss = pol.mean() + V_COEF * ((v - ret[ii]) ** 2).mean()
+        pol = pg_objective(r, a, fr[ii], clip)
+        mus, v = net(sl(zone), sl(zmask), sl(ahu), sl(amask),
+                       sl(plant))
+        if trace:
+            mus0 = tuple(m.detach().clone() for m in mus)
+            stds0 = [t.detach().clone() for t in net.stds()]
+        loss = pol + V_COEF * ((v - ret[ii]) ** 2).mean()
         opt.zero_grad()
         loss.backward()
-        nn.utils.clip_grad_norm_(net.parameters(), 1.0)
+        gnorm = float(nn.utils.clip_grad_norm_(net.parameters(), 1.0))
+        clamp_logstd(net)
         opt.step()
         ran += 1
-        kl = float((old_lp[ii] / old_nd[ii]
-                    - new_lp.detach() / new_nd).mean())
+        cf = clip_frac(r.detach(), fr[ii], clip)
+        cf_sum += cf
+        kl = mean_kl(old_lp[ii], old_nd[ii], new_lp.detach(), new_nd,
+                     fr[ii])
+        if trace:
+            with torch.no_grad():
+                mus1, _ = net(sl(zone), sl(zmask), sl(ahu), sl(amask),
+                              sl(plant))
+                stds1 = net.stds()
+                dmu = max(float((b - a).abs().max())
+                          for a, b in zip(mus0, mus1))
+                dls = max(float((b - a).abs().max())
+                          for a, b in zip(stds0, stds1))
+            lr = torch.log(r.detach())
+            k3 = float((((r.detach() - 1.0) - lr) * fr[ii]).sum()
+                       / fr[ii].sum().clamp(min=1.0))
+            print(f"mb {ran}: frsum={float(fr[ii].sum()):.0f} "
+                  f"gnorm={gnorm:.3f} k1={kl:.6f} k3={k3:.6f} "
+                  f"cf={cf:.4f} dmu={dmu:.2e} dlogstd={dls:.2e}",
+                  flush=True)
         if kl > kl_stop:
-            return ran, True
-    return ran, False
+            return ran, True, cf_sum / ran
+    return ran, False, cf_sum / max(ran, 1)
 
 
 def v_pretrain(net, batch, steps=V_PRETRAIN_STEPS, lr=V_LR):
     (zone, zmask, ahu, amask, plant, _za, _aa, _pa, _ol, _on, _ad,
-     ret) = batch
+     ret, _fr) = batch
     opt = torch.optim.Adam(critic_params(net), lr=lr)
     before = float(((predict_v(net, zone, zmask, ahu, amask, plant)
                      - ret) ** 2).mean())
@@ -188,8 +271,26 @@ def self_test():
     adv = (torch.from_numpy(adv_np).float()
            - float(adv_np.mean())) / (float(adv_np.std()) + 1e-8)
     ret = torch.from_numpy(ret_np).float()
+    fr = torch.ones(T)
+    fr[::2] = 0.0  # half the steps gated: rule alone, no PG signal
     batch = (zone, zmask, ahu, amask, plant, za, aa, pa,
-             old_lp.detach(), old_nd, adv, ret)
+             old_lp.detach(), old_nd, adv, ret, fr)
+    # 0. fr masking: gated rows contribute exactly 0 to pg + KL.
+    r = torch.exp(torch.randn(T))
+    a = torch.randn(T)
+    one = torch.zeros(T)
+    one[7] = 1.0
+    pol = -torch.minimum(r * a, torch.clamp(r, 1 - CLIP, 1 + CLIP) * a)
+    assert torch.equal(pg_objective(r, a, one), pol[7]), "one-hot inexact"
+    assert pg_objective(r, a, torch.zeros(T)) == 0.0, "all-gated not 0"
+    got = pg_objective(r, a, fr)
+    want = pg_objective(r[1::2], a[1::2], fr[1::2])
+    assert abs(float(got - want)) < 1e-6, "fr=0 rows leak into pg"
+    k_all = mean_kl(old_lp, old_nd, old_lp + 1.0, old_nd, fr)
+    k_free = mean_kl(old_lp[1::2], old_nd[1::2], old_lp[1::2] + 1.0,
+                     old_nd[1::2], fr[1::2])
+    assert abs(k_all - k_free) < 1e-6, "fr=0 rows leak into KL"
+    print("fr-mask check PASS (gated rows contribute exactly 0.0)")
     # 1. Mask correctness: padded row contributes exactly 0.
     with torch.no_grad():
         l_full, _ = masked_lp(new, zone, zmask, ahu, amask, plant,
@@ -204,8 +305,9 @@ def self_test():
     assert after < before, "v-pretrain did not reduce loss"
     # 3. KL-stop fires under an absurd lr (1e-1 moves past 0.01 in an epoch).
     opt = torch.optim.Adam(new.parameters(), lr=1e-1)
-    ran, stopped = ppo_epoch(new, opt, batch)
-    print(f"kl-stop check: ran {ran} minibatches, stopped={stopped}")
+    ran, stopped, cf = ppo_epoch(new, opt, batch)
+    print(f"kl-stop check: ran {ran} minibatches, stopped={stopped} "
+          f"clip_frac={cf:.3f}")
     assert stopped, "KL-stop did not fire at lr=1e-1"
     # 4. Save/load roundtrip bit-identical (via load_ckpt).
     opt2 = torch.optim.Adam(new.parameters(), lr=LR)

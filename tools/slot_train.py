@@ -14,7 +14,9 @@ queries heads in shutdown anyway. Memory advances only on delegating
 steps (feat.step update=False otherwise) to match inference dynamics.
 
 Slot assignment is hard (each step trains its own slot's heads); the
-inference-time neighbor blend smooths across them.
+inference-time neighbor blend smooths across them. With --soft k3/k5,
+each step's statistics spread to neighbor slots with binomial weights
+(circular mod 288, bank-hard): train-time soft assignment (MoE T1/T2).
 
 Outputs results/slot_runs/<out>.npz with Wz/bz/Wa/ba/Wg/bg.
 """
@@ -48,15 +50,32 @@ def parse_arguments():
     ap.add_argument("--out", default="slot_bc_occ4")
     ap.add_argument("--scenarios", default="all",
                     help="'all' or comma list building/weather")
+    ap.add_argument("--soft", default="none", choices=("none", "k3", "k5"),
+                    help="train-time soft slot assignment kernel "
+                         "(k3=(1,2,1)/4, k5=(1,4,6,4,1)/16, circular, "
+                         "bank-hard); none = hard assignment")
+    ap.add_argument("--no-holdout", action="store_true",
+                    help="train on all buildings including --hold-building "
+                         "(default excludes it for held-out comparison)")
     return ap.parse_args()
 
 
-def find_runs(teachers, only=None):
+SOFT_KERNELS = {
+    "none": ((0,), (1.0,)),
+    "k3": ((-1, 0, 1), (0.25, 0.5, 0.25)),
+    "k5": ((-2, -1, 0, 1, 2),
+           (1 / 16, 4 / 16, 6 / 16, 4 / 16, 1 / 16)),
+}
+
+
+def find_runs(teachers, only=None, exclude_building=None):
     if isinstance(teachers, str):
         teachers = [teachers]
     runs = []
     for building_dir in sorted(RESULTS.glob("building_train_*")):
         if not building_dir.is_dir():
+            continue
+        if exclude_building and building_dir.name == exclude_building:
             continue
         for weather_dir in sorted(building_dir.iterdir()):
             if not weather_dir.is_dir():
@@ -80,11 +99,11 @@ class Accum:
         self.B = np.zeros((f + 1, o))
         self.n = 0
 
-    def add(self, X, Y):
+    def add(self, X, Y, w=1.0):
         X1 = np.concatenate([X, np.ones((X.shape[0], 1))], axis=1)
-        self.A += X1.T @ X1
-        self.B += X1.T @ Y
-        self.n += X.shape[0]
+        self.A += w * (X1.T @ X1)
+        self.B += w * (X1.T @ Y)
+        self.n += w * X.shape[0]
 
     def solve(self, ridge):
         if self.n == 0:
@@ -98,10 +117,13 @@ class Accum:
 def main():
     args = parse_arguments()
     only = None if args.scenarios == "all" else set(args.scenarios.split(","))
-    runs = find_runs(args.teacher.split(","), only)
-    print(f"teacher runs: {len(runs)}", flush=True)
+    excl = None if args.no_holdout else args.hold_building
+    runs = find_runs(args.teacher.split(","), only, excl)
+    print(f"teacher runs: {len(runs)} (soft={args.soft}, "
+          f"holdout={excl})", flush=True)
     if not runs:
         raise SystemExit("no teacher dumps found")
+    offsets, weights = SOFT_KERNELS[args.soft]
 
     # dims from the first run's meta
     meta0 = json.load(open(runs[0][2]))
@@ -137,20 +159,24 @@ def main():
             deleg = bool(ahu_on.any())
             bank, slot, (zf, af, gf) = feat.step(obs[t], update=deleg)
             ya_run = disc[t, run_disc]
-            on_a[bank, slot] += ya_run.sum()
-            n_a[bank, slot] += len(ahus)
             w_run = (disc[t, w["water_discrete_idx"]]
                      if 0 <= w["water_discrete_idx"] < disc.shape[1] else 0.0)
-            on_w[bank, slot] += w_run
-            n_w[bank, slot] += 1
+            for off, wt in zip(offsets, weights):
+                s2 = (slot + off) % N_SLOTS  # circular, bank-hard
+                on_a[bank, s2] += wt * ya_run.sum()
+                n_a[bank, s2] += wt * len(ahus)
+                on_w[bank, s2] += wt * w_run
+                n_w[bank, s2] += wt
             if not deleg:
                 continue
             n_deleg += 1
             zkeep = ahu_on[ahu_of_room]
             if zkeep.any():
                 yz = np.stack([cont[t, damp], cont[t, reh]], axis=1)
-                acc_z[bank][slot].add(zf[zkeep].astype(np.float64),
-                                      yz[zkeep])
+                Xz = zf[zkeep].astype(np.float64)
+                Yz = yz[zkeep]
+            else:
+                Xz = Yz = None
             ya = np.zeros((ahu_on.sum(), 4))
             kept_af = af[ahu_on].astype(np.float64)
             for j, i in enumerate(np.where(ahu_on)[0]):
@@ -161,16 +187,20 @@ def main():
                 ya[j, 2] = (cont[t, a["recirc_idx"]]
                             if a["recirc_idx"] is not None else 1.0)
                 ya[j, 3] = disc[t, a["run_disc_idx"]]
-            acc_a[bank][slot].add(kept_af, ya)
             yg = np.zeros(3)
             yg[0] = (cont[t, w["water_temp_idx"]]
                      if w["water_temp_idx"] is not None else -1.0)
             yg[1] = (cont[t, w["water_pressure_idx"]]
                      if w["water_pressure_idx"] is not None else -1.0)
             yg[2] = w_run
-            if yg[2] > 0.5:
-                acc_g[bank][slot].add(gf.astype(np.float64)[None, :],
-                                      yg[None, :])
+            Xg = gf.astype(np.float64)[None, :]
+            for off, wt in zip(offsets, weights):
+                s2 = (slot + off) % N_SLOTS  # circular, bank-hard
+                if Xz is not None:
+                    acc_z[bank][s2].add(Xz, Yz, w=wt)
+                acc_a[bank][s2].add(kept_af, ya, w=wt)
+                if yg[2] > 0.5:
+                    acc_g[bank][s2].add(Xg, yg[None, :], w=wt)
         print(f"  {key}: T={T} deleg={n_deleg}", flush=True)
 
     Wz = np.zeros((2, N_SLOTS, FZ, 2))
@@ -211,7 +241,10 @@ def main():
                        out=np.full_like(on_w, 0.5), where=n_w > 0)
     np.savez_compressed(out, Wz=Wz, bz=bz, Wa=Wa, ba=ba, Wg=Wg, bg=bg,
                         rate_a=rate_a, rate_w=rate_w,
-                        ridge=args.ridge, teacher=args.teacher)
+                        nz=nz, na=na, ng=ng, on_a=on_a, n_a=n_a,
+                        on_w=on_w, n_w=n_w,
+                        ridge=args.ridge, teacher=args.teacher,
+                        soft=args.soft, holdout=(excl or ""))
     print(f"saved {out}")
 
 

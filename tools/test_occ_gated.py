@@ -11,6 +11,10 @@ from smart_buildings.baselines.occ_gated2 import OccGated2Policy, OccSat2Policy
 from smart_buildings.baselines.occ_gated3 import OccGated3Policy, OccSat3Policy
 from smart_buildings.baselines.occ_duty import OccDutyPolicy, OccDutyLeanPolicy
 from smart_buildings.baselines.occ_gated4 import OccGated4Policy
+from smart_buildings.baselines.occ_gated7 import OccGated7Policy
+from smart_buildings.baselines.occ_ramp import OccRampPolicy
+from smart_buildings.baselines.occ_econdbhhot9 import OccEconDbhHot9Policy
+from smart_buildings.baselines.occ_rampgated9 import OccRampGated9Policy
 
 
 def _fake_building():
@@ -299,6 +303,61 @@ class OccGated4Test(unittest.TestCase):
         # Round-2/3 would pin the floor (~0.77 here); round-4 leaves the
         # chain's reset value (below the floor for a small shortfall).
         self.assertLess(frac, 0.77)
+
+
+class OccRampTest(unittest.TestCase):
+    # Fractional hours: exact-hour sin/cos can floor to the previous
+    # hour in _get_hour_and_day (hours 1 and 7 mis-decode exactly).
+    def _targets(self, hour, day):
+        meta, spec, index = _fake_building()
+        obs = _obs(index, hour, day, zone_k=292.0)
+        lo, hi = meta["comfort_temp_window"]
+        base = OccGated7Policy(meta, spec)._zone_target(obs, lo, hi)
+        ramp = OccRampPolicy(meta, spec)._zone_target(obs, lo, hi)
+        return base, ramp
+
+    def test_ramp_lowers_premorning_weekday(self):
+        base, ramp = self._targets(4.5, 2)  # Wednesday 04:xx
+        self.assertAlmostEqual(ramp, base - 2.0 * OccRampPolicy.RAMP_K)
+        self.assertGreaterEqual(ramp, OccRampPolicy.RAMP_FLOOR_K)
+
+    def test_ramp_floor(self):
+        base, ramp = self._targets(0.5, 2)  # Wednesday 00:xx
+        self.assertAlmostEqual(
+            ramp, max(OccRampPolicy.RAMP_FLOOR_K, base - 6.0))
+
+    def test_no_ramp_at_or_after_morning(self):
+        for hour in (6.5, 10.5):
+            base, ramp = self._targets(hour, 2)
+            self.assertAlmostEqual(ramp, base)
+
+    def test_no_ramp_weekend(self):
+        base, ramp = self._targets(4.5, 6)  # Sunday 04:xx
+        self.assertAlmostEqual(ramp, base)
+
+
+class OccRampGated9Test(unittest.TestCase):
+    def _targets(self, hour, day, oat_k):
+        meta, spec, index = _fake_building()
+        obs = _obs(index, hour, day, zone_k=292.0, oat_k=oat_k)
+        lo, hi = meta["comfort_temp_window"]
+        base = OccEconDbhHot9Policy(meta, spec)._zone_target(obs, lo, hi)
+        gated = OccRampGated9Policy(meta, spec)._zone_target(obs, lo, hi)
+        return base, gated
+
+    def test_ramp_applies_in_heating_regime(self):
+        base, gated = self._targets(4.5, 2, 270.0)  # Wed 04:xx, cold
+        self.assertAlmostEqual(
+            gated, base - 2.0 * OccRampGated9Policy.RAMP_K)
+
+    def test_no_ramp_in_cooling_regime(self):
+        base, gated = self._targets(4.5, 2, 310.0)  # Wed 04:xx, hot
+        self.assertAlmostEqual(gated, base)
+
+    def test_no_ramp_weekend_or_after_morning(self):
+        for hour, day in ((4.5, 6), (6.5, 2), (10.5, 2)):
+            base, gated = self._targets(hour, day, 270.0)
+            self.assertAlmostEqual(gated, base)
 
 
 if __name__ == "__main__":

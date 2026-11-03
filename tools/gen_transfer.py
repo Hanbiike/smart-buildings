@@ -35,10 +35,19 @@ WEATHERS = ["minneapolis_1", "minneapolis_5", "atlanta_4", "singapore_2"]
 
 
 def main():
+    # Optional argv: start_index count (defaults regenerate the original
+    # xfer_1..4). F1 judge extension: `gen_transfer.py 4 6` adds xfer_5..10
+    # with seeds 50004+ (same fixed-seed scheme, no overlap).
+    start = int(sys.argv[1]) if len(sys.argv) > 1 else 0
+    count = int(sys.argv[2]) if len(sys.argv) > 2 else 4
     os.makedirs(BUILDINGS_DIR, exist_ok=True)
     rng = random.Random(777)
+    # Advance the shape RNG past indices we skip so i>=4 shapes match a
+    # full 0..N run (indices 0..3 never draw).
+    for _ in range(max(0, start - 4)):
+        rng.choice(SHAPES)
     building_paths = []
-    for i in range(4):
+    for i in range(start, start + count):
         seed = 50000 + i
         cfg = generate_config(
             name=f"building_xfer_{i + 1}",
@@ -66,13 +75,14 @@ def main():
               flush=True)
 
     n = 0
+    total = len(building_paths) * len(WEATHERS)
     for bp in building_paths:
         for w in WEATHERS:
             wp = os.path.join(WEATHER_DIR, f"{w}.yaml")
             sc = load_scenario_from_parts(bp, wp, output_base_dir=SCENARIOS_DIR)
             result = generate_scenario_from_config(sc)
             n += 1
-            print(f"[{n}/16] {result['output_dir']}", flush=True)
+            print(f"[{n}/{total}] {result['output_dir']}", flush=True)
     print(f"TRANSFER_SUITE_OK {n} scenarios in {SCENARIOS_DIR}")
 
 

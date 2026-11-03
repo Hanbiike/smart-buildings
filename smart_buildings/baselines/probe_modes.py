@@ -3,6 +3,9 @@
 
 from smart_buildings.baselines.occ_gated4 import OccGated4Policy
 from smart_buildings.baselines.occ_gated7 import OccGated7Policy
+from smart_buildings.baselines.slot_hybrid import SlotHybridPolicy
+from smart_buildings.baselines.occ_coolshift7 import CoolShiftMixin
+from smart_buildings.baselines.occ_econdbhhot9 import OccEconDbhHot9Policy
 from smart_buildings.baselines.zone_pi import _outside_kelvin
 
 
@@ -58,6 +61,26 @@ def any_cold(floor, ix, obs, k):
         if float(temp_k[i]) < lo - k:
             return True
     return False
+
+
+def residual_free(policy, ix, obs, cold_k):
+    """True iff the residual acts this step (our `free` flag, plan F/D3).
+
+    Mirrors Skynet's `floor.free` (PI-hours gating: off-hours => rule
+    alone) plus our two extra gates: occ shutdown/floor modes and the
+    cold gate. `cold_k=None` (or < 0) disables the cold term, for
+    scale-0 identity runs where the gate would be a no-op anyway.
+    Single source of truth shared by the probe and the rollout, so
+    training sees exactly the gating deployment applies.
+    """
+    if getattr(policy, "_shutdown", False):
+        return False
+    if getattr(policy, "_floor_mode", None) is not None:
+        return False
+    if (cold_k is not None and cold_k >= 0.0
+            and any_cold(policy, ix, obs, cold_k)):
+        return False
+    return True
 
 
 class ExpandedResidualProbe(OccGated7Policy):
@@ -140,10 +163,9 @@ class ExpandedResidualProbe(OccGated7Policy):
     def get_action(self, obs):
         import numpy as _np
         action = super().get_action(obs)
-        if self._shutdown or self._floor_mode is not None:
-            return action
-        if (self.RESIDUAL_SCALE != 0.0 and self.COLD_GATE_K >= 0.0
-                and self._any_cold(obs, self.COLD_GATE_K)):
+        cold = (self.COLD_GATE_K
+                if self.RESIDUAL_SCALE != 0.0 else None)
+        if not residual_free(self, self._ix, obs, cold):
             return action
         cont = action["continuous_action"]
         disc = action["discrete_action"]
@@ -612,3 +634,210 @@ class PtrHighCeilProbe(OccGated7Policy):
                 self._ptr_p[i] = max(-1.0, self._ptr_p[i] - self.PTR_DOWN)
             cont[pidx] = _np.float32(self._ptr_p[i])
         return action
+
+
+class Ptr9Up15Probe(OccEconDbhHot9Policy):
+    """J2: occ9 with gentler PTR respond (UP 0.25 -> 0.15)."""
+
+    KEY = "probe_ptr9_up15"
+    PTR_UP = 0.15
+
+
+class Ptr9Db20Probe(OccEconDbhHot9Policy):
+    """J2: occ9 with wider PTR deadband (DB 1.0 -> 2.0)."""
+
+    KEY = "probe_ptr9_db20"
+    PTR_DB = 2.0
+
+
+class Ptr9Persist8Probe(OccEconDbhHot9Policy):
+    """J2: occ9 with slower PTR trigger (PERSIST 4 -> 8)."""
+
+    KEY = "probe_ptr9_persist8"
+    PTR_PERSIST = 8
+
+
+class Ptr9Up35Probe(OccEconDbhHot9Policy):
+    """J2: occ9 with stronger PTR respond (UP 0.25 -> 0.35, sign check)."""
+
+    KEY = "probe_ptr9_up35"
+    PTR_UP = 0.35
+
+
+class Hopt9SatU07Probe(OccEconDbhHot9Policy):
+    """J2: occ9 with fewer heatopt-saturated zones (SAT_U -0.9 -> -0.7)."""
+
+    KEY = "probe_hopt9_satu07"
+
+    def __init__(self, building_meta_data, action_spec):
+        super().__init__(building_meta_data, action_spec)
+        self._hopt_sat_u = -0.7
+
+
+class Dbh9Db10Probe(OccEconDbhHot9Policy):
+    """J3: occ9 with narrower heating deadband (DB 0.15 -> 0.10 K)."""
+
+    KEY = "probe_dbh9_db10"
+
+    def __init__(self, building_meta_data, action_spec):
+        super().__init__(building_meta_data, action_spec)
+        self._dbh_db = 0.10
+
+
+class Dbh9Leak100Probe(OccEconDbhHot9Policy):
+    """J3: occ9 with no integral leak (LEAK 0.97 -> 1.00)."""
+
+    KEY = "probe_dbh9_leak100"
+
+    def __init__(self, building_meta_data, action_spec):
+        super().__init__(building_meta_data, action_spec)
+        self._dbh_leak = 1.00
+
+
+class Dbh9LeakNightProbe(OccEconDbhHot9Policy):
+    """J3: occ9 with the 0.97 leak only at 00-06, persist otherwise."""
+
+    KEY = "probe_dbh9_leaknight"
+
+    def _zone_err(self, obs, temp, lo, hi):
+        self._leak_hour = self._get_hour_and_day(obs)[0]
+        return super()._zone_err(obs, temp, lo, hi)
+
+    def _zone_integral_update(self, err, integral):
+        if self._dbh_on and err == 0.0:
+            h = getattr(self, "_leak_hour", 12)
+            leak = self._dbh_leak if 0 <= h < 6 else 1.0
+            return integral * leak
+        return super()._zone_integral_update(err, integral)
+
+
+class Csh9Probe(CoolShiftMixin, OccEconDbhHot9Policy):
+    """J4: occ9 + cooling-side warm target shift (0.3K)."""
+
+    KEY = "probe_csh9"
+
+
+class Kp069Probe(OccEconDbhHot9Policy):
+    """J4: occ9 with gentler zone PI (KP 0.07 -> 0.06)."""
+
+    KEY = "probe_kp069"
+    KP = 0.06
+
+
+class Csh9Kp06Probe(CoolShiftMixin, OccEconDbhHot9Policy):
+    """J4: occ9 + coolshift + gentler PI (full stack)."""
+
+    KEY = "probe_csh9_kp06"
+    KP = 0.06
+
+
+# J5 menu: fixed PRESTART_H is dead on the occ path (_decide latches prestart
+# adaptively and _prestart_active forces the PI window open), so the menu
+# varies the live knob PRESTART_MARGIN_STEPS (shipped 6 = +30 min).
+
+
+class Ps9H0Probe(OccEconDbhHot9Policy):
+    """J5: occ9 with zero prestart margin (MARGIN 6 -> 0)."""
+
+    KEY = "probe_ps9_h0"
+    PRESTART_MARGIN_STEPS = 0
+
+
+class Ps9H1Probe(OccEconDbhHot9Policy):
+    """J5: occ9 with shipped margin (MARGIN 6, control)."""
+
+    KEY = "probe_ps9_h1"
+    PRESTART_MARGIN_STEPS = 6
+
+
+class Ps9H2Probe(OccEconDbhHot9Policy):
+    """J5: occ9 with doubled margin (MARGIN 6 -> 12, +1h)."""
+
+    KEY = "probe_ps9_h2"
+    PRESTART_MARGIN_STEPS = 12
+
+
+class Ps9H3Probe(OccEconDbhHot9Policy):
+    """J5: occ9 with 4x margin (MARGIN 6 -> 24, +2h)."""
+
+    KEY = "probe_ps9_h3"
+    PRESTART_MARGIN_STEPS = 24
+
+
+class _ZoneSideShiftMixin:
+    """J6: rule-side in-band zone-target shift (their head analogue).
+
+    Moves the effective PI target toward the zone temp by up to
+    ZSS_SHIFT (in-band temps only): heat effort falls (target down),
+    cooling effort falls (target up). Equivalent to a symmetric
+    deadband of width ZSS_SHIFT on the inherited err; the implied
+    target stays between temp and the old target, hence in-band.
+    Never flips the err sign. ZSS_COOL_ONLY isolates the cooling
+    half (the heating half duplicates dbh).
+    """
+
+    ZSS_SHIFT = 0.5
+    ZSS_COOL_ONLY = False
+
+    def _zone_err(self, obs, temp, lo, hi):
+        err = super()._zone_err(obs, temp, lo, hi)
+        temp = float(temp)
+        if not (lo <= temp <= hi) or err == 0.0:
+            return err
+        if self.ZSS_COOL_ONLY and err < 0.0:
+            return err
+        s = min(self.ZSS_SHIFT, abs(err))
+        return err - s if err > 0.0 else err + s
+
+
+class Zss05Probe(_ZoneSideShiftMixin, OccEconDbhHot9Policy):
+    """J6: occ9 + symmetric in-band shift 0.5K."""
+
+    KEY = "probe_zss05"
+    ZSS_SHIFT = 0.5
+
+
+class Zss10Probe(_ZoneSideShiftMixin, OccEconDbhHot9Policy):
+    """J6: occ9 + symmetric in-band shift 1.0K (their magnitude)."""
+
+    KEY = "probe_zss10"
+    ZSS_SHIFT = 1.0
+
+
+class Zssc05Probe(_ZoneSideShiftMixin, OccEconDbhHot9Policy):
+    """J6: occ9 + cooling-side-only shift 0.5K."""
+
+    KEY = "probe_zssc05"
+    ZSS_SHIFT = 0.5
+    ZSS_COOL_ONLY = True
+
+
+class _SlotHybrid7Mixin:
+    """MoE T3: SlotHybrid heads under OccGated7 rule authority.
+
+    MRO (probe, SlotHybridPolicy, OccGated7Policy, ...): the hybrid's
+    _chain_action (slot heads overwrite continuous commands) runs on
+    top of the occ7 chain; modes/run bits come from occ7.
+    """
+
+    WEIGHTS = None
+
+    def __init__(self, building_meta_data, action_spec):
+        super().__init__(building_meta_data, action_spec,
+                         weights_path=self.WEIGHTS)
+
+
+class SlotT1SoftProbe(_SlotHybrid7Mixin, SlotHybridPolicy,
+                      OccGated7Policy):
+    """MoE T3: occ7 authority + soft-k3 slot heads (T1 winner)."""
+
+    KEY = "probe_slot_soft7"
+    WEIGHTS = "smart_buildings/results/slot_runs/slot_t1_soft3.npz"
+
+
+class SlotT1HardProbe(_SlotHybrid7Mixin, SlotHybridPolicy,
+                      OccGated7Policy):
+    """MoE T3: occ7 authority + hard-fit slot heads (deploy-blended)."""
+
+    KEY = "probe_slot_hard7"
+    WEIGHTS = "smart_buildings/results/slot_runs/slot_t1_hard.npz"
