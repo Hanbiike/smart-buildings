@@ -321,6 +321,41 @@ shipped).
   same-sign-positive RL signal noted for future
   research (not a promotion). Logged in plan-19.
 
+### Deep research round 3 (post-RL) -> plan-20
+
+- Workflow (5 angles + critic + gap + synthesis,
+  status partial): distillation remainder (D4 + 3
+  danielwuu probe specs with hooks), N1-N3 grounding
+  (optimizer/seed/bill inventory, all bodies opened),
+  TD3BC post-mortem ((a) determinism favored prior,
+  (b) collapses into (a), (c) movement yes/help
+  unproven + 2-step discriminating experiment),
+  rule-side R1/R2/R3 (How/Gate/Kill/cost on occ9),
+  LB/submission state. Critic caught overclaims
+  (sign conventions, 17321-all-pools, distillation
+  completeness, cross-climate transfer) -- plan-20
+  corrects each. Named gaps kept in plan-20 §gaps.
+- `docs/plan/20-rule-side-and-closures.md` (new):
+  T post-mortem (P20-1 frozen-det, P20-11 BC0
+  conditional), E enablers (P20-2 seed rig, P20-3
+  PR#3 patch), D distillation (P20-4 D4), R levers
+  (P20-5 R1 OFF, P20-6 R2 T&R, P20-8 R3a oracle,
+  P20-13 R3b conditional), N finals (P20-7 N1.1,
+  P20-9 N1.2, P20-10 N2.2, P20-12 N3.2).
+
+### Plan 20/P20-1: frozen-det control (done, (a) confirmed)
+
+- NEW `tools/frozen_det_screen.py` committed tool
+  (serial deterministic-mean vs force_rule, fb8+
+  phx3, --weights/--tag/--seed/--steps); --help +
+  74/74 green. Screen landed (34,560 steps, honest,
+  seed 31): frozen-det gaps fb8 +0.0016810, phx3
+  +0.0007738. phx3 within floor of TD3BC; fb8 beats
+  TD3BC 9.5x (training hurt there). (a)
+  CONFIRMED stronger than predicted; (b)(c) dead;
+  STOP RL training. Base arms bit-reproduce P10.
+  P20-11 skipped (conditional). Logged in plan-20.
+
 ### Simulator update check
 
 - Our tree is pre-PR#1 (tracker occupancy RNG stream);
@@ -357,15 +392,16 @@ shipped).
 
 ## Open
 
-- D4 error-reserve analogue probe (facilities v42 idea on
-  occ9) — queued, not started.
-- danielwuu pieces (OFF-candidate, pressure~fraction^2,
-  water hysteresis) — queued, not started.
+- plan-20 in progress (P20-1 done, P20-11 skipped);
+  next P20-2 seed rig, then P20-3, P20-4 (D4),
+  P20-5..P20-13 per plan.
+- FOLLOW-UP (future round, not a promotion):
+  frozen-det residual beats occ_gated7-rule
+  (+0.00168/+0.00077, above floor both) — needs an
+  occ9-base train-30 + judge + G8 screen as a
+  rule-side artifact.
 - chaitanyajamble (0.01853) + royalacecat smartpolicy reads
   — weak, optional.
-- plan-19 P7 H1 build + H-green — in progress; the ONE
-  750k needs a user go/no-go (branch choice, will stop
-  and report).
 - occ9 LB submission is Oct-28 stale; no new submission
   (nothing beat occ9 locally).
 
