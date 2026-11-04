@@ -396,6 +396,21 @@ shipped).
   D1-D3 (P7 zone_pi parity on train-30). Logged in
   plan-20.
 
+### Plan 20/P20-5: R1 OFF levers (both CLOSED)
+
+- NEW `occ_off1.py` (offa1 spike-override + offb1
+  integral-reset) + POLICY_MAP keys; 80/80 green.
+- R1b CLOSED pre-screen (0 sim): HWS reset
+  integrator gain-0.0-disabled in occ9 (traced
+  max 0.0 over 1500 fb8 steps; shortfalls to
+  1.98K) -- nothing to reset.
+- R1a CLOSED (no-op screen 4/4, 34,560 sim): both
+  pairs bit-identical (fb8 0.027586, atl1
+  0.006261). Mechanism live but never triggers:
+  seed-17321 occupancy has no night spikes.
+  Re-screen under fresh P20-2 seeds noted for
+  P20-10. Logged in plan-20.
+
 ### Simulator update check
 
 - Our tree is pre-PR#1 (tracker occupancy RNG stream);

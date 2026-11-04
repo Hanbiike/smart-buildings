@@ -164,6 +164,10 @@ from smart_buildings.baselines.occ_duty import (
     OccDutyPolicy,
     OccDutyLeanPolicy,
 )
+from smart_buildings.baselines.occ_off1 import (
+    OccOffA1Policy,
+    OccOffB1Policy,
+)
 from smart_buildings.baselines.probe_modes import (
     Csh9Kp06Probe, Csh9Probe,
     Dbh9Db10Probe, Dbh9Leak100Probe, Dbh9LeakNightProbe,
@@ -357,6 +361,8 @@ POLICY_MAP: dict[str, type[Any]] = {
     "occ_econdbh7": OccEconDbh7Policy,
     "occ_heatopt7": OccHeatOpt7Policy,
     "occ_econdbhhot9": OccEconDbhHot9Policy,
+    "occ_offa1": OccOffA1Policy,
+    "occ_offb1": OccOffB1Policy,
     "occ_dcv7": OccDcv7Policy,
     "slot_linear": SlotLinearPolicy,
     "slot_hybrid": SlotHybridPolicy,

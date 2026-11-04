@@ -148,3 +148,31 @@ pieces ride inside N1.1 (P20-7) per synthesis.
   occ9 control 0.00878193 reproduces D1-D3
   0.00878189 to 4e-8 (stability + P7 zone_pi edits
   parity-checked on train-30). 518,400 sim.
+- 2026-11-04 P20-5 running (same note). NEW
+  `occ_off1.py` (OccOffA1Policy spike-override +
+  OccOffB1Policy integral-reset) + POLICY_MAP keys;
+  80/80 green. R1b CLOSED pre-screen: the HWS
+  reset integrator is gain-0.0-disabled in occ9
+  (traced max _water_integral = 0.0 over 1500 fb8
+  steps despite 1.98K shortfalls) -- nothing to
+  reset, 0 sim. R1a mechanism proven live
+  (synthetic night spike: offa1 shutdown vs occ9
+  normal). R1a 2-pair screen (fb8+atl1 x 8640 x 2
+  arms = 34,560 steps, shipped) running in
+  background; sub-lever goes to train-30 only on
+  same-sign-positive both pairs. No code edits
+  until it lands.
+- 2026-11-04 P20-5 done: R1a CLOSED (no-op screen),
+  R1b already closed (same note). R1a screen landed
+  4/4 clean: fb8 0.027586 == 0.027586, atl1
+  0.006261 == 0.006261 -- BIT-IDENTICAL both
+  pairs. The override mechanism is proven live
+  (synthetic night spike) but never triggers: seed
+  17321 occupancy has no night spikes (strict
+  schedule, no security/cleaning visitors), so
+  there is nothing to override. Not a train-30
+  candidate (identical != gain). R1 closed 0/2;
+  34,560 sim. NOTE for P20-10: re-screen R1a under
+  P20-2 fresh seeds -- spikes may exist in other
+  realizations (logged, not run: seed pools
+  unbuilt).
