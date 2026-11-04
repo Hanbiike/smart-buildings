@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """THROWAWAY headroom probes (mode overrides). Delete after use."""
 
+import numpy as np
+
 from smart_buildings.baselines.occ_gated4 import OccGated4Policy
 from smart_buildings.baselines.occ_gated7 import OccGated7Policy
 from smart_buildings.baselines.slot_hybrid import SlotHybridPolicy
@@ -841,3 +843,63 @@ class SlotT1HardProbe(_SlotHybrid7Mixin, SlotHybridPolicy,
 
     KEY = "probe_slot_hard7"
     WEIGHTS = "smart_buildings/results/slot_runs/slot_t1_hard.npz"
+
+
+class MedSat05Probe(OccEconDbhHot9Policy):
+    """D1: occ9 + median-demand SAT (their DEMAND_QUANTILE=0.5)."""
+
+    KEY = "probe_medsat05"
+    DEMAND_QUANTILE = 0.5
+
+
+class UShift06Probe(OccEconDbhHot9Policy):
+    """D2: occ9 + per-zone u-EMA economic target shift (0.6K, EMA144)."""
+
+    KEY = "probe_ushift06"
+    ZONE_SHIFT_K = 0.6
+    ZONE_EMA_STEPS = 144
+    ZONE_SHIFT_FULL_U = 0.2
+
+    def __init__(self, building_meta_data, action_spec):
+        super().__init__(building_meta_data, action_spec)
+        self._u_ema = {}
+
+    def _zone_target(self, obs, lo, hi):
+        target = super()._zone_target(obs, lo, hi)
+        if not self.ZONE_SHIFT_K:
+            return target
+        ema = self._u_ema.get(getattr(self, "_cur_vav", None))
+        if ema is None:
+            return target
+        frac = float(np.clip(ema / self.ZONE_SHIFT_FULL_U, -1.0, 1.0))
+        shift = min(self.ZONE_SHIFT_K, 0.4 * (hi - lo)) * frac
+        return float(np.clip(target + shift, lo + 0.3, hi - 0.3))
+
+    def _base_action(self, obs):
+        action = super()._base_action(obs)
+        if self.ZONE_SHIFT_K > 0:
+            for v, u in self._zone_u.items():
+                prev = self._u_ema.get(v, u)
+                self._u_ema[v] = prev + (u - prev) / self.ZONE_EMA_STEPS
+        return action
+
+
+class Wknd6Probe(OccEconDbhHot9Policy):
+    """D3: occ9 + weekend heating setback (lo edge -6K)."""
+
+    KEY = "probe_wknd6"
+    WEEKEND_EXTRA_DROP_K = 6.0
+
+    def _weekend_drop(self, obs):
+        if not self.WEEKEND_EXTRA_DROP_K or self._pi_active:
+            return 0.0
+        _, day = self._get_hour_and_day(obs)
+        return self.WEEKEND_EXTRA_DROP_K if day >= 5 else 0.0
+
+    def _zone_band(self, obs, vav_id, low, high):
+        lo, hi = super()._zone_band(obs, vav_id, low, high)
+        return lo - self._weekend_drop(obs), hi
+
+    def _ahu_error(self, obs, ctrl, low, high):
+        return super()._ahu_error(obs, ctrl, low - self._weekend_drop(obs),
+                                  high)

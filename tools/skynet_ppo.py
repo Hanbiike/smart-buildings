@@ -48,6 +48,21 @@ def critic_params(net):
             + list(net.c_plant.parameters()) + list(net.c_head.parameters()))
 
 
+def _grad_norm(params):
+    """L2 grad norm over params (read-only, no clipping)."""
+    tot = 0.0
+    for p in params:
+        if p.grad is not None:
+            tot += float(p.grad.detach().norm(2).item()) ** 2
+    return tot ** 0.5
+
+
+def policy_params(net):
+    """All params except the critic heads (actor trunk + heads)."""
+    cids = {id(p) for p in critic_params(net)}
+    return [p for p in net.parameters() if id(p) not in cids]
+
+
 def masked_lp(net, zone, zmask, ahu, amask, plant, za, aa, pa):
     """Summed Gaussian logprob per timestep + entity-dim count.
 
@@ -174,6 +189,9 @@ def ppo_epoch(net, opt, batch, clip=CLIP, kl_stop=KL_STOP, mb=32,
         loss = pol + V_COEF * ((v - ret[ii]) ** 2).mean()
         opt.zero_grad()
         loss.backward()
+        if trace:
+            gpol = _grad_norm(policy_params(net))
+            gval = _grad_norm(critic_params(net))
         gnorm = float(nn.utils.clip_grad_norm_(net.parameters(), 1.0))
         clamp_logstd(net)
         opt.step()
@@ -187,16 +205,20 @@ def ppo_epoch(net, opt, batch, clip=CLIP, kl_stop=KL_STOP, mb=32,
                 mus1, _ = net(sl(zone), sl(zmask), sl(ahu), sl(amask),
                               sl(plant))
                 stds1 = net.stds()
-                dmu = max(float((b - a).abs().max())
-                          for a, b in zip(mus0, mus1))
+                dh = [float((b - a).abs().max())
+                      for a, b in zip(mus0, mus1)]
+                dmu = max(dh)
                 dls = max(float((b - a).abs().max())
                           for a, b in zip(stds0, stds1))
             lr = torch.log(r.detach())
             k3 = float((((r.detach() - 1.0) - lr) * fr[ii]).sum()
                        / fr[ii].sum().clamp(min=1.0))
             print(f"mb {ran}: frsum={float(fr[ii].sum()):.0f} "
-                  f"gnorm={gnorm:.3f} k1={kl:.6f} k3={k3:.6f} "
-                  f"cf={cf:.4f} dmu={dmu:.2e} dlogstd={dls:.2e}",
+                  f"gnorm={gnorm:.3f} gpol={gpol:.3f} gval={gval:.3f} "
+                  f"k1={kl:.6f} k3={k3:.6f} "
+                  f"cf={cf:.4f} dmu={dmu:.2e} "
+                  f"dmuz={dh[0]:.2e} dmua={dh[1]:.2e} dmup={dh[2]:.2e} "
+                  f"dlogstd={dls:.2e}",
                   flush=True)
         if kl > kl_stop:
             return ran, True, cf_sum / ran
@@ -253,7 +275,7 @@ def self_test():
     T, V, K = 64, 5, 2
     NA = N_AHU
     NP = N_PLANT
-    zone = torch.randn(T, V + 1, 23)
+    zone = torch.randn(T, V + 1, 21 + surg.NEW_ZONE_INPUTS)
     zmask = torch.ones(T, V + 1)
     zmask[:, V] = 0.0  # padded row, never a real zone
     ahu = torch.randn(T, K, NA)

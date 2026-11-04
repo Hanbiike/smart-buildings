@@ -156,6 +156,7 @@ class ZonePIPolicy(CoolingHoldPolicy):
         self._zone_integral = {}
         self._zone_u = {}
         self._pi_active = False
+        self._cur_vav = None
 
     def _pi_hours(self, obs):
         hour, day = self._get_hour_and_day(obs)
@@ -172,6 +173,7 @@ class ZonePIPolicy(CoolingHoldPolicy):
         for vav_id, obs_idx, action_indices in zones:
             if not action_indices:
                 continue
+            self._cur_vav = vav_id  # loop context for target-shift readers
             lo, hi = self._zone_band(obs, vav_id, lo_c, hi_c)
             # Before occupancy the sensor band is still the eco band; aim
             # at comfort.
@@ -306,6 +308,9 @@ class DemandSatPolicy(ZonePIEconFixPolicy):
 
     RAMP = 0.0
     COLD_SAT = -0.7
+    # Statistic of the zones' PI outputs that sets the supply temperature:
+    # None = mean; a number = that quantile (distillation D1).
+    DEMAND_QUANTILE = None
     KEY = "dsat_bin"
 
     def _base_action(self, obs):
@@ -317,7 +322,8 @@ class DemandSatPolicy(ZonePIEconFixPolicy):
             us = [self._zone_u[v] for v, _, _ in ctrl["zones"] if v in self._zone_u]
             if not us or not disc[ctrl["run_discrete_idx"]]:
                 continue
-            d = float(np.mean(us))
+            d = (float(np.mean(us)) if self.DEMAND_QUANTILE is None
+                 else float(np.quantile(us, self.DEMAND_QUANTILE)))
             frac = (float(np.clip(d / self.RAMP, 0.0, 1.0)) if self.RAMP > 0
                     else (1.0 if d > 0 else 0.0))
             cont[ctrl["temp_idx"]] = np.float32(1.0 + frac * (self.COLD_SAT - 1.0))

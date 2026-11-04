@@ -98,6 +98,16 @@ def main(argv=None):
     ap.add_argument("--trace", action="store_true")
     ap.add_argument("--v-steps", type=int, default=100)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--rule-only", action="store_true",
+                    help="force-gate every step (zero corrections): rule-only "
+                         "batch, no update (plan-19 P1)")
+    ap.add_argument("--dump-batch", default=None,
+                    help="npz path for the cycle-0 collated batch + meta "
+                         "(plan-19 P1)")
+    ap.add_argument("--gate", default=None,
+                    help="gate weights (.pt from gate_fit.py) for "
+                         "rollout-side confidence gating (plan-19 P4)")
+    ap.add_argument("--gate-tau", type=float, default=0.5)
     ap.add_argument("--out", default="/tmp/opencode/sb-rl/cycle0.pt")
     ap.add_argument("--init", default="/tmp/opencode/sb-rl/skynet.pt")
     a = ap.parse_args(argv)
@@ -160,11 +170,22 @@ def main(argv=None):
         ppo.save_ckpt(net, opt, behavior, extra={"cycle": c})
         seeds = [a.seed + c * 1000 + i for i in range(len(pairs))]
         t0 = _time.time()
+        gate_spec = ((a.gate, a.gate_tau) if a.gate else None)
         if a.workers > 1:
             trajs = roll.rollout_parallel(gin_paths, a.rollout_steps,
                                           seeds, behavior, a.bill,
-                                          a.workers)
+                                          a.workers,
+                                          force_rule=a.rule_only,
+                                          gate_spec=gate_spec)
         else:
+            gate = None
+            if gate_spec is not None:
+                from tools.gate_fit import GateMLP
+                gck = torch.load(gate_spec[0], map_location="cpu",
+                                 weights_only=False)
+                gate = (GateMLP(gck["arch"][0]), gate_spec[1])
+                gate[0].load_state_dict(gck["state"])
+                gate[0].eval()
             trajs = []
             for i, pair in enumerate(pairs):
                 d = Path(gin_paths[i]).parent
@@ -176,7 +197,9 @@ def main(argv=None):
                                            spec)
                 tr = roll.rollout_env(env, meta, spec, base,
                                       a.rollout_steps, seed=seeds[i],
-                                      weights=behavior)
+                                      weights=behavior,
+                                      force_rule=a.rule_only,
+                                      gate=gate)
                 trajs.append(tr)
         wall = max(_time.time() - t0, 1e-6)
         flat = sum(len(tr["r"]) for tr in trajs)
@@ -192,6 +215,18 @@ def main(argv=None):
         print(f"batch: S={len(trajs)} T={bounds} "
               f"flat={F['zone'].shape[0]} "
               f"nV={F['zone'].shape[1]} nK={F['ahu'].shape[1]}", flush=True)
+        if a.dump_batch and c == 0:
+            np.savez_compressed(
+                a.dump_batch, bounds=np.array(bounds),
+                scenarios=np.array(pairs),
+                pool_sha=pool_checksum(pairs), seeds=np.array(seeds),
+                bill=a.bill, weights=behavior, base="occ_gated7",
+                rollout_steps=a.rollout_steps, rule_only=a.rule_only,
+                **{k: np.asarray(v) for k, v in F.items()})
+            print(f"dumped batch {a.dump_batch}", flush=True)
+        if a.rule_only:
+            print("rule-only: no update, done", flush=True)
+            break
         B = {k: t(v) for k, v in F.items() if k not in ("r", "v")}
         B["zone"] = B["zone"].float()
         B["ahu"] = B["ahu"].float()

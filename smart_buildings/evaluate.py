@@ -173,6 +173,7 @@ from smart_buildings.baselines.probe_modes import (
     PressureTrimRespondProbe,
     Ptr9Db20Probe, Ptr9Persist8Probe, Ptr9Up15Probe, Ptr9Up35Probe,
     PtrFastTrimProbe, PtrHighCeilProbe, PtrPropKickProbe, SATProbe,
+    MedSat05Probe, UShift06Probe, Wknd6Probe,
     SlotT1HardProbe, SlotT1SoftProbe,
     Zss05Probe, Zss10Probe, Zssc05Probe,
     SetpointProbe, SkynetResidualProbe, TodShiftProbe, WeekendFloorProbe)
@@ -384,6 +385,9 @@ POLICY_MAP: dict[str, type[Any]] = {
     "probe_zssc05": Zssc05Probe,
     "probe_slot_soft7": SlotT1SoftProbe,
     "probe_slot_hard7": SlotT1HardProbe,
+    "probe_medsat05": MedSat05Probe,
+    "probe_ushift06": UShift06Probe,
+    "probe_wknd6": Wknd6Probe,
     "probe_ptr_pa": PtrFastTrimProbe,
     "probe_ptr_pb": PtrPropKickProbe,
     "probe_ptr_pc": PtrHighCeilProbe,

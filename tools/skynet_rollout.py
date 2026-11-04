@@ -52,8 +52,15 @@ def build_policy(meta, spec, weights=DEFAULT_WEIGHTS):
 
 
 def rollout_env(env, meta, spec, base_policy, steps, seed=0,
-                weights=DEFAULT_WEIGHTS):
-    """Rollout driving a live env with the base policy + residual sample."""
+                weights=DEFAULT_WEIGHTS, force_rule=False, gate=None):
+    """Rollout driving a live env with the base policy + residual sample.
+
+    force_rule=True gates every step (zero corrections): a rule-only
+    trajectory for offline baselines (plan-19 P1/H2).
+    gate=(net, tau): rollout-side confidence gate (plan-19 P4/H4);
+    the residual acts only where the gate opens (multiplicative
+    extension of residual_free, fixed before PPO).
+    """
     from skynet.features import N_AHU, N_PLANT
     from smart_buildings.smart_control.utils.scenario_generator import (
         SimulationTracker)
@@ -81,12 +88,21 @@ def rollout_env(env, meta, spec, base_policy, steps, seed=0,
         from smart_buildings.baselines.probe_modes import residual_free
         from smart_buildings.baselines.probe_modes import (
             ExpandedResidualProbe as _X)
-        free = residual_free(base_policy, ix, obs, _X.COLD_GATE_K)
-        gated = not free
         zf, af, pf = ix.features(obs, pc, pd)
         extra = sys.modules["skynet_surgery"].expanded_zone_cols(
             base_policy, ix, obs)
         z23 = np.concatenate([zf, extra], axis=1)
+        free = residual_free(base_policy, ix, obs, _X.COLD_GATE_K)
+        if gate is not None and free:
+            gnet, tau = gate
+            import torch as _T
+            with _T.no_grad():
+                pv = np.concatenate([z23.mean(axis=0), af.mean(axis=0),
+                                     pf]).astype(np.float32)
+                prob = float(_T.sigmoid(
+                    gnet(_T.from_numpy(pv))).item())
+            free = prob > tau
+        gated = True if force_rule else (not free)
         t = torch.from_numpy
         with torch.no_grad():
             (mz, ma, mp), v = xnet(
@@ -154,7 +170,23 @@ def _worker_env(gin_path):
 
 
 def _rollout_task(task):
-    scenario_idx, gin_path, steps, seed, weights, bill = task
+    scenario_idx, gin_path, steps, seed, weights, bill = task[:6]
+    force_rule = task[6] if len(task) > 6 else False
+    gate_spec = task[7] if len(task) > 7 else None
+    gate = None
+    if gate_spec is not None:
+        gpath, gtau = gate_spec
+        cached = _WORKER.get("gate")
+        if cached is None or cached[0] != gpath:
+            import torch as _T
+            from tools.gate_fit import GateMLP
+            ck = _T.load(gpath, map_location="cpu", weights_only=False)
+            gm = GateMLP(ck["arch"][0])
+            gm.load_state_dict(ck["state"])
+            gm.eval()
+            cached = (gpath, gm)
+            _WORKER["gate"] = cached
+        gate = (cached[1], gtau)
     from smart_buildings import evaluate as _E
     from smart_buildings.evaluate import POLICY_MAP
     if bill == "honest" and not _WORKER.get("billed", False):
@@ -164,7 +196,7 @@ def _rollout_task(task):
     env, meta, spec = _worker_env(gin_path)
     base = _E.initialize_policy(POLICY_MAP["occ_gated7"], meta, spec)
     tr = rollout_env(env, meta, spec, base, steps, seed=seed,
-                     weights=weights)
+                     weights=weights, force_rule=force_rule, gate=gate)
     tr["scenario_idx"] = scenario_idx
     return stack_traj(tr)
 
@@ -181,17 +213,20 @@ def stack_traj(tr):
     return out
 
 
-def rollout_parallel(gin_paths, steps, seeds, weights, bill, workers):
+def rollout_parallel(gin_paths, steps, seeds, weights, bill, workers,
+                     force_rule=False, gate_spec=None):
     """One trajectory per scenario across a spawn pool (E1).
 
     gin_paths/seeds align with the scenario list; returns trajectories
     in scenario order. Deterministic: same seeds as the serial driver.
+    gate_spec=(weights_path, tau) or None (plan-19 P4).
     """
     import multiprocessing as _mp
     ctx = _mp.get_context("spawn")
     pool = ctx.Pool(workers)
     try:
-        tasks = [(i, gin_paths[i], steps, seeds[i], weights, bill)
+        tasks = [(i, gin_paths[i], steps, seeds[i], weights, bill,
+                  force_rule, gate_spec)
                  for i in range(len(gin_paths))]
         out = pool.map(_rollout_task, tasks)
     finally:
