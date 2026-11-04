@@ -67,6 +67,23 @@ class _VavZones(NamedTuple):
   sensing_temp: float
 
 
+def _recirc_weight(vav, v_area: float) -> float:
+  """Per-VAV weight for the AHU recirculation temperature (P20-3).
+
+  Shipped behavior (default): zone floor area. Under PR3_AIRFLOW=1
+  (local-only PR#3-equivalent research flag): actual VAV airflow
+  (damper_setting x max_air_flow_rate); a fully closed damper
+  contributes zero. Exact PR#3 semantics unverified (PR bodies
+  uninspected -- plan-20 gap 1); this is the airflow-weighted
+  reading of the return-air fix.
+  """
+  import os
+  if os.environ.get("PR3_AIRFLOW") != "1":
+    return v_area
+  flow = vav.damper_setting * vav.max_air_flow_rate
+  return flow if flow > 0 else 0.0
+
+
 @gin.configurable
 class SimulatorFlexibleGeometries(simulator.Simulator[str]):
   """Simulates thermodynamics of a building with flexible geometries.
@@ -315,8 +332,9 @@ class SimulatorFlexibleGeometries(simulator.Simulator[str]):
       )
       vav_sensing_temp_map[v_id] = v_sensing_temp
 
-      ahu_temp_weighted_sum[ahu_id] += v_sensing_temp * v_area
-      ahu_area_total[ahu_id] += v_area
+      _w = _recirc_weight(vav, v_area)
+      ahu_temp_weighted_sum[ahu_id] += v_sensing_temp * _w
+      ahu_area_total[ahu_id] += _w
 
     if isinstance(hvac.air_handler, air_handler_py.AirHandlerSystem):
       ahus = hvac.air_handler.ahus
@@ -740,8 +758,9 @@ class SimulatorFlexibleGeometries(simulator.Simulator[str]):
         v_sensing_temp = (
             sum(avg_temps[z] * room_areas[z] for z in assigned_zones) / v_area
         )
-        ahu_temp_weighted_sum[ahu_id] += v_sensing_temp * v_area
-        ahu_area_total[ahu_id] += v_area
+        _w = _recirc_weight(vav, v_area)
+        ahu_temp_weighted_sum[ahu_id] += v_sensing_temp * _w
+        ahu_area_total[ahu_id] += _w
 
     if isinstance(self._hvac.air_handler, air_handler_py.AirHandlerSystem):
       ahus = self._hvac.air_handler.ahus

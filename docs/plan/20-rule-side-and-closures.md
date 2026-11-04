@@ -111,3 +111,17 @@ pieces ride inside N1.1 (P20-7) per synthesis.
   (weekend nights carry no occupancy). Enabler
   ready for P20-10; 17321-only finals now BANNED.
   4,500 probe sim, no verdicts.
+- 2026-11-04 P20-3 done: PR#3-equivalent patch GREEN
+  (same note). `_recirc_weight` helper in the
+  vendored sim (area by default; damper x max-flow
+  under PR3_AIRFLOW=1; closed damper = 0) wired at
+  both recirc sites (`execute_step_sim` +
+  `_get_air_handler_reward_infos`, 4 lines) --
+  in-sim edit chosen over monkeypatch (would
+  duplicate 2 large method bodies). Shipped default
+  untouched. `tools/test_pr3_patch.py` (3 tests;
+  suite 80/80). Liveness 2x1500: unset -8.557719
+  (matches P20-2 baseline -- default intact),
+  PR3_AIRFLOW=1 -8.587920 (patch live). Semantics
+  stay UNVERIFIED (PR bodies uninspected, gap 1);
+  enabler ready for P20-12. 3,000 probe sim.

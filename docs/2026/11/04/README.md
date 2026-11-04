@@ -371,6 +371,19 @@ shipped).
   nights.) 4,500 probe sim. Enabler for P20-10;
   17321-only finals banned. Logged in plan-20.
 
+### Plan 20/P20-3: PR#3-equivalent patch (GREEN)
+
+- `_recirc_weight` helper (area default; airflow
+  under PR3_AIRFLOW=1) wired at both recirc sites
+  (4 lines). In-sim edit over monkeypatch (would
+  duplicate 2 method bodies). Shipped default
+  untouched.
+- `tools/test_pr3_patch.py` (3 tests, suite 80/80).
+  Liveness 2x1500: unset matches P20-2 baseline,
+  flag differs. Semantics unverified (gap 1).
+  3,000 probe sim. Enabler for P20-12. Logged in
+  plan-20.
+
 ### Simulator update check
 
 - Our tree is pre-PR#1 (tracker occupancy RNG stream);
