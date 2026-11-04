@@ -7,9 +7,9 @@ KL early stop. Logprobs are mean-field per-dim normalized so buildings
 with different zone/AHU counts share one clip/KL scale; padded entities
 contribute exactly 0 through the masks.
 
-Continuous heads only (zone damper/reheat, AHU temp/pressure/recirc,
-plant water/pressure/pump votes are frozen): the target head and switch
-votes are excluded from the ratio until their effectors exist.
+Continuous heads only (zone damper/reheat/target, AHU
+temp/pressure/recirc, plant water/pressure; switch votes are frozen):
+the target head drives the PI loop via the delay-1 offset dict (P7).
 
 Self-test (no sim): ./.venv/bin/python -B tools/skynet_ppo.py
 """
@@ -63,11 +63,32 @@ def policy_params(net):
     return [p for p in net.parameters() if id(p) not in cids]
 
 
+# Item-40 guard (P7 step 3): L2 on the surgery adapter weights only, so
+# the PI loop-state features cannot grow unbounded authority. Value is a
+# small standard decay; the plan fixes no number.
+ADAPTER_L2 = 1e-4
+
+
+def l2_groups(named_params):
+    """Adam param groups: plain rest + ADAPTER_L2-decayed adapter."""
+    rest, adapt = [], []
+    for n, p in named_params:
+        (adapt if ".adapter." in n else rest).append(p)
+    groups = []
+    if rest:
+        groups.append({"params": rest})
+    if adapt:
+        groups.append({"params": adapt, "weight_decay": ADAPTER_L2})
+    return groups
+
+
 def masked_lp(net, zone, zmask, ahu, amask, plant, za, aa, pa):
     """Summed Gaussian logprob per timestep + entity-dim count.
 
-    zone [T,V,23], ahu [T,K,NA], plant [T,NP]; masks [T,V]/[T,K] float.
-    Only the two trained zone heads enter the ratio (target head excluded).
+    zone [T,V,27], ahu [T,K,NA], plant [T,NP]; masks [T,V]/[T,K] float.
+    All three zone heads enter the ratio (P7: the target head drives the
+    PI loop via the delay-1 _zone_target_offset dict). Switch votes stay
+    frozen.
     Returns (lp_sum [T], ndim [T]).
     """
     import torch.distributions as _D
@@ -75,12 +96,12 @@ def masked_lp(net, zone, zmask, ahu, amask, plant, za, aa, pa):
     stds = [torch.clamp(s, min=MIN_LOGSTD) for s in net.stds()]
     outs = []
     total = torch.zeros(zone.shape[0])
-    # Zone damper/reheat heads.
-    dz = _D.Normal(mz[..., :2],
-                   stds[0][:2].exp().expand_as(mz[..., :2]))
-    lpz = dz.log_prob(za[..., :2]).sum(-1) * zmask
+    # Zone damper/reheat/target heads.
+    dz = _D.Normal(mz[..., :3],
+                   stds[0][:3].exp().expand_as(mz[..., :3]))
+    lpz = dz.log_prob(za[..., :3]).sum(-1) * zmask
     outs.append(lpz.sum(-1))
-    n = 2.0 * zmask.sum(-1)
+    n = 3.0 * zmask.sum(-1)
     # AHU heads (temp, pressure, recirc; run vote frozen).
     da = _D.Normal(ma[..., :3],
                    stds[1][:3].exp().expand_as(ma[..., :3]))
@@ -228,7 +249,10 @@ def ppo_epoch(net, opt, batch, clip=CLIP, kl_stop=KL_STOP, mb=32,
 def v_pretrain(net, batch, steps=V_PRETRAIN_STEPS, lr=V_LR):
     (zone, zmask, ahu, amask, plant, _za, _aa, _pa, _ol, _on, _ad,
      ret, _fr) = batch
-    opt = torch.optim.Adam(critic_params(net), lr=lr)
+    cids = {id(p) for p in critic_params(net)}
+    opt = torch.optim.Adam(l2_groups(
+        [(n, p) for n, p in net.named_parameters() if id(p) in cids]),
+        lr=lr)
     before = float(((predict_v(net, zone, zmask, ahu, amask, plant)
                      - ret) ** 2).mean())
     for _ in range(steps):

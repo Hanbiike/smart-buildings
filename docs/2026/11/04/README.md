@@ -194,6 +194,133 @@ shipped).
 - VERDICT: H5 KILLED per kill-gate. 0 sim. Logged in
   plan-19.
 
+### Plan 19/P6: H3 PI loop-state features (KILLED)
+
+- 6-col surgery (`tools/skynet_surgery.py`, NEW_ZONE_INPUTS=6):
+  plan-18 pair (err/5K, integral saturation) + P6 cols
+  (PI-target offset from band centre /5K, freeze flag,
+  pi_active bit, prestart-or-normal bit) + zeroed
+  third zone head; `_cur_vav` loop context in
+  `zone_pi.py:159,176` = D5 hook. Parity PASS
+  (bit-identical, target exactly 0.0).
+- Wiring check caught stale `N_ZONE_X=23` in
+  `tools/skynet_rollout.py` (now 27; `z23`->`zx` + width
+  assert); `masked_lp` docstring to [T,V,27]; collate
+  width-agnostic confirmed; target head excluded from
+  the ratio (`mz[..., :2]`). Self-tests PASS: rollout
+  2x256, PPO, 72/72 units.
+- 1-cycle trace (protocol-only): 2 P1 pairs x 2016,
+  epochs 1, seed 11, honest -- free 0.390/0.314,
+  v-pre 76.7->20.9, mean_kl 0.001002, clip 0.0000,
+  dmu ~3e-2, per-head dmuz/dmua/dmup print. Trace
+  cost 4,032 steps + self-tests 512.
+- 3-cycle full-episode screen LANDED (exit 0):
+  P1 pool (10 pairs, sha 058d815f0357) x 8640 x 3 =
+  259,200 steps, 10 workers, seed 11, honest,
+  out `/tmp/p6/screen.pt`. Mechanics healthy (KL-stop
+  each cycle, clip 0.0, v-pre 79.9->29.3). Honest
+  means: c0 -0.0109494, c1 -0.0109118 (+0.0000375,
+  below floor, 6/10 better), c2 -0.0110379
+  (-0.0000886 vs c0, 1/10 better). No monotone gain;
+  c2 below behavior = I2 flat/drift signature.
+- VERDICT: H3 KILLED per kill-gate at ~250k. Total P6
+  sim 263,744 (screen + trace 4,032 + self-tests 512).
+  Logged in plan-19.
+
+### Plan 19/P7: H1 zone-target head (steps 0-4 done, H-GREEN, 750k awaits user go)
+
+- Step 0 (D5 hook, read not assumed): `_cur_vav` at
+  `zone_pi.py:159,176`; plan-18 "per-step offset dict"
+  did NOT exist (added in step 1); `TARGET_K=1.0` +
+  `BuildingIndex.target_offsets()` already in
+  `features.py:58,140-142`; occ9 chain roots at
+  `ZonePIPolicy`, but 3 dsat `_zone_target` overrides
+  skip super() (found the hard way, see below).
+- Step 1: `_zone_target_offset` dict + `_zone_target_shift`
+  helper (in-band clip vs the effective MRO target)
+  applied as an err delta in the `_command_zones` PI
+  branch -- the single choke point covering the whole
+  occ path. FIRST attempt hooked base `_zone_target`
+  and was DEAD (dsat overrides bypass it); caught by
+  a clean two-policy test (0.0) after a naive
+  repeated-get_action probe faked liveness via PI
+  integral drift (quantized 0.0074/call artifact).
+  Repair: +1K -> max|dc| 0.147, empty-vs-empty 0.0.
+- Step 2: third head into `masked_lp` (`mz[..., :3]`,
+  ndim 3.0/zone) + delay-1 offset dict in rollout
+  (two-pass get_action would double-advance the PI
+  integral; policy sees the live offset via P6 col 2,
+  keeping the extended state Markov). Rollout A/B
+  DIVERGED: live -7.7521 vs lobotomized -7.6424.
+  Gated/force_rule steps still record exact zeros.
+- Step 3: ADAPTER_L2=1e-4 on the 896 surgery-adapter
+  params via `l2_groups()` in both Adam sites
+  (train + v-pretrain); plan fixes no number.
+- Step 4: H-gate re-pass GREEN at the new setting
+  (2 P1 pairs x 2016, seed 11): mean_kl 0.000630,
+  clip 0.0000, v-pre 75.0->20.7, free 0.314+,
+  per-head dmu printed, pool sha/E3/E5 train-only/
+  monster-check/conc all green. 72/72 units + PPO/
+  rollout/surgery self-tests PASS throughout.
+- Cost ~21k probe sim steps (no verdicts). STOPPED
+  per protocol: the ONE 750k (step 5) is a user
+  branch choice. Logged in plan-19.
+- USER GO received: ONE 750k RAN to completion
+  (exit 0, 9 cycles x 86,400 = 777,600 steps, P1 pool
+  sha 058d815f0357, seed 11, 10 workers, honest,
+  `/tmp/p7/run750k.pt`). Mechanics healthy (KL-stop
+  8/9, clip 0.0, v-pre 80.7->29.3). Train-pool
+  honest: c0 -0.0110471 = BEST, c1..c8 all worse
+  (c6 -0.0118862 worst, c8 -0.0114187); best-c0 =
+  +0.0000000. Climates c8-c0: atl -0.00078, den
+  -0.00031, fb -0.00080 (blowup), phx +0.00000, sg
+  +0.00003 -- zero improve. All 3 gate clauses fail;
+  no ckpt to judge (judging c0 ~= judging base).
+- VERDICT: H1 KILLED (flat like I2; lever ceiling
+  binds). Total P7 sim ~800k. Logged in plan-19.
+
+### Plan 19/P8: H6 KL-anchor (SKIPPED, condition unmet)
+
+- Opens ONLY if H2/H5 show signal but drift eats
+  it. Both were killed signal-less (P3/P5), and P7
+  shows drift is not the problem (policy moves dmu
+  ~3e-2/cycle, reward does not). H6 closed. 0 sim.
+  Logged in plan-19.
+
+### Plan 19/P9: honest bill (GREEN)
+
+- Sim ledger: P0 0; P1 172,800 (honest, sha
+  058d815f0357, seed 11) + ~1k smoke; P2 0; P3 0;
+  P4 34,560 (honest, seed 31) + ~1k smoke; P5 0;
+  P6 263,744 (honest P1); P7 ~800,000 (777,600
+  honest P1 + ~23k probes); P8 0. Total ~1.271M.
+  Judge/b8 steps: 0 (no ckpt qualified).
+- No promotion claim anywhere (all killed/
+  skipped/unopened except offline-only H4), so the
+  >1M-honest bar is vacuous. Logged in plan-19.
+
+### Plan 19/P10: long-shots (KILLED 1/2, RL line closed)
+
+- P10.1 BCOOLER-style AWR (`tools/awr_fit.py`, MC
+  gamma=1, beta=std(A), w clip 20): weighted NLL
+  0.0330->0.0330 FLAT, |dmu| ~1e-2 noise -- no
+  offline movement, no screen qualifier (35k saved).
+  Fixed `mc_returns` dropping gamma + `test_awr.py`
+  (suite 74/74).
+- HRL precondition fails: warm-up vs intraday
+  Cohen's d = -0.077 (negligible) -- nothing to
+  split. 0 sim.
+- TD3+BC (`tools/td3bc_fit.py`, twin pooled Q,
+  gamma 0.995, alpha 2.5): Q unconverged (TD
+  wandering, qmean -1.2 vs true ~-30) but actor
+  MOVED (zone max|d|=0.127). Screen (deterministic
+  mean via new `deterministic` rollout flag, fb8+
+  phx3, honest, seed 31, 34,560 steps): phx3
+  +0.0007337 (above floor), fb8 +0.0001769 (below
+  floor). Gate 2/2 fails -- P10 KILLED. First
+  same-sign-positive RL signal noted for future
+  research (not a promotion). Logged in plan-19.
+
 ### Simulator update check
 
 - Our tree is pre-PR#1 (tracker occupancy RNG stream);
@@ -236,7 +363,9 @@ shipped).
   water hysteresis) — queued, not started.
 - chaitanyajamble (0.01853) + royalacecat smartpolicy reads
   — weak, optional.
-- plan-19 P0-P2 execution (H1-750k rails) — not started.
+- plan-19 P7 H1 build + H-green — in progress; the ONE
+  750k needs a user go/no-go (branch choice, will stop
+  and report).
 - occ9 LB submission is Oct-28 stale; no new submission
   (nothing beat occ9 locally).
 

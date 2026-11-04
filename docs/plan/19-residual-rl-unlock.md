@@ -313,3 +313,142 @@ Open gaps carried (subset of prior gap-4 + new):
   per-step) -- exactly the Addendum-A prediction. Two
   probe bugs caught+fixed en route (post-norm std vacuous;
   normalize_adv in-place aliasing). 0 sim.
+- 2026-11-04 P6 wiring + trace GREEN, screen running (same
+  note). 6-col surgery (plan-18 pair + target-offset,
+  freeze flag, pi_active, mode bit) + `_cur_vav` hook;
+  stale `N_ZONE_X=23` fixed to 27 (`z23`->`zx` + width
+  assert), `masked_lp` docstring to [T,V,27]; collate
+  width-agnostic confirmed, zone_pi D5 hooks verified
+  present. Self-tests PASS: surgery parity
+  (bit-identical + target exactly 0.0), rollout 2x256,
+  PPO, 72/72 units. 1-cycle trace (2 P1 pairs x 2016,
+  epochs 1, seed 11): free 0.390/0.314, v-pre 76.7->20.9,
+  mean_kl 0.001002, clip_frac 0.0000, dmu ~3e-2 --
+  protocol healthy (trace is protocol-only, no verdict).
+  3-cycle full-episode screen on the P1 pool (10 pairs x
+  8640 x 3 = 259,200 steps, 10 workers, seed 11) running
+  in background; no policy/tool edits until it lands.
+- 2026-11-04 P6 done: H3 KILLED (same note). Screen
+  landed exit 0, 259,200 steps, mechanics healthy
+  (KL-stop each cycle, clip_frac 0.0, v-pre 79.9->29.3,
+  free_frac ~0.26-0.42). Train-pool honest means: c0
+  -0.0109494, c1 -0.0109118 (+0.0000375 vs c0, BELOW
+  the 0.0002 floor, 6/10 pairs better), c2 -0.0110379
+  (-0.0000886 vs c0, 1/10 better). NO monotone gain
+  over 3 full-episode cycles; c2 regresses below
+  behavior = the I2 flat/drift signature (healthy PPO,
+  zero signal), not item-40 (no b8 win to overfit:
+  c1 b8 3/5 better by noise, c2 b8 1/5). Kill-gate
+  fired at ~250k. Total P6 sim: 263,744 steps
+  (screen 259,200 + trace 4,032 + self-tests 512),
+  honest bill, pool sha 058d815f0357. H3 closed;
+  compute goes to P7 (new effector), not longer runs.
+- 2026-11-04 P7 steps 0-4 done, H-GREEN, 750k AWAITS
+  USER GO/NO-GO (same note). Step 0: `_cur_vav` found
+  (`zone_pi.py:159,176`); plan-18 "per-step offset
+  dict" did NOT exist (added); `TARGET_K=1.0` +
+  `target_offsets()` ready in features. Step 1:
+  `_zone_target_offset` dict + `_zone_target_shift`
+  helper (in-band clip) applied as an err delta in
+  the `_command_zones` PI branch (the single choke
+  point -- first hooked `_zone_target`, but 3 dsat
+  overrides skip super() and the effector was dead;
+  clean two-policy test proved 0.0, repair gives
+  +1K -> max|dc| 0.147, empty-vs-empty 0.0). Step 2:
+  third head in `masked_lp` (`:3`, ndim 3.0) +
+  delay-1 offset dict in rollout (two-pass would
+  double-advance the PI integral); A/B rollout
+  DIVERGED (live -7.7521 vs lobotomized -7.6424).
+  Step 3: ADAPTER_L2=1e-4 on the 896 surgery-adapter
+  params (item-40 guard; plan fixes no number).
+  Step 4: H-probe (2 P1 pairs x 2016, seed 11):
+  mean_kl 0.000630, clip 0.0000, v-pre 75.0->20.7,
+  free 0.314+, all P0 fields, pool sha + E3/E5 +
+  xfer-exclusion + monster-check green. 72/72 units
+  throughout. ~21k probe sim steps, no verdicts.
+  STOPPED per protocol: the ONE 750k is a user
+  branch choice.
+- 2026-11-04 P7 step 5 RUNNING (user go): ONE 750k =
+  9 cycles x P1 pool (10 pairs x 8640 = 777,600
+  rollout steps), seed 11, 10 workers, honest bill,
+  epochs 4, lr 3e-4 -> 0 decay, out
+  `/tmp/p7/run750k.pt`. No gate (P4-online is a
+  separate branch; gate.pt is 23-wide anyway). No
+  policy/tool edits until it lands; verdict vs P7
+  gate (train-pool >= c0 by >= 0.0002, >= 2 climates
+  improve, no Fairbanks blowup) + judge-24 + b8 + G8
+  per ckpt.
+- 2026-11-04 P7 done: H1 KILLED (same note). 750k
+  landed exit 0 (777,600 rollout steps, 9 cycles, P1
+  pool sha 058d815f0357, honest, seed 11). Mechanics
+  healthy (KL-stop 8/9 cycles, clip 0.0, v-pre
+  80.7->29.3, ~310 steps/s). Train-pool honest
+  means: c0 -0.0110471 (BEST), c1 -0.0111670 ...
+  c6 -0.0118862 (worst, -7.6%) ... c8 -0.0114187;
+  best-cycle minus c0 = +0.0000000 -- flat like I2
+  with drift. c8-c0 pool -0.0003716; climates c8 vs
+  c0: atl -0.00078, den -0.00031, fb -0.00080
+  (BLOWUP, worst), phx +0.00000, sg +0.00003 --
+  ZERO climates improve, Fairbanks blows up. ALL
+  THREE gate clauses fail, so no ckpt qualifies for
+  judge-24/b8/G8 (nothing beat c0 even on train;
+  judging c0 ~= judging the base -- ~250k saved).
+  Even the only TRACKED (non-cancelled) effector
+  learns nothing: lever ceiling binds. H1 closed;
+  compute goes rule-side per plan. Total P7 sim
+  ~800k (750k run + ~23k H-probes/liveness).
+- 2026-11-04 P8 SKIPPED (condition unmet, same
+  note). Opens ONLY if H2/H5 show signal but drift
+  eats it; H2 was killed signal-less (P3: no MSE
+  drop, frozen baseline destroyed by shift) and H5
+  was killed signal-less (P5: shaped/unshaped ratio
+  0.999). No signal exists for an anchor to
+  protect -- and P7 confirms drift is not the
+  problem (policy moves, reward does not). H6 stays
+  closed with H2/H5. 0 sim.
+- 2026-11-04 P9 done: honest bill reconciled (same
+  note). Plan-19 sim ledger (all bills/pools
+  logged): P0 0, P1 172,800 (honest, P1 pool
+  058d815f0357, seed 11) + ~1k unlogged smoke,
+  P2 0, P3 0, P4 34,560 (honest, seed 31) + ~1k
+  smoke, P5 0, P6 263,744 (honest P1 pool), P7
+  ~800,000 (777,600 honest P1 pool + ~23k probes),
+  P8 0. Total ~1,271,000 steps, zero judge/b8
+  steps (no ckpt ever qualified). No promotion
+  claim exists anywhere below >1M honest steps --
+  nothing is promoted at all (H1/H2/H3/H5 killed,
+  H4 survives offline-only, H6 unopened). P9 GREEN.
+- 2026-11-04 P10 in progress (same note). P10.1
+  BCOOLER-style (AWR on actor10, `tools/awr_fit.py`
+  new, MC gamma=1, beta=std(A), w clip 20, frozen
+  adapters/target/logstds): weighted NLL 0.0330 ->
+  0.0330 FLAT, head |dmu| ~1e-2 (noise) -- NO
+  offline movement, so nothing qualifies for the
+  P10.2 screen (policy == init; 35k saved by the
+  same logic as P7-no-judge). En route: fixed
+  `mc_returns` dropping its gamma arg (P3 unaffected
+  -- default unchanged) + `tools/test_awr.py` (2
+  tests; suite now 74/74). HRL precondition FAILS
+  (0 sim): warm-up vs intraday reward Cohen's d =
+  -0.077 (negligible) -- no timescale split to
+  build. Remaining: constrained TD3 small probe
+  (TD3+BC reading of "CQL-style").
+- 2026-11-04 P10 done: KILLED by gate, 1/2 climates
+  (same note). TD3+BC (`tools/td3bc_fit.py` new,
+  twin pooled Q, gamma 0.995, alpha 2.5, frozen
+  adapters/target/logstds): offline Q never
+  converged (TD 0.05-0.20 wandering, qmean -> -1.2
+  vs true ~-30) but the actor MOVED (zone
+  max|d|=0.127, 10x AWR noise) -- the only offline
+  method that moved at all. Screen (deterministic
+  mean, new `deterministic` flag in `rollout_env`,
+  fb8+phx3 full episodes, honest, seed 31, 34,560
+  steps): phx3 +0.0007337 (ABOVE floor) but fb8
+  +0.0001769 (BELOW floor). Gate needs >= 0.0002 on
+  2 climates -- 1/2 FAILS, P10 KILLED. Noted for a
+  future research round: first same-sign-positive RL
+  signal of the whole project (deterministic
+  residual over rule?), not a promotion (F2: fb8
+  does not resolve). RL line CLOSED: H1/H2/H3/H5
+  killed, H6/H7-longshots killed/skipped, H4
+  offline-only. Total P10 sim 34,560.

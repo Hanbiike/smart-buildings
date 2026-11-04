@@ -171,7 +171,10 @@ def expanded_zone_cols(floor, ix, obs):
             lo, hi = lo_c, hi_c
         err_k = float(floor._zone_err(obs, float(temp_k[i]), lo, hi))
         integ = float(floor._zone_integral.get(vav, 0.0))
-        target = float(floor._zone_target(obs, lo, hi))
+        # P7: effective target incl. the armed RL shift, so the policy
+        # observes the live offset it set (delay-1 Markov state).
+        target = float(floor._zone_target(obs, lo, hi)) + float(
+            floor._zone_target_shift(obs, vav, lo, hi))
         u_raw = kp * err_k + ki * integ
         frozen = (abs(u_raw) >= 1.0 and _np.sign(err_k) == _np.sign(u_raw))
         cols[i, 0] = _np.float32(_np.clip(err_k / 5.0, -10.0, 10.0))

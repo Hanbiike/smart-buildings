@@ -154,7 +154,8 @@ def main(argv=None):
 
     gin_paths = [_gin(p) for p in pairs]
     total = len(pairs) * a.rollout_steps * a.cycles
-    opt = torch.optim.Adam(net.parameters(), lr=a.lr)
+    opt = torch.optim.Adam(ppo.l2_groups(net.named_parameters()),
+                             lr=a.lr)
     behavior = f"{a.out}.behavior"
     done_steps = 0
     best_r, best_c = None, None  # best-ckpt retention (E3)

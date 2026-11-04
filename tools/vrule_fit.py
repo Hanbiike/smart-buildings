@@ -26,7 +26,8 @@ def mc_returns(r, bounds, gamma=ppo.GAMMA):
     out, off = [], 0
     for T in bounds:
         sl = slice(off, off + int(T))
-        out.append(ppo.compute_gae(r[sl], np.zeros(int(T)), lam=1.0)[1])
+        out.append(ppo.compute_gae(r[sl], np.zeros(int(T)), gamma=gamma,
+                                   lam=1.0)[1])
         off += int(T)
     return np.concatenate(out)
 

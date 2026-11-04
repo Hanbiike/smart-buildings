@@ -20,7 +20,7 @@ sys.path.insert(0, "/tmp/pkg")
 import numpy as np
 import torch
 
-N_ZONE_X = 23  # 21 base + err + integral saturation (see probe_xres)
+N_ZONE_X = 21 + 6  # 21 base + 6 surgery cols (plan-19 P6; was 23 = 21+2)
 
 
 DEFAULT_WEIGHTS = "/tmp/opencode/sb-rl/skynet.pt"
@@ -52,7 +52,8 @@ def build_policy(meta, spec, weights=DEFAULT_WEIGHTS):
 
 
 def rollout_env(env, meta, spec, base_policy, steps, seed=0,
-                weights=DEFAULT_WEIGHTS, force_rule=False, gate=None):
+                weights=DEFAULT_WEIGHTS, force_rule=False, gate=None,
+                deterministic=False):
     """Rollout driving a live env with the base policy + residual sample.
 
     force_rule=True gates every step (zero corrections): a rule-only
@@ -60,6 +61,8 @@ def rollout_env(env, meta, spec, base_policy, steps, seed=0,
     gate=(net, tau): rollout-side confidence gate (plan-19 P4/H4);
     the residual acts only where the gate opens (multiplicative
     extension of residual_free, fixed before PPO).
+    deterministic=True acts the head means (for deterministic offline
+    actors, plan-19 P10 screen); gated steps still record exact zeros.
     """
     from skynet.features import N_AHU, N_PLANT
     from smart_buildings.smart_control.utils.scenario_generator import (
@@ -76,7 +79,15 @@ def rollout_env(env, meta, spec, base_policy, steps, seed=0,
          "za": [], "aa": [], "pa": [], "lpz": [], "lpa": [], "lpp": [],
          "gated": [], "fr": [], "v": [], "r": []}
     t0 = time.time()
+    # P7 zone-target head: delay-1 offset dict. The PI loop inside
+    # get_action sees the previous step's sampled offsets (zeros on step
+    # 0); the current sample arms the next step. A two-pass get_action
+    # would double-advance the PI integral, so the 1-step supervisory lag
+    # is the honest wiring (the policy observes the live offset via the
+    # P6 target-offset feature column, keeping the extended state Markov).
+    prev_offsets = {}
     for _ in range(steps):
+        base_policy._zone_target_offset = prev_offsets
         base = base_policy.get_action(obs)
         pc = np.asarray(base["continuous_action"])
         pd = np.asarray(base["discrete_action"])
@@ -91,13 +102,14 @@ def rollout_env(env, meta, spec, base_policy, steps, seed=0,
         zf, af, pf = ix.features(obs, pc, pd)
         extra = sys.modules["skynet_surgery"].expanded_zone_cols(
             base_policy, ix, obs)
-        z23 = np.concatenate([zf, extra], axis=1)
+        zx = np.concatenate([zf, extra], axis=1)
+        assert zx.shape[1] == N_ZONE_X, (zx.shape, N_ZONE_X)
         free = residual_free(base_policy, ix, obs, _X.COLD_GATE_K)
         if gate is not None and free:
             gnet, tau = gate
             import torch as _T
             with _T.no_grad():
-                pv = np.concatenate([z23.mean(axis=0), af.mean(axis=0),
+                pv = np.concatenate([zx.mean(axis=0), af.mean(axis=0),
                                      pf]).astype(np.float32)
                 prob = float(_T.sigmoid(
                     gnet(_T.from_numpy(pv))).item())
@@ -106,7 +118,7 @@ def rollout_env(env, meta, spec, base_policy, steps, seed=0,
         t = torch.from_numpy
         with torch.no_grad():
             (mz, ma, mp), v = xnet(
-                t(z23)[None], torch.ones(1, len(z23)),
+                t(zx)[None], torch.ones(1, len(zx)),
                 t(af)[None], torch.ones(1, len(af)),
                 t(pf)[None])
             mz, ma, mp = mz[0], ma[0], mp[0]
@@ -115,19 +127,21 @@ def rollout_env(env, meta, spec, base_policy, steps, seed=0,
             for m, ls in zip((mz, ma, mp),
                              (stds[0], stds[1], stds[2])):
                 d = _D.Normal(m, ls.exp().expand_as(m))
-                a = (torch.zeros_like(m) if gated else d.sample())
+                a = (torch.zeros_like(m) if gated
+                     else (m if deterministic else d.sample()))
                 acts.append(a)
                 lps.append(d.log_prob(a).sum(-1))
             lpz, lpa, lpp = (l.detach().numpy().astype(np.float32)
                                for l in lps)
         za, aa, pa = [a.numpy().astype(np.float32) for a in acts]
+        prev_offsets = ix.target_offsets(za, 1.0)
         cont, _disc = ix.compose(pc, pd, za, aa, pa, 1.0)
         act = {"continuous_action": cont.astype(np.float32),
                "discrete_action": pd.astype(np.int32)}
         from smart_buildings import evaluate as E
         act = E.validate_action(act, spec)
         obs, _, done, trunc, _ = trk.step(act)
-        T["zone"].append(z23)
+        T["zone"].append(zx)
         T["ahu"].append(af)
         T["plant"].append(pf)
         T["za"].append(za)

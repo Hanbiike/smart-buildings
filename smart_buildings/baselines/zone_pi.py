@@ -157,6 +157,7 @@ class ZonePIPolicy(CoolingHoldPolicy):
         self._zone_u = {}
         self._pi_active = False
         self._cur_vav = None
+        self._zone_target_offset = {}
 
     def _pi_hours(self, obs):
         hour, day = self._get_hour_and_day(obs)
@@ -182,6 +183,9 @@ class ZonePIPolicy(CoolingHoldPolicy):
             err = self._zone_err(
                 obs, self._denormalize_zone_temp(obs[obs_idx]), lo, hi
             )
+            # P7: RL target shift as an err delta (a +K target shift is a
+            # -K err shift). No-op 0.0 with the default empty offset dict.
+            err -= self._zone_target_shift(obs, vav_id, lo, hi)
             integral = self._zone_integral.get(vav_id, 0.0)
             integral = self._zone_integral_update(err, integral)
             self._zone_integral[vav_id] = integral
@@ -199,6 +203,21 @@ class ZonePIPolicy(CoolingHoldPolicy):
     def _zone_target(self, obs, lo, hi):
         """Temperature each zone's PI loop aims at; the band centre by default."""
         return 0.5 * (lo, hi)[0] + 0.5 * (lo, hi)[1]
+
+    def _zone_target_shift(self, obs, vav, lo, hi):
+        """Applied RL target shift (K) for vav (P7 zone-target head).
+
+        The armed `_zone_target_offset[vav]` clipped so the effective
+        target stays in-band; 0.0 when no offset is armed. Applied as an
+        err delta in `_command_zones` (the single choke point: several
+        `_zone_target` overrides skip super(), so a hook there would
+        silently miss the dsat line).
+        """
+        off = self._zone_target_offset.get(vav, 0.0)
+        if not off:
+            return 0.0
+        tgt = self._zone_target(obs, lo, hi)
+        return float(np.clip(tgt + off, lo, hi) - tgt)
 
     def _zone_output_map(self, u):
         """(damper_01, reheat_01) from PI signal u in [-1, 1].
