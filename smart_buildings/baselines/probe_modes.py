@@ -903,3 +903,54 @@ class Wknd6Probe(OccEconDbhHot9Policy):
     def _ahu_error(self, obs, ctrl, low, high):
         return super()._ahu_error(obs, ctrl, low - self._weekend_drop(obs),
                                   high)
+
+
+class ErrResProbe(OccEconDbhHot9Policy):
+    """D4: occ9 + per-zone error-reserve band tightening (facilities v42).
+
+    Zones with large tracking error get a symmetric reserve: the band
+    narrows by `extra` on both edges, so the PI loop holds drifting
+    zones tighter. errEMA tracks |temp - target| (clipped 2.0K) at
+    0.94/0.06 from init 0.08; extra = min(0.5*(ema-0.08) in [0,0.25],
+    0.25*bandwidth); comfort (PI-active) steps only. No _ahu_error
+    override: the reserve is per-VAV and has no AHU-level equivalent
+    (AHU ctrl sees the base band). Fullrun-only like D1-D3 (never a
+    skynet rollout base), so the EMA updates exactly once per zone
+    per step in every real path.
+    """
+
+    KEY = "probe_errres025"
+    ERRRES_INIT = 0.08
+    ERRRES_FAST = 0.06
+    ERRRES_GAIN = 0.5
+    ERRRES_CAP = 0.25
+    ERRRES_BANDFRAC = 0.25
+    ERRRES_CLIP_K = 2.0
+
+    def __init__(self, *a, **k):
+        super().__init__(*a, **k)
+        self._err_ema = {}
+
+    def _zone_err(self, obs, temp, lo, hi):
+        err = super()._zone_err(obs, temp, lo, hi)
+        vav = self._cur_vav
+        if vav is not None:
+            tgt = self._zone_target(obs, lo, hi)
+            e = min(abs(float(temp) - float(tgt)), self.ERRRES_CLIP_K)
+            ema = self._err_ema.get(vav, self.ERRRES_INIT)
+            self._err_ema[vav] = ((1.0 - self.ERRRES_FAST) * ema
+                                  + self.ERRRES_FAST * e)
+        return err
+
+    def _reserve(self, vav_id, lo, hi):
+        if not self._pi_active:
+            return 0.0
+        ema = self._err_ema.get(vav_id, self.ERRRES_INIT)
+        raw = self.ERRRES_GAIN * (ema - self.ERRRES_INIT)
+        raw = min(max(raw, 0.0), self.ERRRES_CAP)
+        return min(raw, self.ERRRES_BANDFRAC * max(hi - lo, 0.0))
+
+    def _zone_band(self, obs, vav_id, low, high):
+        lo, hi = super()._zone_band(obs, vav_id, low, high)
+        extra = self._reserve(vav_id, lo, hi)
+        return lo + extra, hi - extra

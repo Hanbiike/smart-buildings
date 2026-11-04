@@ -384,6 +384,18 @@ shipped).
   3,000 probe sim. Enabler for P20-12. Logged in
   plan-20.
 
+### Plan 20/P20-4: D4 error-reserve (CLOSED below floor)
+
+- NEW `probe_errres025` (ErrResProbe on occ9) +
+  POLICY_MAP key; 80/80 green; liveness PASS.
+- Suite 60/60 clean (shipped, 518,400 sim): mean
+  gap +0.00001827 (11x below floor); climates all
+  sub-floor (fb best +0.0000635); 9W/15L/6 ties;
+  worst b8/fb8 -0.000133. Gate fails all clauses
+  -- CLOSE, no judge. occ9 control 0.00878193 ==
+  D1-D3 (P7 zone_pi parity on train-30). Logged in
+  plan-20.
+
 ### Simulator update check
 
 - Our tree is pre-PR#1 (tracker occupancy RNG stream);

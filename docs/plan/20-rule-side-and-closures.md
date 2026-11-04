@@ -125,3 +125,26 @@ pieces ride inside N1.1 (P20-7) per synthesis.
   PR3_AIRFLOW=1 -8.587920 (patch live). Semantics
   stay UNVERIFIED (PR bodies uninspected, gap 1);
   enabler ready for P20-12. 3,000 probe sim.
+- 2026-11-04 P20-4 running (same note). NEW
+  `probe_errres025` (ErrResProbe on occ9, EMA
+  0.94/0.06 init 0.08 clip 2.0K, extra =
+  min(0.5*(ema-0.08)[0,0.25], 0.25*bandwidth),
+  comfort-only; zone-level, no _ahu_error override
+  -- per-VAV reserve has no AHU equivalent) +
+  POLICY_MAP key; 80/80 green; liveness PASS (30
+  zones, ema_max 1.10). Train-30 verdict suite
+  (probe + occ9 control, 60 jobs, shipped bill to
+  match D1-D3/J4/J6 -- occ9 control must reproduce
+  0.00878189) running in background; no code edits
+  until it lands.
+- 2026-11-04 P20-4 done: D4 CLOSED below floor (same
+  note). Suite landed 60/60 clean, shipped bill.
+  Mean gap +0.00001827 (11x below floor); climates
+  atl -0.0000205 / den +0.0000378 / fb +0.0000635 /
+  phx +0.0000133 / sg -0.0000028 -- zero climates
+  at >= 0.0002; 9W/15L/6 ties; worst b8/fb8
+  -0.000133 (no wknd6-scale blowup). Gate fails on
+  all clauses -- CLOSE like D1-D3, no judge (F2).
+  occ9 control 0.00878193 reproduces D1-D3
+  0.00878189 to 4e-8 (stability + P7 zone_pi edits
+  parity-checked on train-30). 518,400 sim.
