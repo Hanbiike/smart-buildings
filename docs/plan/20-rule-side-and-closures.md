@@ -91,3 +91,23 @@ pieces ride inside N1.1 (P20-7) per synthesis.
   a future round (logged in day-note Open).
   P20-11 SKIPPED (conditional on killing (a);
   (a) confirmed). 34,560 sim, honest, seed 31.
+- 2026-11-04 P20-2 done: OCC_SEED rig GREEN (same
+  note). Verified by reading (critic's demand):
+  17321 is the ctor default of the ONLY live
+  occupancy class (gin never binds seed; the only
+  bind in the tree is the timestamp); the 511211
+  class is dead (no references); building-gen seeds
+  are a separate axis (explicitly not this).
+  Rig: `OCC_SEED` env rebind in
+  `load_hybrid_environment` (after parse, before
+  construction -- pre-load binds are discarded on
+  re-parse) + OCC_SEED banner in fullrun/fullrun_t
+  (seeds logged per run) + `tools/test_occ_seed.py`
+  (3 gin-level tests; suite 77/77). No template
+  regen needed (runtime param -- better than the
+  synthesis proposal). Liveness (3x1500 steps):
+  unset == 17321 bit-identical (-8.557719), 99999
+  differs (-8.396648) -- 256 steps was too short
+  (weekend nights carry no occupancy). Enabler
+  ready for P20-10; 17321-only finals now BANNED.
+  4,500 probe sim, no verdicts.

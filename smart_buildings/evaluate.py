@@ -618,6 +618,16 @@ def load_hybrid_environment(gin_config_file: Path, *, start_timestamp=None):
             if timestamp.tzinfo is not None:
                 timestamp = timestamp.tz_convert('UTC').tz_localize(None)
             gin.bind_parameter('sim/to_timestamp.date_str', str(timestamp))
+        # P20-2 seed-variation rig (default off = 17321 replay, bit-identical):
+        # OCC_SEED rebinds the arrival/departure occupancy RNG per scenario.
+        # Bound here (after parse, before construction) like the timestamp --
+        # binding before load_hybrid_environment would be discarded on re-parse.
+        import os
+        occ_seed = os.environ.get("OCC_SEED")
+        if occ_seed is not None:
+            gin.bind_parameter(
+                "randomized_occupancy/RandomizedArrivalDepartureOccupancy.seed",
+                int(occ_seed))
     return hybrid_action_environment.HybridActionEnvironment()
 
 

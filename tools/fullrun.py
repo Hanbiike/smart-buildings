@@ -47,7 +47,10 @@ def main():
     pairs = [p.split("/") for p in sys.argv[6].split(",")]
     dump = len(sys.argv) > 7 and sys.argv[7] == "dump"
     jobs = [(p, b, w, steps, timeout, results_dir, dump) for b, w in pairs for p in policies]
-    print(f"{len(jobs)} jobs, concurrency {conc}", flush=True)
+    import os
+    print(f"{len(jobs)} jobs, concurrency {conc}, "
+          f"OCC_SEED={os.environ.get('OCC_SEED', '17321(default)')}",
+          flush=True)
     results = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=conc) as ex:
         futs = {ex.submit(one_job, j): j for j in jobs}

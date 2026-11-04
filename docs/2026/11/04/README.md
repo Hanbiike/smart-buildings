@@ -356,6 +356,21 @@ shipped).
   STOP RL training. Base arms bit-reproduce P10.
   P20-11 skipped (conditional). Logged in plan-20.
 
+### Plan 20/P20-2: OCC_SEED rig (GREEN)
+
+- Claim verified by reading: 17321 = ctor default
+  of the only live occupancy class; gin binds only
+  the timestamp; 511211 class dead; building-gen
+  seeds are a separate axis.
+- Rig: `OCC_SEED` env rebind in the loader (after
+  parse, before construction) + banner in
+  fullrun/fullrun_t + `tools/test_occ_seed.py` (3
+  tests, suite 77/77). No regen needed.
+- Liveness 3x1500: unset == 17321 bit-identical,
+  99999 differs. (256 steps insufficient: weekend
+  nights.) 4,500 probe sim. Enabler for P20-10;
+  17321-only finals banned. Logged in plan-20.
+
 ### Simulator update check
 
 - Our tree is pre-PR#1 (tracker occupancy RNG stream);
