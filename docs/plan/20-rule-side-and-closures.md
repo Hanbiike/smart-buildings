@@ -334,3 +334,17 @@ pieces ride inside N1.1 (P20-7) per synthesis.
   conjunction already decided; 363k saved).
   Compute stays rule-side. 414,720 honest
   sims (+ wave-1 timeout waste unledgered).
+- 2026-11-04 P20-10 done: VACUOUS (same
+  note). Survivor audit: D4 CLOSED (floor),
+  R1 CLOSED (no-op + pre-screen), R2 CLOSED
+  (gain-0.0), R3 KILLED UNBUILT, N1 KILLED
+  (loses to PG) -- NO survivors to run
+  promotion finals on. 0 sim. BACKLOG for
+  round 4: the frozen-det follow-up (P20-1:
+  frozen-det beats occ9-rule +0.00168 fb8 /
+  +0.00077 phx3, above floor) still needs
+  occ9-base train-30 + judge + G8 + notebook
+  feasibility -- it is the only above-floor
+  signal in plan-20 and must head the next
+  plan, not ride P20-10 (not a line
+  survivor).

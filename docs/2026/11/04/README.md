@@ -468,6 +468,15 @@ shipped).
   decided). Compute stays rule-side.
   414,720 honest sims. Logged in plan-20.
 
+### Plan 20/P20-10: N2.2 finals (VACUOUS, no survivors)
+
+- Audit: D4/R1/R2 closed, R3/N1 killed --
+  nothing to final. 0 sim. Frozen-det
+  follow-up (+0.00168/+0.00077, above floor)
+  queued as round-4 backlog (train-30 +
+  judge + G8 + notebook feasibility), not a
+  P20-10 rider. Logged in plan-20.
+
 ### Simulator update check
 
 - Our tree is pre-PR#1 (tracker occupancy RNG stream);
