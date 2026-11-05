@@ -59,6 +59,7 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 `clip-rate — train 0/60M vs judge 0/46M — F6 KILL (judge not greater)`.
 `F3 scale — 1/3 probes (xfer_10/msp1 only) — KILL (needs 2/3)`; `F7 — no target head — CLOSED pre-screen`.
 `F2 cold — Monday regret 22.7x occ9 (gate 3x) — KILL`; `F4 occ-gate — trigger P~1e-44/day — CLOSED vacuous`; P21-7 DEAD.
+`R1a rescreen — OCC_SEED=99999 counter 0 (bit-identical) — KILL`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -96,6 +97,14 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
   then explodes (-0.15/-0.07/-0.05); full +0.009 worse.
   21,780 sims. P21-7 DEAD (conditional, both killed).
 
+### Plan 21/P21-8: R1a fresh-seed rescreen (KILLED)
+
+- Trigger counter OCC_SEED=99999 x1500: fb8 + atl1
+  bit-identical all 6 CSVs (offa1 == occ9). Counter = 0,
+  gate needs > 0: no screen. R1a dead under 2 seeds;
+  forced-departure model makes night spikes
+  near-impossible. 6,000 sims. No code changes.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -109,8 +118,8 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 
 ## Open
 
-- P21-8 R1a trigger-counter rescreen (~6k, next).
-- P21-9 R2 xfer_3/msp1 rescreen (~1.5k), P21-10 N1 singles,
+- P21-9 R2 xfer_3/msp1 rescreen (~1.5k, next).
+- P21-10 N1 singles,
   P21-11 E2 bars, P21-12 R3a mine, P21-13 MoE blocked,
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.

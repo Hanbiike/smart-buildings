@@ -158,3 +158,15 @@ budget + corrected-sim/rescore timing (Kaggle API/host watch).
   liveness + 17,280 full). P21-7 DEAD:
   conditional on P21-5/6 pass, both
   killed.
+- 2026-11-05 P21-8 done: KILLED (same
+  note). R1a trigger counter under
+  OCC_SEED=99999 x1500: fb8 0.020330 ==
+  0.020330, atl1 0.004219 == 0.004219 --
+  BIT-IDENTICAL all 6 CSVs both pairs.
+  Counter = 0, gate needs > 0: no
+  99999 screen, no full 69,120. R1a dead
+  under 2 seeds (17321 + 99999);
+  occupancy model forces departure by
+  latest hour, so night spikes are
+  near-impossible by construction.
+  6,000 sims. No code changes.
