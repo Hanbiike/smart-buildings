@@ -176,3 +176,50 @@ pieces ride inside N1.1 (P20-7) per synthesis.
   P20-2 fresh seeds -- spikes may exist in other
   realizations (logged, not run: seed pools
   unbuilt).
+- 2026-11-04 P20-6 running (same note). NEW
+  `occ_ptr1.py`: PtrLoopMixin sits BETWEEN
+  DeadbandHeatMixin and OccGated7Policy in the
+  occ9 base list (the naive super(OccGated7Policy)
+  skip from an occ9 child would drop the
+  econ/dbh/heatopt mixins; direct-occ7-child-only
+  precedent in probe_modes.py; heatopt WRITES
+  pressure_idx + VAV dampers above gated7, so a
+  replay-over-super loop would destroy heatopt).
+  6 hook/MRO tests, 248/248 green. Parity:
+  occ_ptr0 == occ9 BIT-IDENTICAL (1500 fb8).
+  4-cell prescreen fb8 x 8640 (34,560 sim) landed
+  ALL bit-identical (0.027586 x4) -- T&R never
+  fires there (pressure pinned -1.0 all 1500
+  steps). Train-30 pressure scan (30 x 1500 dump):
+  only b1/fb1 (pmax -0.471) and b2/fb2 (pmax
+  -0.627) lift pressure; but liveness A/B/C vs
+  occ9 on b1/fb1 x 1500 STILL bit-identical --
+  the lift is heatopt's, not T&R's (fire counter:
+  0/2096 loop iters). Full train-30 fire-count
+  scan running in background; R2 closes gain-0.0
+  if fire == 0 everywhere (nothing to gate).
+  No code edits until it lands.
+- 2026-11-04 P20-6 done: R2 CLOSED gain-0.0
+  (same note). Fire-count scan landed 30/30
+  clean: fire == 0 on EVERY train pair x 1500
+  steps (loop iters 2037-6111/pair). The gated7
+  T&R loop NEVER fires under occ9 on train --
+  dampers open past 0.85 on many pairs but zone
+  temps stay inside db_eff at those moments
+  (occupied-gated, OAT-widened). fb8 full-episode
+  C-parity proves fire == 0 over all 8640 there
+  (any fire would set C's EMA > 0 and diverge).
+  The b1/fb1+b2/fb2 pressure lifts are heatopt's
+  writes, not T&R's. All three sub-levers ==
+  occ9 by construction wherever fire == 0 (A:
+  up/persist only matter post-fire; B: 0>=1 and
+  0>=2 both False; C: EMA stays 0.0) -- prescreen
+  4-cell fb8 (34,560) + b1/fb1 liveness both
+  bit-identical, gain 0.0, no survivors to
+  train-30. Limitation: fire scan covers first
+  1500 steps/pair (full-episode fire proof only
+  on fb8 via C-parity). 139,560 sim. NOTE for
+  P20-10: T&R may fire under fresh P20-2 seeds
+  or transfer tails (gated7 validated on xfer_3
+  tails, not train) -- re-screen R2 there if a
+  firing pair is found (logged, not run).

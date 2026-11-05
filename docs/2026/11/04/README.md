@@ -411,6 +411,25 @@ shipped).
   Re-screen under fresh P20-2 seeds noted for
   P20-10. Logged in plan-20.
 
+### Plan 20/P20-6: R2 self-tuning T&R (CLOSED gain-0.0)
+
+- NEW `occ_ptr1.py` (PtrLoopMixin between
+  DeadbandHeat and Gated7 in occ9 base list) +
+  keys occ_ptr0/a1/b1/c1; 248/248 green.
+- Base parity: occ_ptr0 == occ9 BIT-IDENTICAL
+  (1500 fb8 steps).
+- fb8 4-cell prescreen x 8640 (34,560 sim): all
+  bit-identical (0.027586 x4).
+- Fire-count scan 30/30: fire == 0 on EVERY
+  train pair x 1500 steps. The T&R loop never
+  fires under occ9 on train (dampers open but
+  temps stay inside db_eff); b1/fb1+b2/fb2
+  pressure lifts are heatopt's. All subs ==
+  occ9 by construction; gain 0.0, no survivors.
+  139,560 sim. Re-screen under fresh seeds /
+  transfer tails noted for P20-10. Logged in
+  plan-20.
+
 ### Simulator update check
 
 - Our tree is pre-PR#1 (tracker occupancy RNG stream);
