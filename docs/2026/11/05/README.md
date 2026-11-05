@@ -86,6 +86,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 `P22-7 OFFM — mild wins 7x below floor, sg7 bit-identical (gate blocks hot) — CLOSED`.
 `P22-8 P2M — OAT-gate kills explosions (fb ties) but atl2/sg7 lose — KILL`.
 `P22-9 DAGX — cold-transfer confirmed (fb1 93%, fb2 50.5%) but sg8 poisons — CLOSED`.
+`P22-10 — doc closes (RLS correction, pocket_stats.py, weight cite) — PLAN-22 COMPLETE (1 PASS, P21-13 unblocked)`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -257,6 +258,14 @@ confirmed NO-RLS (covariance alloc-only) and pockets
   Stage-2 skipped (sg8 poisoning already proven).
   Revival gate failed; resid dominates. 51,840 sims.
 
+### Plan 22/P22-10+11: doc closes + deferred (PLAN-22 COMPLETE)
+
+- RLS->observer correction in research/21;
+  tools/pocket_stats.py repro (exact); weight source
+  scenario_generator.py:372-374. P22-11 stays DEFERRED
+  (no torch candidate for smoke). 0 sim. Plan-22:
+  1 PASS (P22-6), 3 CLOSED, 5 KILLED, 1 DEFERRED.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -270,7 +279,8 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 
 ## Open
 
-- Plan-22 action (next): P22-10 doc closes.
+- Round-6 deep research (next): MoE revival directions
+  (resid scale/mode/DAgger-on-resid, T4 push to occ9).
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

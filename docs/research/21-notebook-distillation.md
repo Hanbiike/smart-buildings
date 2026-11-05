@@ -125,9 +125,17 @@ MPC-lite, NOT PI-based):
 
 - Per-zone 6-dim linear thermal model (1, (OAT-T)/20,
   (slow-T)/5, (group-T)/5, mode, power/1000), geometry priors
-  from `zone_map`, online residual RLS (rate 0.35, clip +-5 K)
-  + model_error tracker. Theta init scaled by `response_scale`
-  0.75 (the "alpha075").
+  from `zone_map`, online residual disturbance observer
+  (rate 0.35, clip +-5 K) + model_error tracker. Theta init
+  scaled by `response_scale` 0.75. CORRECTION (2026-11-05,
+  round-5 angle-2, parent-verified): NO RLS update exists --
+  `covariance` is allocated once (`policy.py:229`,
+  sha-verified archive) and never referenced; theta is
+  read-only after init. "alpha075" is the ResidualPolicy
+  blend weight (`round2_runtime.py`), not `response_scale`
+  (coincidentally also 0.75). The v41 "bounded-RLS" label
+  in the facilities row above refers to jazivxt's own code,
+  not danielwuu's.
 - "Observation delay = 1" is STANDARD MDP causality (action at
   t affects obs at t+1; verified in
   `environment.py:1651+`: action -> wait_time -> obs), NOT a

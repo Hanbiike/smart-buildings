@@ -200,3 +200,27 @@ rescore timing. Corrected-sim re-validation blocked on hosts.
   unmeetable. DAG-overwrite line stays
   dead (resid dominates anyway).
   51,840 sims (34,560 + 17,280 occ7).
+- 2026-11-05 P22-10 done: all closes
+  landed (same note). (1) danielwuu
+  RLS->observer correction in
+  research/21 (covariance alloc-only
+  :229, alpha075 = blend weight not
+  response_scale). (2) tools/pocket_stats.py
+  committed: repro prints total -2276.3,
+  comfort -114.1, h67 76.7%, h6 57.7%
+  exactly. (3) Reward-weight value source
+  cited: scenario_generator.py:372-374
+  (0.6/0.2/0.2 dataclass defaults) ->
+  gin (1071-1082) -> regret constructor.
+  0 sim.
+- 2026-11-05 P22-11 stays DEFERRED (same
+  note). P22-1..4 resolved so the
+  literal unblock fired, but smoke
+  without a torch candidate burns budget
+  for no decision: no torch arm beats
+  occ9 anywhere (skynet judge-only,
+  resid is linear rule-side). Smoke on
+  candidate emergence. 0 sim.
+  PLAN-22 COMPLETE: 1 PASS (P22-6,
+  P21-13 unblocked), 3 CLOSED (P22-2/7/9),
+  5 KILLED, 1 DEFERRED (P22-11).
