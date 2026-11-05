@@ -833,6 +833,152 @@ class R3aHwsProbe(OccEconDbhHot9Policy):
     WATER_SCALE = 0.7
 
 
+# P20-7 N1.1: danielwuu (0.01061 honest) pieces on occ9. Ported from
+# /tmp/kaggle_nb/danielwuu_cpu-b-*/policy.py (frozen archive, sha ok):
+# (a) OFF-candidate (_choose_ahu: run AHU only if free-drift prediction
+# leaves the band), (b) pressure = 2000 x fraction^2 reset, (c) water
+# 345K/310K heat-recency hysteresis (24 steps). Each piece is one mixin
+# (neutral via _ON flag) + single probe + the N1StackProbe combo.
+
+
+class N1OffMixin:
+    """danielwuu (a): per-AHU OFF when all group zones sit deep in band."""
+
+    N1_OFF_ON = 1
+    N1_OFF_MARGIN = 0.5
+
+    def _base_action(self, obs):
+        action = super()._base_action(obs)
+        if not self.N1_OFF_ON:
+            return action
+        cont = action["continuous_action"]
+        disc = action["discrete_action"]
+        lo, hi = self.comfort_temp_window
+        for ctrl in self.ahu_controllers:
+            if not disc[ctrl["run_discrete_idx"]]:
+                continue
+            ok = True
+            for _, obs_idx, _ in ctrl["zones"]:
+                try:
+                    t = self._denormalize_zone_temp(obs[obs_idx])
+                except (TypeError, ValueError):
+                    ok = False
+                    break
+                if not (lo + self.N1_OFF_MARGIN < t < hi - self.N1_OFF_MARGIN):
+                    ok = False
+                    break
+            if ok:
+                disc[ctrl["run_discrete_idx"]] = 0
+                for vav_id, _, _ in ctrl["zones"]:
+                    aidx = self.zone_action_indices.get(vav_id, {}).get(
+                        "supply_air_damper_percentage_command")
+                    if aidx is not None:
+                        cont[aidx] = np.float32(2.0 * self.MIN_DAMPER - 1.0)
+        return action
+
+
+class N1OffProbe(N1OffMixin, OccEconDbhHot9Policy):
+    """N1.1: occ9 + danielwuu OFF-candidate."""
+
+    KEY = "probe_n1_off"
+
+
+class N1P2Mixin:
+    """danielwuu (b): per-AHU pressure = 2000 x max-damper-fraction^exp."""
+
+    N1_P2_ON = 1
+    N1_P2_EXP = 2.0
+    N1_P2_MIN_PA = 200.0
+
+    def _base_action(self, obs):
+        action = super()._base_action(obs)
+        if not self.N1_P2_ON:
+            return action
+        cont = action["continuous_action"]
+        disc = action["discrete_action"]
+        for ctrl in self.ahu_controllers:
+            pidx = ctrl.get("pressure_idx")
+            if pidx is None or not disc[ctrl["run_discrete_idx"]]:
+                continue
+            fmax = 0.0
+            for vav_id, _, _ in ctrl["zones"]:
+                aidx = self.zone_action_indices.get(vav_id, {}).get(
+                    "supply_air_damper_percentage_command")
+                if aidx is not None:
+                    fmax = max(fmax, (float(cont[aidx]) + 1.0) * 0.5)
+            p = min(2000.0, max(self.N1_P2_MIN_PA,
+                                2000.0 * fmax ** self.N1_P2_EXP))
+            cont[pidx] = np.float32(p / 1000.0 - 1.0)
+        return action
+
+
+class N1P2Probe(N1P2Mixin, OccEconDbhHot9Policy):
+    """N1.1: occ9 + danielwuu pressure fraction^2 reset."""
+
+    KEY = "probe_n1_p2"
+
+
+class N1HystMixin:
+    """danielwuu (c): HWS 345K/310K heat-recency hysteresis."""
+
+    N1_HYST_ON = 1
+    N1_HYST_WINDOW = 24
+    N1_HYST_MARGIN = 0.0
+
+    def __init__(self, building_meta_data, action_spec):
+        super().__init__(building_meta_data, action_spec)
+        self._n1_last_heat = -10 ** 9
+        self._n1_step = 0
+
+    def _base_action(self, obs):
+        action = super()._base_action(obs)
+        self._n1_step += 1
+        if not self.N1_HYST_ON or self.water_temp_idx is None:
+            return action
+        lo, _ = self.comfort_temp_window
+        for ctrl in self.ahu_controllers:
+            for _, obs_idx, _ in ctrl["zones"]:
+                try:
+                    t = self._denormalize_zone_temp(obs[obs_idx])
+                except (TypeError, ValueError):
+                    continue
+                if t < lo + self.N1_HYST_MARGIN:
+                    self._n1_last_heat = self._n1_step
+                    break
+            else:
+                continue
+            break
+        recent = (self._n1_step - self._n1_last_heat) < self.N1_HYST_WINDOW
+        cont = action["continuous_action"]
+        cont[self.water_temp_idx] = np.float32(0.75 if recent else -1.0)
+        return action
+
+
+class N1HystProbe(N1HystMixin, OccEconDbhHot9Policy):
+    """N1.1: occ9 + danielwuu water hysteresis."""
+
+    KEY = "probe_n1_hyst"
+
+
+class N1StackProbe(N1OffMixin, N1P2Mixin, N1HystMixin, OccEconDbhHot9Policy):
+    """N1.1: occ9 + all three danielwuu pieces (BO-tuned stack)."""
+
+    KEY = "probe_n1_stack"
+
+
+class N1StackTunedProbe(N1StackProbe):
+    """N1.1: stack at BO-best (it04: margin 0.5408, exp 2.6692, win 71).
+
+    Fixed consts from the tools/n1bo.py run (20 iters, best_sum
+    0.116293 over the g4bo 5-scenario honest screen). P20-9 finals arm.
+    """
+
+    KEY = "probe_n1_tuned"
+    N1_OFF_MARGIN = 0.5408
+    N1_P2_EXP = 2.6692
+    N1_HYST_WINDOW = 71
+
+
 class _ZoneSideShiftMixin:
     """J6: rule-side in-band zone-target shift (their head analogue).
 

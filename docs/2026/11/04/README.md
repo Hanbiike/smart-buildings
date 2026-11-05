@@ -444,6 +444,20 @@ shipped).
   P20-13 SKIPPED (condition unmet). 223,800
   sim. Logged in plan-20.
 
+### Plan 20/P20-7: N1.1 hybrid build (done)
+
+- 3 danielwuu pieces ported (OFF-candidate,
+  pressure frac^2, water hysteresis) + stack;
+  all liveness green (off on atl pairs).
+- PG arm: probe_skynet frozen (liveness
+  green). BO 20/20 (86.4k honest): best
+  it04 sum 0.116293; tuned stack fixed
+  consts verify EXACT. Ledgers: hybrid
+  90,720 honest + 13,500 shipped, PG 0
+  train (+1,500 live), equal budget. 263/263
+  green. Finals (P20-9): tuned vs skynet.
+  Logged in plan-20.
+
 ### Simulator update check
 
 - Our tree is pre-PR#1 (tracker occupancy RNG stream);

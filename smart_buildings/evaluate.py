@@ -181,6 +181,7 @@ from smart_buildings.baselines.probe_modes import (
     Hopt9SatU07Probe, Kp069Probe, MarginProbe,
     Ps9H0Probe, Ps9H1Probe, Ps9H2Probe, Ps9H3Probe,
     PressureTrimRespondProbe, R3aHwsProbe, R3aPcapProbe, R3aRecProbe, R3aSatProbe,
+    N1OffProbe, N1P2Probe, N1HystProbe, N1StackProbe, N1StackTunedProbe,
     Ptr9Db20Probe, Ptr9Persist8Probe, Ptr9Up15Probe, Ptr9Up35Probe,
     PtrFastTrimProbe, PtrHighCeilProbe, PtrPropKickProbe, SATProbe,
     MedSat05Probe, UShift06Probe, Wknd6Probe, ErrResProbe,
@@ -400,6 +401,11 @@ POLICY_MAP: dict[str, type[Any]] = {
     "probe_r3a_pcap": R3aPcapProbe,
     "probe_r3a_rec": R3aRecProbe,
     "probe_r3a_hws": R3aHwsProbe,
+    "probe_n1_off": N1OffProbe,
+    "probe_n1_p2": N1P2Probe,
+    "probe_n1_hyst": N1HystProbe,
+    "probe_n1_stack": N1StackProbe,
+    "probe_n1_tuned": N1StackTunedProbe,
     "probe_zss05": Zss05Probe,
     "probe_zss10": Zss10Probe,
     "probe_zssc05": Zssc05Probe,
@@ -1375,6 +1381,31 @@ def _register_g4bo_params():
 
 
 _register_g4bo_params()
+
+
+# P20-7 N1.1 hook: tools/n1bo.py writes smart_buildings/results/n1bo_params.json
+# (off_margin/p2_exp/hyst_window); the dynamic policy "probe_n1bo" is built
+# and registered here so the BO loop can run it without code edits.
+def _register_n1bo_params():
+    import json
+    import os
+
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        "results", "n1bo_params.json")
+    if not os.path.exists(path):
+        return
+    with open(path) as f:
+        values = json.load(f)
+    cls = type("N1BoParamsProbe", (N1StackProbe,), {
+        "KEY": "probe_n1bo",
+        "N1_OFF_MARGIN": float(values["off_margin"]),
+        "N1_P2_EXP": float(values["p2_exp"]),
+        "N1_HYST_WINDOW": int(float(values["hyst_window"])),
+    })
+    POLICY_MAP["probe_n1bo"] = cls
+
+
+_register_n1bo_params()
 
 
 if __name__ == "__main__":

@@ -259,3 +259,45 @@ pieces ride inside N1.1 (P20-7) per synthesis.
   for its build; P20-13 stays SKIPPED
   (condition unmet). 223,800 sim (172,800
   suite + 51,000 liveness/counters).
+- 2026-11-04 P20-7 running (same note). N1.1
+  hybrid arm: 3 danielwuu pieces ported from
+  the frozen cpu-b policy.py (sha ok) as
+  mixins + single probes + N1StackProbe combo:
+  (a) OFF-candidate (per-AHU run=0 + min
+  damper when all group zones sit MARGIN
+  inside band; margin 0.5 default), (b)
+  pressure = 2000 x max-damper-frac^EXP
+  (exp 2.0), (c) HWS 345K/310K heat-recency
+  hysteresis (window 24; water native
+  [310,350] verified, 345K -> +0.75).
+  Round-3 probe specs were not on disk --
+  spec'd from research/21 + source lines.
+  Liveness all green: off DIFFERS atl1+atl2
+  (identical fb8 -- strict), p2/hyst/stack
+  DIFFERS fb8. PG arm: probe_skynet frozen
+  residual (skynet.pt@5001216, /tmp/pkg live),
+  liveness 0.019749 fb8x1500. BO tune:
+  tools/n1bo.py (bayes_opt 3.4 ask-tell,
+  g4bo SCEN x 864, HONEST bill, 3 dims,
+  20 iters x 4,320 = 86,400 honest sims)
+  running in background; bayesian-optimization
+  installed via uv into .venv (no pip).
+  Tuned stack + ledgers when it lands. No
+  code edits until then.
+- 2026-11-04 P20-7 done: both arms built,
+  ledgers logged (same note). BO landed 20/20
+  (86,400 honest sims): best it04 sum
+  0.116293 (margin 0.5408, exp 2.6692,
+  window 71.71; GP exploits collapsed to
+  corners after it06 -- best stands from
+  random init). N1StackTunedProbe fixed
+  consts (0.5408/2.6692/71) verify screen
+  sum 0.116293 EXACT. LEDGERS -- hybrid
+  honest 90,720 (86,400 BO + 4,320 verify),
+  hybrid shipped liveness 13,500, PG train 0
+  (frozen skynet.pt@5001216) + 1,500 shipped
+  liveness; PG attributed budget = 90,720
+  honest (EQUAL to hybrid; P7 777.6k
+  precedent noted, ours 8.6x smaller). No PG
+  sims in hybrid arm. 263/263 green. P20-9
+  finals: probe_n1_tuned vs probe_skynet.
