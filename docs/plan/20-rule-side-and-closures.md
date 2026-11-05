@@ -301,3 +301,36 @@ pieces ride inside N1.1 (P20-7) per synthesis.
   precedent noted, ours 8.6x smaller). No PG
   sims in hybrid arm. 263/263 green. P20-9
   finals: probe_n1_tuned vs probe_skynet.
+- 2026-11-04 P20-9 running (same note). N1.2
+  finals: probe_n1_tuned vs probe_skynet,
+  8640, HONEST_BILL=1 -- judge-24 (xfer_5..10
+  x 4w, 48 runs) FIRST, then holdout-16 (32)
+  + b8 train x5 (10); 90 runs = 777,600
+  honest sims total. Gate: hybrid wins total
+  + comfort split on judge-24 AND b8, gaps >=
+  0.0002, consistent across pools; else KILL
+  N1. Judge suite running in background. No
+  code edits until all three land.
+- 2026-11-04 P20-9 incident (same note):
+  first judge launch (conc 10, timeout 1500)
+  timed out wave-wide (0 CSV in 30 min):
+  xfer_6-class buildings (6 AHUs) run ~140s
+  per 864 steps even at conc 2 (7x slower
+  than b8) -- full episodes need ~1400s+
+  uncontended. Relaunched conc 8, timeout
+  5400 (AGENTS cap). ETA ~3h judge alone.
+- 2026-11-04 P20-9 done: N1 KILLED (same
+  note). Judge-24 landed 48/48 clean
+  (honest): tuned 0.020333 vs skynet
+  0.017712 -- PG arm wins by +0.002621
+  (13x floor, wrong sign). Comfort split
+  also fails (prod_regret -0.00434 vs
+  -0.00924; energy 0.05146 vs 0.03594;
+  carbon 0.03720 vs 0.02490); skynet wins
+  4/6 buildings (tuned only xfer_10/5,
+  weakly). Gate needs hybrid wins on
+  judge-24 AND b8 -- judge is a decisive
+  loss, so holdout-16 + b8 NOT run (gate
+  conjunction already decided; 363k saved).
+  Compute stays rule-side. 414,720 honest
+  sims (+ wave-1 timeout waste unledgered).

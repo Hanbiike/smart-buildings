@@ -458,6 +458,16 @@ shipped).
   green. Finals (P20-9): tuned vs skynet.
   Logged in plan-20.
 
+### Plan 20/P20-9: N1.2 finals (N1 KILLED)
+
+- Judge-24 48/48 honest: tuned 0.020333 vs
+  skynet 0.017712 (PG wins +0.002621, 13x
+  floor, wrong sign). Comfort split fails
+  too (all 3 components worse); skynet wins
+  4/6 buildings. Holdout/b8 not run (gate
+  decided). Compute stays rule-side.
+  414,720 honest sims. Logged in plan-20.
+
 ### Simulator update check
 
 - Our tree is pre-PR#1 (tracker occupancy RNG stream);
