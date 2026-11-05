@@ -16,7 +16,10 @@ Second deep-research workflow (arXiv/OpenReview/PwC/forum)
 merged as plan-19 Addendum A + 2 draft corrections. Simulator
 update check: our tree is pre-PR#1; PR #2 open; hosts aim final
 verification at the corrected sim; no local update (LB still
-shipped).
+shipped). Plan-19 CLOSED (P0-P10, RL line closed); plan-20 ran
+P20-1..P20-11 (frozen-det vs occ_gated7 confirmed, seed rig,
+PR#3, R1/R2/N1 levers, D4 closed). Kernel count: 31 valid
+dirs + 1 empty (alexchilton_v46) + 1 via-get file = 33 entries.
 
 ## Status
 
@@ -531,14 +534,11 @@ shipped).
 
 ## Open
 
-- plan-20 in progress (P20-1 done, P20-11 skipped);
-  next P20-2 seed rig, then P20-3, P20-4 (D4),
-  P20-5..P20-13 per plan.
-- FOLLOW-UP (future round, not a promotion):
-  frozen-det residual beats occ_gated7-rule
-  (+0.00168/+0.00077, above floor both) — needs an
-  occ9-base train-30 + judge + G8 screen as a
-  rule-side artifact.
+- plan-20 COMPLETE 11-05 (P20-1..13 done/closed/killed/
+  skipped, no survivors; see `docs/2026/11/05/`).
+- FOLLOW-UP closed as P21-1 (11-05): occ9-base screen
+  KILLED (fb8 -0.003512 wrong sign, phx3 +0.000015
+  floor) — P20-1 signal was a weak-base artifact.
 - chaitanyajamble (0.01853) + royalacecat smartpolicy reads
   — weak, optional.
 - occ9 LB submission is Oct-28 stale; no new submission

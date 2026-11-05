@@ -256,3 +256,28 @@ budget + corrected-sim/rescore timing (Kaggle API/host watch).
   per-mode routing. 191,940 sims
   (dumps 25,920 + liveness 10,500 +
   screens 155,520).
+- 2026-11-05 P21-14 done: all 6 closes
+  (same note). (1) K07 cf clause dropped
+  from plan-20 gaps (renumbered 3-5).
+  (2) Ladder leader row -> boys 0.00470
+  LB Nov-03. (3) research/01 header
+  points to research/21. (4) 11/04
+  README Summary/Open refreshed
+  (plan-19 closed, plan-20 ran P20-1..11,
+  kernel count; Open: plan-20 COMPLETE
+  pointer, frozen-det FOLLOW-UP closed
+  as P21-1). (5) honest_bill bound diff:
+  rule honest 0.01207 vs PR#2 0.01178
+  (Δ=0.00029) + Mima-scale 0.00003 ->
+  billing-choice bound <= 0.0003,
+  BOUND documented NOT closed (PR
+  bodies absent, needs-external).
+  (6) 31-vs-33 reconciled: /tmp/kaggle_nb
+  33 entries = 31 valid kernel dirs + 1
+  empty (alexchilton_v46) + 1 via-get
+  file; "31/31 OK" stands. 0 sim.
+  PLAN-21 COMPLETE: no survivors (13
+  killed/closed/dead/blocked, 1 closed
+  mined); P21-13 stays BLOCKED pending
+  research ideas (residual-ize,
+  per-mode routing).

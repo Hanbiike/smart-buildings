@@ -2,7 +2,8 @@
 
 > Historical research track. For current repository state and recommendations,
 > read [06](06-repository-analysis.md), [09](09-evidence-audit.md) and
-> [10](10-control-research-synthesis.md). Related competitions have different
+> [10](10-control-research-synthesis.md). For public-notebook distillation,
+> read [21](21-notebook-distillation.md). Related competitions have different
 > plants and metrics; their results do not identify this competition's leader
 > or establish a universal algorithm ranking. Unopened sources remain leads.
 

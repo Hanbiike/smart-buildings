@@ -58,10 +58,9 @@ pieces ride inside N1.1 (P20-7) per synthesis.
 
 1. PR #1/#2/#3 bodies uninspected (plan-19 gap-4 stands): N3.1 patch is site-located but semantics-unverified; honest_bill is PR#2-approximate (rule honest 0.01207 vs PR#2 0.01178 split documented).
 2. Forum thread bodies (749531/752142/753804/749896/752678/751998) absent: Mima/cycling/phantom numbers are digest-text only, not bars.
-3. N2 cf claim (K07 tuning -16.1%) ungrounded in repo: not a bar.
-4. TD3BC fit seed 0 (mine, logged here -- closes the research gap); P10 screen driver was `/tmp/p10_screen.py` scratch (P20-1 commits a tool version).
-5. Second-seed replication of phx3 +0.0007337 absent (single seed 31).
-6. 8h-enumeration wall-clock vs 10x cap unmeasured (P20-13 must verify).
+3. TD3BC fit seed 0 (mine, logged here -- closes the research gap); P10 screen driver was `/tmp/p10_screen.py` scratch (P20-1 commits a tool version).
+4. Second-seed replication of phx3 +0.0007337 absent (single seed 31).
+5. 8h-enumeration wall-clock vs 10x cap unmeasured (P20-13 must verify).
 
 ## Execution log
 

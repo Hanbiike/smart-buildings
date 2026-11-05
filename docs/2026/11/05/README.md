@@ -13,6 +13,12 @@ seed rescreens + offline probes + 0-sim backlog scoped. Critic caught
 a plan-20 wording slip (P20-10:344 "beats occ9-rule" vs occ_gated7
 screen base) — P21-1 re-screens vs occ9 first. Wrote
 `docs/plan/21-frozen-determinism.md`, starting action.
+Plan-21 ran P21-1..P21-14 same day: frozen line KILLED
+(weak-base artifact), F-series all killed/vacuous
+(F2 22.7x, F4 trigger 1e-44, F3 1/3, F6/F7 closed),
+rescreens killed (R1a counter 0, R2 fire 0, N1 singles
+lose to occ9), E2 collapse, R3a no-sweep, MoE DAgger
+2/2 failed (BLOCKED), docs closed. COMPLETE, no survivors.
 
 ## Status
 
@@ -65,6 +71,7 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 `E2 RvS — collapse (shuffled RTG beats true) + teacher ceiling — KILLED, 0 sim`.
 `R3a mine — sat wins 0/5, no MILD_SAT sweep — CLOSED, 0 sim`.
 `MoE DAgger — idea-1 fb8 -91% but sg8 12x worse, idea-2 worse than soft7 — BLOCKED, 192k`.
+`P21-14 — 6 doc closes (K07, ladder, r01, 11-04, bill bound ≤0.0003, 31/33) — PLAN-21 COMPLETE`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -156,6 +163,15 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
   correctives; no convergence. T4 shut. Residual-ize
   + per-mode routing queued for research. 191,940 sims.
 
+### Plan 21/P21-14: doc/gap closes (done, PLAN-21 COMPLETE)
+
+- K07 clause dropped (plan-20 gaps renumbered); ladder
+  leader boys 0.00470; research/01 -> research/21
+  pointer; 11/04 Summary/Open refreshed; honest_bill
+  bound diff <= 0.0003 (bound, not closed); 31-vs-33
+  reconciled (31 valid + empty + file). 0 sim.
+  Plan-21: no survivors; P21-13 BLOCKED pending research.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -169,7 +185,8 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 
 ## Open
 
-- P21-14 backlog closes (next, last),
+- Round-5 deep research (next): residual-ize, per-mode routing,
+  new angles; P21-13 unblocks on compounding-fix ideas.
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

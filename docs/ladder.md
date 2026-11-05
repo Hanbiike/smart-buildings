@@ -282,7 +282,7 @@ See `docs/2026/11/03/`.
 | occ_gated7 | occ7 v1 | COMPLETE | 0.01323 |
 | occ_econdbh7 (occ8) | smart-buildings-submission-occ8 | COMPLETE | 0.01260 |
 | occ_econdbhhot9 (occ9) | occ9 kernel v1 | COMPLETE | 0.01236 |
-| leader (Joe Penn) | — | LB | 0.00521 |
+| leader (boys) | — | LB Nov-03 | 0.00470 |
 
 Scoring queue is slow (~14h). Watch the daily submission budget
 (1 left on 10-27).
