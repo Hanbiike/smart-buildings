@@ -63,6 +63,7 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 `R2 rescreen — fire 0 (xfer_3 + 2 full C-parity) — KILL`.
 `N1 singles — p2 explodes train-fb, off/hyst lose to occ9 — all KILLED`.
 `E2 RvS — collapse (shuffled RTG beats true) + teacher ceiling — KILLED, 0 sim`.
+`R3a mine — sat wins 0/5, no MILD_SAT sweep — CLOSED, 0 sim`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -136,6 +137,13 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
   signal, collapse confirmed. Teacher = occ9 = current
   best: ceiling = occ9. No escalation. 0 sim.
 
+### Plan 21/P21-12: R3a 0-sim mine (CLOSED, no sweep)
+
+- Located 20x b8x5 CSVs (/tmp/r3a20). Sat vs hws
+  per-pair: worse atl1/den6/fb8, tie phx4/sg7.
+  0/5 wins: no MILD_SAT sweep, forecast->menu dead,
+  bound +0.000199 stands. 0 sim.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -149,7 +157,7 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 
 ## Open
 
-- P21-12 R3a mine (next), P21-13 MoE blocked,
+- P21-13 MoE blocked (next),
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

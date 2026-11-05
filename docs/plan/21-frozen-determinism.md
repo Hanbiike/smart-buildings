@@ -215,3 +215,17 @@ budget + corrected-sim/rescore timing (Kaggle API/host watch).
   current best, ceiling = occ9, beating
   by cloning impossible. No escalation.
   0 sim.
+- 2026-11-05 P21-12 done: CLOSED mined,
+  no sweep (same note). Located R3a 20x
+  b8x5 CSVs (/tmp/r3a20, 4 arms x 5
+  pairs x8640). Per-pair sat vs hws
+  (fixed-best): atl1 0.007234 vs
+  0.006087 (worse), den6 0.004631 vs
+  0.004298 (worse), fb8 0.027586 vs
+  0.027512 (worse), phx4 0.012424 vs
+  0.012424 (tie), sg7 0.006345 vs
+  0.006345 (tie). Sat wins 0/5: MILD_SAT
+  sweep condition unmet, forecast->menu
+  stays dead, no new menu (needs
+  0.0005 clear). Bound +0.000199 stands.
+  0 sim.
