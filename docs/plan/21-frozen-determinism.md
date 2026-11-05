@@ -200,3 +200,18 @@ budget + corrected-sim/rescore timing (Kaggle API/host watch).
   worse than occ9 mean. No single beats
   occ9: nothing promotable. 36,600
   sims. No code changes.
+- 2026-11-05 P21-11 done: E2 KILLED
+  (same note). Bars pinned on 30 occ9
+  dumps (259,200 steps): action spread
+  healthy (mean_std 0.17-0.33, const
+  <15%). BC vs RvS held-out (fb8,
+  time-split, GPU): BC 0.022307,
+  RvS-true 0.021316 (-4.4%) BUT
+  RvS-shuffled 0.020966 and BC+clock
+  0.021100 both beat true-RTG --
+  RTG "help" is noise/clock-leak, no
+  return signal: COLLAPSE confirmed.
+  Premise corrected: teacher = occ9 =
+  current best, ceiling = occ9, beating
+  by cloning impossible. No escalation.
+  0 sim.

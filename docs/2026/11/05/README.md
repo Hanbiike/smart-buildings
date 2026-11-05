@@ -62,6 +62,7 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 `R1a rescreen — OCC_SEED=99999 counter 0 (bit-identical) — KILL`.
 `R2 rescreen — fire 0 (xfer_3 + 2 full C-parity) — KILL`.
 `N1 singles — p2 explodes train-fb, off/hyst lose to occ9 — all KILLED`.
+`E2 RvS — collapse (shuffled RTG beats true) + teacher ceiling — KILLED, 0 sim`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -126,6 +127,15 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
   hyst +0.00023 vs occ9 mean. No single beats occ9.
   36,600 sims. No code changes.
 
+### Plan 21/P21-11: E2 RvS collapse probe (KILLED, 0 sim)
+
+- Bars on 30 occ9 dumps (259,200 steps): spread healthy
+  (0.17-0.33). BC 0.022307 vs RvS-true 0.021316 vs
+  RvS-shuffled 0.020966 vs BC+clock 0.021100 (fb8
+  held-out, GPU): shuffled beats true — no return
+  signal, collapse confirmed. Teacher = occ9 = current
+  best: ceiling = occ9. No escalation. 0 sim.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -139,7 +149,7 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 
 ## Open
 
-- P21-11 E2 bars (next), P21-12 R3a mine, P21-13 MoE blocked,
+- P21-12 R3a mine (next), P21-13 MoE blocked,
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 
