@@ -948,6 +948,20 @@ class N1OffMixin:
 
     N1_OFF_ON = 1
     N1_OFF_MARGIN = 0.5
+    N1_OFF_OAT_GATE = 0
+
+    def _off_oat_ok(self, obs, ctrl, lo, hi) -> bool:
+        """OAT inside the comfort band (free-drift-safe to stop)."""
+        if not self.N1_OFF_OAT_GATE:
+            return True
+        oidx = ctrl.get("oat_idx")
+        if oidx is None:
+            return False
+        try:
+            oat = _outside_kelvin(self, float(obs[oidx]))
+        except (TypeError, ValueError):
+            return False
+        return bool(lo < oat < hi)
 
     def _base_action(self, obs):
         action = super()._base_action(obs)
@@ -958,6 +972,8 @@ class N1OffMixin:
         lo, hi = self.comfort_temp_window
         for ctrl in self.ahu_controllers:
             if not disc[ctrl["run_discrete_idx"]]:
+                continue
+            if not self._off_oat_ok(obs, ctrl, lo, hi):
                 continue
             ok = True
             for _, obs_idx, _ in ctrl["zones"]:
@@ -983,6 +999,13 @@ class N1OffProbe(N1OffMixin, OccEconDbhHot9Policy):
     """N1.1: occ9 + danielwuu OFF-candidate."""
 
     KEY = "probe_n1_off"
+
+
+class N1OffMildProbe(N1OffMixin, OccEconDbhHot9Policy):
+    """P22-7: OFF-candidate gated on mild OAT (in-band only)."""
+
+    KEY = "probe_n1_offmild"
+    N1_OFF_OAT_GATE = 1
 
 
 class N1P2Mixin:

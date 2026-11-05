@@ -6,6 +6,7 @@ from smart_buildings import evaluate
 from smart_buildings.baselines.probe_modes import (
     N1HystMixin,
     N1HystProbe,
+    N1OffMildProbe,
     N1OffMixin,
     N1OffProbe,
     N1P2Mixin,
@@ -57,6 +58,30 @@ class TestN1Pieces(unittest.TestCase):
         self.assertLess(mro.index(N1OffMixin), mro.index(N1P2Mixin))
         self.assertLess(mro.index(N1P2Mixin), mro.index(N1HystMixin))
         self.assertLess(mro.index(N1HystMixin), mro.index(occ9))
+
+    def test_offmild_registered_and_gated(self):
+        self.assertIn("probe_n1_offmild", evaluate.POLICY_MAP)
+        self.assertEqual(N1OffMildProbe.N1_OFF_OAT_GATE, 1)
+        self.assertEqual(N1OffMixin.N1_OFF_OAT_GATE, 0)
+        self.assertEqual(N1OffProbe.N1_OFF_OAT_GATE, 0)
+
+    def test_off_oat_ok(self):
+        import numpy as np
+        probe = N1OffMildProbe.__new__(N1OffMildProbe)
+        probe.outside_mean = 0.0
+        probe.outside_std = 1.0
+        ctrl = {"oat_idx": 0}
+        # raw kelvin in-band -> ok; out-of-band -> blocked
+        self.assertTrue(probe._off_oat_ok(np.array([295.0]), ctrl,
+                                          294.0, 297.0))
+        self.assertFalse(probe._off_oat_ok(np.array([280.0]), ctrl,
+                                           294.0, 297.0))
+        self.assertFalse(probe._off_oat_ok(np.array([310.0]), ctrl,
+                                           294.0, 297.0))
+        # flag off -> always ok (existing probes unchanged)
+        probe0 = N1OffProbe.__new__(N1OffProbe)
+        self.assertTrue(probe0._off_oat_ok(np.array([280.0]), ctrl,
+                                           294.0, 297.0))
 
     def test_p2_pressure_math(self):
         # fraction 1.0 -> 2000 Pa -> +1.0; fraction 0.1 -> clip 200 Pa -> -0.8.

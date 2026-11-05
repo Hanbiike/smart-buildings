@@ -83,6 +83,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 `P22-4 DMAX — fb1 -0.010, fb8 -0.004 (min-airflow under-delivers in deep cold) — KILL`.
 `P22-5 F2B — ablation bit-identical to F2 (stale-offset refuted, F7-consistent) — F2 stays KILLED`.
 `P22-6 RESID — PASS: fb8 gap cut 102% (beats occ7 by 0.00088), elsewhere ties — P21-13 UNBLOCKED`.
+`P22-7 OFFM — mild wins 7x below floor, sg7 bit-identical (gate blocks hot) — CLOSED`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -232,6 +233,14 @@ confirmed NO-RLS (covariance alloc-only) and pockets
   phx1/sg8 tie occ7 (2e-6). Mean-3 beats occ7 by
   0.000295 (T4 bar). 82,260 sims.
 
+### Plan 22/P22-7: mild-only OFF (CLOSED below floor)
+
+- N1OffMildProbe (OAT-gate) + 9 tests green. Screen:
+  atlanta_2 +0.000026, denver_7 +0.000028 (same-sign,
+  7x below floor); sg7 bit-identical (gate blocks hot
+  fire; ungated lost -1.18). Mechanism confirmed, no
+  escalation. 54,840 sims.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -245,7 +254,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 
 ## Open
 
-- Plan-22 action (next): P22-7 OFFM mild-only OFF.
+- Plan-22 action (next): P22-8 P2M heat-interlocked P2.
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

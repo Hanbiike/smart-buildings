@@ -161,3 +161,17 @@ rescore timing. Corrected-sim re-validation blocked on hosts.
   0.000295 (T4 bar). P21-13 UNBLOCKED.
   82,260 sims (4,500 live + 77,760;
   refit/replay 0-sim).
+- 2026-11-05 P22-7 done: CLOSED
+  below-floor, mechanism confirmed (same
+  note). NEW N1OffMildProbe (OAT-gate
+  in mixin, default off = existing
+  probes unchanged) + key + 9 tests
+  green. Screen 2 mild + sg7 x8640:
+  atlanta_2 +0.000026, denver_7
+  +0.000028 (same-sign wins, 7x below
+  floor); sg7 BIT-IDENTICAL all 3 CSVs
+  (gate fully blocks hot fire; ungated
+  off lost -1.18 there). Gate conditions
+  met but below floor: revive confirmed,
+  no escalation. 54,840 sims (3,000
+  live + 51,840).
