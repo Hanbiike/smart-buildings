@@ -186,3 +186,17 @@ rescore timing. Corrected-sim re-validation blocked on hosts.
   FAIL, no stage-2 fb checks. P2 dead
   everywhere: cold = explosion, mild =
   loss, hot = loss. 8,640 sims.
+- 2026-11-05 P22-9 done: CLOSED,
+  cold-transfer confirmed, revival gate
+  failed (same note). Stage-1 fb1+fb2
+  x8640: dag1 wins both, gap cut 93.4%
+  (fb1: 0.0586 vs soft7 0.1586 vs occ7
+  0.0516) and 50.5% (fb2: 0.0252 vs
+  0.0344 vs 0.0161) -- fb8-fix DOES
+  transfer cold-to-cold. Stage-2
+  skipped 0-sim: sg8 poisoning already
+  proven (/tmp/dag9 dag1 0.108 vs soft7
+  0.0085), revival gate AND-condition
+  unmeetable. DAG-overwrite line stays
+  dead (resid dominates anyway).
+  51,840 sims (34,560 + 17,280 occ7).
