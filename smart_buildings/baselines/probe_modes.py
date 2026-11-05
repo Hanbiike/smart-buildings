@@ -1228,9 +1228,10 @@ class ResidualSlotProbe(_SlotHybrid7Mixin, SlotHybridPolicy,
         Wz, bz = self._blended(self.Wz, self.bz, bank, slot)
         Wa, ba = self._blended(self.Wa, self.ba, bank, slot)
         Wg, bg = self._blended(self.Wg, self.bg, bank, slot)
-        zone = zf.astype(np.float64) @ Wz + bz
-        ahu = af.astype(np.float64) @ Wa + ba
-        wat = gf.astype(np.float64) @ Wg + bg
+        # P23-5: prefix slice keeps pre-P23-5 weights bit-identical.
+        zone = zf.astype(np.float64)[:, :Wz.shape[0]] @ Wz + bz
+        ahu = af.astype(np.float64)[:, :Wa.shape[0]] @ Wa + ba
+        wat = gf.astype(np.float64)[:Wg.shape[0]] @ Wg + bg
         cont = action["continuous_action"]
         rooms = self.slot.ctx.rooms
         for k, r in enumerate(rooms):

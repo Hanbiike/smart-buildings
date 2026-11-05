@@ -113,9 +113,9 @@ class PPOPolicy(SlotHybridPolicy):
         Wz, bz = self._blended(self.Wz, self.bz, bank, slot)
         Wa, ba = self._blended(self.Wa, self.ba, bank, slot)
         Wg, bg = self._blended(self.Wg, self.bg, bank, slot)
-        mz = zf.astype(np.float64) @ Wz + bz
-        ma = af.astype(np.float64) @ Wa + ba
-        mw = gf.astype(np.float64) @ Wg + bg
+        mz = zf.astype(np.float64)[:, :Wz.shape[0]] @ Wz + bz
+        ma = af.astype(np.float64)[:, :Wa.shape[0]] @ Wa + ba
+        mw = gf.astype(np.float64)[:Wg.shape[0]] @ Wg + bg
         sz = np.exp(self.logstd["z"])
         sa = np.exp(self.logstd["a"])
         sw = np.exp(self.logstd["w"])

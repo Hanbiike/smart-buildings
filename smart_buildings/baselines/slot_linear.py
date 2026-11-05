@@ -73,13 +73,17 @@ def blend_weights(kind=(1, 2, 1)) -> np.ndarray:
 class SlotFeatures:
     """Fixed-dim features with 1-step memory. Shared train/infer path."""
 
-    FZ_EXTRA = 10  # occupancy, comfort x2, SAT-zone, AHU run, water-zone,
+    FZ_EXTRA = 12  # occupancy, comfort x2, SAT-zone, AHU run, water-zone,
     # ...prev temp, EMA temp, leaky err-integral, outdoor-air-temp
     # (appended to room_feats). The oat channel is unsaturated: room
     # feat4 (T-oat) clips at +/-2, so fairbanks days are indistinguishable
-    # without it.
-    FA = 14        # + heat-need EMA, cool-need EMA (teacher mixedness state)
-    FG = 11        # + leaky heat-shortfall integral (teacher reset state)
+    # without it. P23-5 appends unclipped water-gap + unclipped OAT
+    # (channels 18-19); heads trained pre-P23-5 read the 18-prefix.
+    FA = 18        # + heat-need EMA, cool-need EMA (teacher mixedness state);
+    # P23-5 appends SAT setpoint, SAT tracking error, static-pressure
+    # error, fan-speed command (channels 14-17); old heads read 14-prefix.
+    FG = 12        # + leaky heat-shortfall integral (teacher reset state);
+    # P23-5 appends supply-water setpoint gap (channel 11).
 
     def __init__(self, meta: dict):
         self.ctx = FeatureContext(meta)
@@ -96,6 +100,7 @@ class SlotFeatures:
         self.hws_press = idx.get("hws_differential_pressure_sensor", -1)
         self.hws_run = idx.get("hws_run_status",
                                idx.get("hws_supervisor_run_command", -1))
+        self.hws_twsp = idx.get("hws_supply_water_temperature_setpoint", -1)
         fz_room = 8
         self.FZ = fz_room + self.FZ_EXTRA
         self.mode_bounds = tuple(meta.get("slot_mode_bounds", (283.15,)))
@@ -147,15 +152,26 @@ class SlotFeatures:
         self.mode = self._oat_mode
 
     def _sat_kelvin(self, obs, ahu_i: int) -> float:
+        return self._ahu_kelvin(obs, ahu_i,
+                                "supply_air_temperature_sensor", 291.0)
+
+    def _ahu_kelvin(self, obs, ahu_i: int, col: str,
+                    default: float) -> float:
         cols = self.ctx.ahu_cols[ahu_i]
-        i = cols["supply_air_temperature_sensor"]
+        i = cols[col]
         if i < 0:
-            return 291.0
+            return default
         v = float(obs[i])
-        entry = self.ctx.norm.get("supply_air_temperature_sensor")
+        entry = self.ctx.norm.get(col)
         if entry is not None and abs(v) <= 150.0:
             return v * entry["sample_std"] + entry["sample_mean"]
         return v
+
+    def _twsp_kelvin(self, obs) -> float:
+        if self.hws_twsp < 0:
+            return 330.0
+        v = float(obs[self.hws_twsp])
+        return v if v > 150.0 else v * 20.0 + 330.0
 
     # -- main ------------------------------------------------------------
 
@@ -214,8 +230,10 @@ class SlotFeatures:
             zf[k, 13] = self._clip((tw - t_now[k]) / 20.0)
             zf[k, 14] = (self._prev_t[k] - 294.0) / 6.0
             zf[k, 15] = (self._ema_t[k] - 294.0) / 6.0
+            zf[k, 18] = (tw - t_now[k]) / 20.0  # P23-5: unclipped water gap
         zf[:, 16] = self._clip(self._int_z / 20.0)
         zf[:, 17] = self._clip((oat - 280.0) / 20.0)
+        zf[:, 19] = (oat - 280.0) / 20.0  # P23-5: unclipped OAT
         self._prev_t = t_now.copy()
         self._ema_t = (11.0 / 12.0) * self._ema_t + (1.0 / 12.0) * t_now
         self._int_z = 0.995 * self._int_z + np.clip(center_err, -1.0, 1.0)
@@ -243,8 +261,19 @@ class SlotFeatures:
             sat = self._sat_kelvin(obs, i)
             af[i, 6] = (sat - 291.0) / 10.0
             cols = ctx.ahu_cols[i]
+            satsp = self._ahu_kelvin(obs, i,
+                                     "supply_air_temperature_setpoint", 291.0)
+            af[i, 14] = (satsp - 291.0) / 10.0  # P23-5: SAT setpoint
+            af[i, 15] = self._clip((sat - satsp) / 5.0, -2.0, 2.0)  # SAT err
             pi = cols["supply_air_static_pressure_sensor"]
             af[i, 7] = float(obs[pi]) / 1000.0 if pi >= 0 else 0.2
+            psi = cols["supply_air_static_pressure_setpoint"]
+            if pi >= 0 and psi >= 0:
+                af[i, 16] = self._clip((float(obs[pi]) - float(obs[psi]))
+                                       / 200.0, -2.0, 2.0)  # P23-5: dp err
+            fani = cols["supply_fan_speed_percentage_command"]
+            af[i, 17] = (float(obs[fani]) * 4.0 if fani >= 0
+                         else 0.0)  # P23-5: fan-speed u-proxy
             fi = cols["supply_air_flowrate_sensor"]
             af[i, 8] = float(obs[fi]) / 4.0 if fi >= 0 else 0.0
             run_i = cols["supervisor_run_command"]
@@ -266,6 +295,7 @@ class SlotFeatures:
         gf[7] = float(obs[self.hws_press]) / 10.0 if self.hws_press >= 0 else 0.0
         gf[8] = float(obs[self.hws_run]) if self.hws_run >= 0 else 0.0
         gf[9] = self._clip((oat - 280.0) / 20.0)
+        gf[11] = (tw - self._twsp_kelvin(obs)) / 20.0  # P23-5: water sp gap
         shortfall = float(np.mean(np.clip(-room[:, 1], 0.0, None))) if Z else 0.0
         gf[10] = self._clip(self._int_w / 50.0)
         self._int_w = 0.995 * self._int_w + shortfall
@@ -341,9 +371,11 @@ class SlotLinearPolicy:
         Wz, bz = self._blended(self.Wz, self.bz, bank, slot)
         Wa, ba = self._blended(self.Wa, self.ba, bank, slot)
         Wg, bg = self._blended(self.Wg, self.bg, bank, slot)
-        zone = zf.astype(np.float64) @ Wz + bz          # [Z, 2]
-        ahu = af.astype(np.float64) @ Wa + ba           # [A, 4]
-        wat = gf.astype(np.float64) @ Wg + bg           # [3]
+        # P23-5: heads read the feature prefix they were trained on
+        # (pre-P23-5 weights see 18/14/11 of the 20/18/12 channels).
+        zone = zf.astype(np.float64)[:, :Wz.shape[0]] @ Wz + bz   # [Z, 2]
+        ahu = af.astype(np.float64)[:, :Wa.shape[0]] @ Wa + ba    # [A, 4]
+        wat = gf.astype(np.float64)[:Wg.shape[0]] @ Wg + bg       # [3]
 
         cont = np.full(self.n_continuous, -1.0, dtype=np.float32)
         disc = np.zeros(self.n_discrete, dtype=np.int32)

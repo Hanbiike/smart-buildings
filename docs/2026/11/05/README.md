@@ -97,6 +97,7 @@ verified bank1-zero + memory skew. Wrote plan-23.
 `P23-2 SKEW — mismatch is divergence not a bug (9.6% deleg), unfixable by update rules — REVERTED, 0 sim`.
 `P23-3 BREAK — self-limit holds to 0.5 (res50 fb8 best) but s=1.0 explodes everywhere — KILL`.
 `P23-4 K2 — OAT-split hurts fb8 (-0.000305): sample-split cost beats specialization — KILL, K=1 holds`.
+`P23-5 FEAT — zero R2 lift on phx1 SAT (.176→.176), err-channels exactly-0 weights (degenerate) — KILL, 0 sim`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -312,6 +313,19 @@ verified bank1-zero + memory skew. Wrote plan-23.
   Split cost > gain (mode0 med 212 vs 1730).
   K=1 holds; baseline res30. 52,140 sims.
 
+### Plan 23/P23-5: feature augment (KILLED by R2 gate)
+
+- slot_r2.py (per-channel offline R2) + 7 new
+  channels (zone unclipped tw/oat, AHU satsp/
+  sat-err/dp-err/fan, water sp-gap) with prefix
+  slices (old weights bit-identical, parity
+  proven) + 4 tests green (305 total). Refit
+  f5: phx1 SAT .176→.176 (zero lift), water
+  still negative; sg8 no inflation. sat-err/
+  dp-err weights exactly 0 (teacher holds
+  setpoints; degenerate in demos). No screen
+  (ordered gate). Baseline res30. 0 sims.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -325,7 +339,8 @@ verified bank1-zero + memory skew. Wrote plan-23.
 
 ## Open
 
-- Plan-23 action (next): P23-5 feature augment.
+- Plan-23 action (next): P23-6 DAgger-on-resid
+  (needs tools/replay_base.py first).
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

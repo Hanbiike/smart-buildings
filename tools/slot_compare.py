@@ -54,9 +54,9 @@ def predict(H, bank, slot, zf, af, gf):
     Wz, bz = blended(H["Wz"], H["bz"], bank, slot)
     Wa, ba = blended(H["Wa"], H["ba"], bank, slot)
     Wg, bg = blended(H["Wg"], H["bg"], bank, slot)
-    return (zf.astype(np.float64) @ Wz + bz,
-            af.astype(np.float64) @ Wa + ba,
-            gf.astype(np.float64) @ Wg + bg)
+    return (zf.astype(np.float64)[:, :Wz.shape[0]] @ Wz + bz,
+            af.astype(np.float64)[:, :Wa.shape[0]] @ Wa + ba,
+            gf.astype(np.float64)[:Wg.shape[0]] @ Wg + bg)
 
 
 def main():

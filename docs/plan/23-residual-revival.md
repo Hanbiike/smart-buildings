@@ -110,3 +110,24 @@ bodies, submission budget + rescore timing.
   212 vs pooled 1730). K=1 holds;
   baseline stays res30. 52,140 sims
   (300 live + 51,840).
+- 2026-11-05 P23-5 done: KILLED by
+  offline R2 gate, 0 sim (same note).
+  NEW tools/slot_r2.py (per-channel R2
+  on teacher demos, deploy-blend).
+  Baseline slot_resid: phx1 a.sat
+  .176, w.temp -.844; sg8 a.sat .399.
+  Augment (+2 zone unclipped tw/oat,
+  +4 AHU satsp/sat-err/dp-err/fan, +1
+  water sp-gap; prefix slices keep old
+  weights bit-identical, R2-parity
+  proven) + refit slot_resid_f5 + 4
+  tests green (305 total): phx1 a.sat
+  .176->.176 (ZERO lift, target
+  channel), w.temp -.844->-.827
+  (still worse than constant); sg8 no
+  inflation. Mechanism: sat-err/dp-err
+  weights EXACTLY 0 (teacher holds
+  setpoints exactly -> degenerate in
+  demos); zone lift +.003 noise. No
+  screen (gate ordered offline first).
+  Baseline stays res30. 0 sims.
