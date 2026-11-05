@@ -56,6 +56,7 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 ## Measured
 
 `occ9det — fb8+phx3 x8640 honest — fb8 gap -0.003512, phx3 gap +0.000015 — KILL (wrong sign / below floor)`.
+`clip-rate — train 0/60M vs judge 0/46M — F6 KILL (judge not greater)`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -64,6 +65,12 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
   -0.003512 (17x floor, wrong sign), phx3 +0.000015 (floor).
   P20-1 signal was a weak-base artifact; P21-2/P21-3 SKIPPED.
   Seed replica degenerate (rollout seed != occupancy).
+  Logged in plan-21.
+
+### Plan 21/P21-4: F6 clip audit (KILLED)
+
+- Train 0/60M vs judge 0/46M clip hits (24 fresh judge dumps).
+  Input scale healthy; transfer gap elsewhere. 36,000 sims.
   Logged in plan-21.
 
 ## Decisions

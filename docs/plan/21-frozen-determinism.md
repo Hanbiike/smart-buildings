@@ -97,3 +97,11 @@ budget + corrected-sim/rescore timing (Kaggle API/host watch).
   replica; true second seed needs OCC_SEED,
   moot now). P21-2 + P21-3 SKIPPED (gated
   behind P21-1). 69,120 honest sims.
+- 2026-11-05 P21-4 done: F6 KILLED (same
+  note). Clip-+-10 hit-rate: train 0/60M
+  (30 dumps) vs judge 0/46M (24 fresh
+  dumps x1500) -- judge NOT greater than
+  train. Input scale is healthy; transfer
+  gap is elsewhere. 36,000 sims (dumps;
+  plan said 0-sim -- judge obs did not
+  exist, corrected).
