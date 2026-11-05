@@ -24,6 +24,12 @@ synthesis, 8/8 read): ranked 10 plan-22 candidates; parent
 refuted two-teacher theory (dag1 labels ARE occ9),
 confirmed NO-RLS (covariance alloc-only) and pockets
 (h67 76.7% exact). Wrote docs/plan/22-loss-pockets.md.
+Plan-22 ran P22-1..11: UGAS KILL, PRE CLOSED (+0.000071),
+DWU KILL (-0.00107), DMAX KILL, F2B stays KILLED, RESID
+PASS (P21-13 unblocked), OFFM/P2M/DAGX closed/killed,
+docs closed. 1 PASS. Round-6 (3/8 results, angles 1-4
+lost to schema) ranked 8 revival candidates; parent
+verified bank1-zero + memory skew. Wrote plan-23.
 
 ## Status
 
@@ -279,8 +285,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 
 ## Open
 
-- Round-6 deep research (next): MoE revival directions
-  (resid scale/mode/DAgger-on-resid, T4 push to occ9).
+- Plan-23 action (next): P23-1 scale ablation.
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

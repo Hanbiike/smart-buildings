@@ -1,0 +1,44 @@
+# Plan 23 — residual revival push (round-6 synthesis)
+
+Source: round-6 workflow (angle-0 + p99-followup + synthesis read;
+angles 1-4 + critic schema-failed and were LOST -- T4-path,
+tie-diag, ship, climategate survive only as synthesis ranks, which
+the parent treats as unverified-until-screened). Synthesis ranked
+8 candidates; parent-verified before writing: (1) bank1 weekend
+heads EXACTLY 0 (W~1e-15, run-bias 1.0) -- T==B weekends;
+(2) train/infer memory skew REAL (deploy slot.step update=True
+always vs train update=deleg); (3) /tmp/pooled_p99.py exists with
+per-channel constants (damp 0.872/reheat 0.846/SAT 0.624/press
+0.046/recirc 2.102/waterT 1.160).
+
+Shared gates: probe gate (fb8 gap-cut >= 50% vs occ7 + no >floor
+regression on phx1/sg8) for revival steps; F/F3 (judge-24 first,
+b8/train second, >= 0.0002, G8 3x, shipped AND honest) for any
+promotion. Short runs protocol-only.
+
+| ID | Item | Work | Gate |
+|---|---|---|---|
+| P23-1 | Scale ablation (RANK1, zero refit, FIRST) | Probes s in {0.05,0.3} + per-channel p99-normalized scale (consts above) on frozen slot_resid.npz; 3-pair x8640 (fb8+sg8+phx1) ~6 arms = 18 runs | Probe gate; winner → F/F3 track; all fail → KILL scale-up |
+| P23-2 | Memory-skew fix | Deploy slot.step(update=deleg) to match train (deleg from AHU-run obs); 3-pair x8640 | Beats s=0.15 baseline (no-regression + any gain) else REVERT (keep skew, document) |
+| P23-3 | Noise-head kill (RANK3) | Zero pressure + sg8-waterT heads (offline, no refit); scale break-test {0.15,0.5,1.0} on sg8 + HWS-cooling pair + fb8 | Self-limit claim holds (sg8-class bill diff < 2e-4 at all s) else KILL |
+| P23-4 | Per-mode K=2 resid (RANK2) | OAT-band K=2 modes x2 banks x288 slots + cold scale-up; refit + 3-pair x8640 | Probe gate + no sample-starvation (min/med/zeros) else KILL |
+| P23-5 | Feature augmentation (RANK4) | Add dp/SAT-cmd/u-proxy/unclipped-tw to zone+AHU heads; refit + R2 check + 3-pair x8640 | Offline R2 lift (phx1 SAT/water) w/o sg8 noise inflation, then probe gate; else KILL |
+| P23-6 | DAgger-on-resid cold-only (RANK5) | FIRST commit tools/replay_base.py (B-replay writer, unblocks tooling); B on student obs; cold-only refit + screens | P21-13 revisit: cold wins + sg8 guard; dag2-pattern (non-convergent) = KILL |
+| P23-7 | OAT-gated stack track (RANK6, SEPARATE) | 6-pair decision table; stage-0 liveness 6x6x1500 then x8640 survivors (P2 EXCLUDED; dmax/dwu never bundled unscreened) | 6-pair honest >= 0.0002 floor per arm; below floor = CLOSED (catastrophe-avoidance value only) |
+| P23-8 | Ship hardening (RANK7, parallel, code-only) | f32 b64+zlib weights cell (182KB), self-containment (no assembler surgery), local exec-check 300+ steps 2 scenarios | P21-3 bars (no-exception, f32/f64 <1e-4 + discrete equality, determinism, p99 time); 0 sim |
+| P23-9 | Doc closes | Round-6 angle loss record; bank1/skew findings to research; day notes | 0-sim; all landed |
+
+NOT RANKED: nonlinear heads (RANK8 LAST -- only if ranks 1-4
+plateau AND notebook path clears smoke); torch smoke stays
+DEFERRED (no torch candidate).
+
+Needs-external (unchanged): PR #1/#2/#3 diff bodies, forum
+bodies, submission budget + rescore timing.
+
+## Execution log
+
+- 2026-11-05 plan written from round-6 synthesis (3/8 results
+  read; angles 1-4 + critic lost to schema failure -- named
+  gap: T4-path/feature-audit/tie-diag/ship/climategate have
+  no dedicated evidence, synthesis ranks only). Starting
+  action at P23-1.
