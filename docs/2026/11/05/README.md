@@ -93,6 +93,7 @@ verified bank1-zero + memory skew. Wrote plan-23.
 `P22-8 P2M — OAT-gate kills explosions (fb ties) but atl2/sg7 lose — KILL`.
 `P22-9 DAGX — cold-transfer confirmed (fb1 93%, fb2 50.5%) but sg8 poisons — CLOSED`.
 `P22-10 — doc closes (RLS correction, pocket_stats.py, weight cite) — PLAN-22 COMPLETE (1 PASS, P21-13 unblocked)`.
+`P23-1 SCALE — monotone scale-up, res30 wins (fb8 cut 52%), sg8 holds — PASS, res30 new baseline`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -272,6 +273,14 @@ verified bank1-zero + memory skew. Wrote plan-23.
   (no torch candidate for smoke). 0 sim. Plan-22:
   1 PASS (P22-6), 3 CLOSED, 5 KILLED, 1 DEFERRED.
 
+### Plan 23/P23-1: scale ablation (PASS, res30 baseline)
+
+- ResidS05/S30/PCProbes + 8 tests green, refactor
+  parity exact. 18-run: fb8 monotone (res30 0.028963,
+  cut 52%); respc ~= resid (killed); sg8 ties at 0.3;
+  phx1 +0.00009 below floor. res30 = revival baseline.
+  161,520 sims.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -285,7 +294,7 @@ verified bank1-zero + memory skew. Wrote plan-23.
 
 ## Open
 
-- Plan-23 action (next): P23-1 scale ablation.
+- Plan-23 action (next): P23-2 memory-skew fix.
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

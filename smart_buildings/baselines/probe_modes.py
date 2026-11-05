@@ -1219,6 +1219,9 @@ class ResidualSlotProbe(_SlotHybrid7Mixin, SlotHybridPolicy,
     WEIGHTS = "smart_buildings/results/slot_runs/slot_resid.npz"
     RESID_SCALE = 0.15
 
+    def _resid_scale(self, channel):
+        return self.RESID_SCALE
+
     def _chain_action(self, obs):
         action = super(SlotHybridPolicy, self)._chain_action(obs)
         bank, slot, (zf, af, gf) = self.slot.step(np.asarray(obs))
@@ -1228,34 +1231,72 @@ class ResidualSlotProbe(_SlotHybrid7Mixin, SlotHybridPolicy,
         zone = zf.astype(np.float64) @ Wz + bz
         ahu = af.astype(np.float64) @ Wa + ba
         wat = gf.astype(np.float64) @ Wg + bg
-        s = self.RESID_SCALE
         cont = action["continuous_action"]
         rooms = self.slot.ctx.rooms
         for k, r in enumerate(rooms):
             cont[r["damp_act"]] = np.float32(np.clip(
-                float(cont[r["damp_act"]]) + s * zone[k, 0], -1.0, 1.0))
+                float(cont[r["damp_act"]])
+                + self._resid_scale("damp") * zone[k, 0], -1.0, 1.0))
             cont[r["reheat_act"]] = np.float32(np.clip(
-                float(cont[r["reheat_act"]]) + s * zone[k, 1], -1.0, 1.0))
+                float(cont[r["reheat_act"]])
+                + self._resid_scale("reheat") * zone[k, 1], -1.0, 1.0))
         for i, act in enumerate(self.slot.ctx.ahu_actions):
             cont[act["temp_idx"]] = np.float32(np.clip(
-                float(cont[act["temp_idx"]]) + s * ahu[i, 0], -1.0, 1.0))
+                float(cont[act["temp_idx"]])
+                + self._resid_scale("sat") * ahu[i, 0], -1.0, 1.0))
             if act["pressure_idx"] is not None:
                 cont[act["pressure_idx"]] = np.float32(np.clip(
-                    float(cont[act["pressure_idx"]]) + s * ahu[i, 1],
+                    float(cont[act["pressure_idx"]])
+                    + self._resid_scale("press") * ahu[i, 1],
                     -1.0, 1.0))
             if act["recirc_idx"] is not None:
                 cont[act["recirc_idx"]] = np.float32(np.clip(
-                    float(cont[act["recirc_idx"]]) + s * ahu[i, 2],
+                    float(cont[act["recirc_idx"]])
+                    + self._resid_scale("recirc") * ahu[i, 2],
                     -1.0, 1.0))
         w = self.slot.ctx.water
         if w["water_temp_idx"] is not None:
             cont[w["water_temp_idx"]] = np.float32(np.clip(
-                float(cont[w["water_temp_idx"]]) + s * wat[0], -1.0, 1.0))
+                float(cont[w["water_temp_idx"]])
+                + self._resid_scale("waterT") * wat[0], -1.0, 1.0))
         if w["water_pressure_idx"] is not None:
             cont[w["water_pressure_idx"]] = np.float32(np.clip(
-                float(cont[w["water_pressure_idx"]]) + s * wat[1],
+                float(cont[w["water_pressure_idx"]])
+                + self._resid_scale("waterP") * wat[1],
                 -1.0, 1.0))
         return action
+
+
+class ResidS05Probe(ResidualSlotProbe):
+    """P23-1: residual slot at scale 0.05."""
+
+    KEY = "probe_slot_res05"
+    RESID_SCALE = 0.05
+
+
+class ResidS30Probe(ResidualSlotProbe):
+    """P23-1: residual slot at scale 0.30."""
+
+    KEY = "probe_slot_res30"
+    RESID_SCALE = 0.30
+
+
+class ResidPCProbe(ResidualSlotProbe):
+    """P23-1: per-channel p99-normalized residual scale.
+
+    Parent-designed (angle-0 formula (b) not in compact):
+    s_c = 0.15 * (p99|D_c|/p99|P_c|) / 1.5, pressure killed
+    (p99|D|=0 proven dead channel).
+    """
+
+    KEY = "probe_slot_respc"
+    RESID_SCALES = {
+        "damp": 0.129, "reheat": 0.138, "sat": 0.224, "press": 0.0,
+        "recirc": 0.095, "waterT": 0.172, "waterP": 0.172,
+    }
+
+    def _resid_scale(self, channel):
+        return self.RESID_SCALES[channel]
 
 
 class SlotDag1Probe(SlotT1SoftProbe):

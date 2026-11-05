@@ -4,6 +4,9 @@ import unittest
 
 from smart_buildings import evaluate
 from smart_buildings.baselines.probe_modes import (
+    ResidPCProbe,
+    ResidS05Probe,
+    ResidS30Probe,
     ResidualSlotProbe,
     SlotDag1Probe,
     SlotDag2Probe,
@@ -40,6 +43,20 @@ class TestSlotDag(unittest.TestCase):
         self.assertIn("probe_slot_resid", evaluate.POLICY_MAP)
         self.assertEqual(ResidualSlotProbe.KEY, "probe_slot_resid")
         self.assertEqual(ResidualSlotProbe.RESID_SCALE, 0.15)
+
+    def test_scale_arms_registered(self):
+        for key, cls, scale in (
+                ("probe_slot_res05", ResidS05Probe, 0.05),
+                ("probe_slot_res30", ResidS30Probe, 0.30)):
+            self.assertIn(key, evaluate.POLICY_MAP)
+            self.assertEqual(cls.RESID_SCALE, scale)
+        self.assertIn("probe_slot_respc", evaluate.POLICY_MAP)
+        self.assertEqual(ResidPCProbe.RESID_SCALES["press"], 0.0)
+        self.assertEqual(ResidPCProbe.RESID_SCALES["sat"], 0.224)
+        probe = ResidPCProbe.__new__(ResidPCProbe)
+        self.assertEqual(probe._resid_scale("damp"), 0.129)
+        base = ResidualSlotProbe.__new__(ResidualSlotProbe)
+        self.assertEqual(base._resid_scale("damp"), 0.15)
 
     def test_teacher_import(self):
         from smart_buildings.baselines.occ_econdbhhot9 import (

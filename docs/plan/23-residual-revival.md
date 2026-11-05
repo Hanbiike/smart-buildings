@@ -42,3 +42,21 @@ bodies, submission budget + rescore timing.
   gap: T4-path/feature-audit/tie-diag/ship/climategate have
   no dedicated evidence, synthesis ranks only). Starting
   action at P23-1.
+- 2026-11-05 P23-1 done: PASS, res30
+  new baseline (same note). NEW
+  ResidS05/S30/PCProbes (uniform +
+  parent-designed per-channel) + keys +
+  8 tests green; refactor parity
+  (resid 0.022739 exact). 18-run
+  screen: fb8 monotone (res05 0.030070
+  / resid 0.029590 / res30 0.028963;
+  res30 cut 52% of occ7->occ9 gap,
+  0.0014 from occ9); respc 0.029585 ~=
+  resid (per-channel no win, killed);
+  sg8 all tie (5e-6, self-limit holds
+  at 0.3); phx1 res30 +0.00009 (below
+  floor, predicted risk). Gate met.
+  Winner res30 -> revival baseline
+  (not promotion: still -0.0014 vs
+  occ9). 161,520 sims (6,000 live +
+  155,520).
