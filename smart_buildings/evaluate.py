@@ -168,6 +168,9 @@ from smart_buildings.baselines.occ_off1 import (
     OccOffA1Policy,
     OccOffB1Policy,
 )
+from smart_buildings.baselines.occ_ugas1 import (
+    UgasCap20Policy,
+)
 from smart_buildings.baselines.occ_ptr1 import (
     OccPtrA1Policy,
     OccPtrB1Policy,
@@ -373,6 +376,7 @@ POLICY_MAP: dict[str, type[Any]] = {
     "occ_econdbhhot9": OccEconDbhHot9Policy,
     "occ_offa1": OccOffA1Policy,
     "occ_offb1": OccOffB1Policy,
+    "occ_ugascap20": UgasCap20Policy,
     "occ_ptr0": Ptr1Base,
     "occ_ptra1": OccPtrA1Policy,
     "occ_ptrb1": OccPtrB1Policy,

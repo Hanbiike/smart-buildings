@@ -41,3 +41,20 @@ rescore timing. Corrected-sim re-validation blocked on hosts.
 - 2026-11-05 plan written from round-5 synthesis (8/8 read,
   critic corrections applied, 3 parent verifications above).
   Starting action at P22-1.
+- 2026-11-05 P22-1 done: KILLED (same
+  note). NEW UgasCap20Policy (floor cap
+  eco_lo - 2K) + key + 3 tests green.
+  Directionality record: FLOOR_CAPABILITY
+  0.5/0.7/1.0 all VACUOUS bit-identical
+  (gated3 caps floor at eco_lo - 1K,
+  binds always; proven + offline replay
+  modes). Cap20 liveness via replay-diff
+  (x1500 window floor-quiet): 791
+  mode-diffs + 2293 action-diffs.
+  Screen fb1+fb8 x8640: fb8 -0.000152
+  (win, below floor), fb1 +0.000126
+  (loss, below floor) -- mixed, mean
+  ~0. Components: fb1 comfort -46.8 vs
+  -38.3 (deeper floor breaks recovery
+  in -21C), fb8 all better but small.
+  48,060 sims.

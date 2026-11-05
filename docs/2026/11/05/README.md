@@ -77,6 +77,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 `R3a mine — sat wins 0/5, no MILD_SAT sweep — CLOSED, 0 sim`.
 `MoE DAgger — idea-1 fb8 -91% but sg8 12x worse, idea-2 worse than soft7 — BLOCKED, 192k`.
 `P21-14 — 6 doc closes (K07, ladder, r01, 11-04, bill bound ≤0.0003, 31/33) — PLAN-21 COMPLETE`.
+`P22-1 UGAS — floor-cap lever mixed below floor (fb8 -0.00015, fb1 +0.00013) — KILL`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -177,6 +178,15 @@ confirmed NO-RLS (covariance alloc-only) and pockets
   reconciled (31 valid + empty + file). 0 sim.
   Plan-21: no survivors; P21-13 BLOCKED pending research.
 
+### Plan 22/P22-1: UGAS floor-cap trim (KILLED)
+
+- UgasCap20Policy (eco_lo - 2K) + 3 tests green.
+  FLOOR_CAPABILITY proven vacuous (gated3 cap binds).
+  Replay-diff liveness (791 modes). Screen: fb8
+  -0.000152 win, fb1 +0.000126 loss — mixed below
+  floor. fb1 comfort -46.8 vs -38.3 (recovery breaks).
+  48,060 sims.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -190,7 +200,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 
 ## Open
 
-- Plan-22 action (next): P22-1 UGAS trim probe.
+- Plan-22 action (next): P22-2 PRE arrival-edge probe.
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 
