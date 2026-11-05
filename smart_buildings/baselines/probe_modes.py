@@ -1141,6 +1141,55 @@ class SlotT1HardProbe(_SlotHybrid7Mixin, SlotHybridPolicy,
     WEIGHTS = "smart_buildings/results/slot_runs/slot_t1_hard.npz"
 
 
+class SlotDag1Probe(SlotT1SoftProbe):
+    """P21-13: soft-k3 architecture, DAgger-round-1 heads (occ9 + dag1)."""
+
+    KEY = "probe_slot_dag1"
+    WEIGHTS = "smart_buildings/results/slot_runs/slot_dag1.npz"
+
+
+class SlotDag2Probe(SlotT1SoftProbe):
+    """P21-13: DAgger-round-1 heads, 3-pair corrective (fb8+phx1+sg8)."""
+
+    KEY = "probe_slot_dag2"
+    WEIGHTS = "smart_buildings/results/slot_runs/slot_dag2.npz"
+
+
+class SlotDaggerProbe(SlotT1SoftProbe):
+    """P21-13: DAgger-lite collection for the slot-hybrid compounding fix.
+
+    Executes soft-k3 heads; records the occ9 teacher's action for the
+    same obs into teacher_labels (evaluate dump writes dagger_labels.npz).
+    Actions are soft7's bit-for-bit (labels never feed back).
+    """
+
+    KEY = "probe_slot_dag"
+
+    def __init__(self, building_meta_data, action_spec):
+        super().__init__(building_meta_data, action_spec)
+        from smart_buildings.baselines.occ_econdbhhot9 import (
+            OccEconDbhHot9Policy)
+        self.teacher = OccEconDbhHot9Policy(
+            building_meta_data, action_spec)
+        self.teacher_labels = []
+
+    def reset(self):
+        super().reset()
+        self.teacher_labels = []
+
+    def get_action(self, obs):
+        import numpy as _np
+        action = super().get_action(obs)
+        teacher_action = self.teacher.get_action(obs)
+        self.teacher_labels.append(_np.concatenate([
+            _np.asarray(teacher_action["continuous_action"],
+                        dtype=_np.float32),
+            _np.asarray(teacher_action["discrete_action"],
+                        dtype=_np.float32),
+        ]))
+        return action
+
+
 class MedSat05Probe(OccEconDbhHot9Policy):
     """D1: occ9 + median-demand SAT (their DEMAND_QUANTILE=0.5)."""
 

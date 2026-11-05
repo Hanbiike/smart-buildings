@@ -229,3 +229,30 @@ budget + corrected-sim/rescore timing (Kaggle API/host watch).
   stays dead, no new menu (needs
   0.0005 clear). Bound +0.000199 stands.
   0 sim.
+- 2026-11-05 P21-13 done: still BLOCKED,
+  DAgger path exhausted 2/2 (same note).
+  NEW SlotDaggerProbe (soft7 exec +
+  occ9 labels, parity liveness
+  IDENTICAL + labels recorded, mean
+  |teacher-soft| 0.23) + SlotDag1Probe
+  + SlotDag2Probe + keys + 6 tests
+  green. Diagnosis (0-sim): soft holds
+  fb8 ~1K colder by day 3 (292.0 vs
+  293.3K), comfort explodes day 3
+  (-0.095 vs -0.003) -- thermal drift
+  -> OOD heads -> spiral. Idea-1
+  fb8-only DAgger: fb8 gap -91%
+  (0.039->0.003) BUT phx1 2x worse,
+  sg8 12.6x worse (shared heads
+  poisoned by one climate). Idea-2
+  3-pair DAgger: mean 0.0471 vs soft7
+  0.0286 vs occ7 0.0142 -- worse than
+  soft7 everywhere except fb8; dag2
+  worse than dag1 on phx1+fb8.
+  Conflicting correctives destabilize
+  shared linear heads; iterations do
+  NOT converge. T4 stays shut. Queued
+  for research: residual-ize heads,
+  per-mode routing. 191,940 sims
+  (dumps 25,920 + liveness 10,500 +
+  screens 155,520).

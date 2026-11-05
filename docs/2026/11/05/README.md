@@ -64,6 +64,7 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 `N1 singles — p2 explodes train-fb, off/hyst lose to occ9 — all KILLED`.
 `E2 RvS — collapse (shuffled RTG beats true) + teacher ceiling — KILLED, 0 sim`.
 `R3a mine — sat wins 0/5, no MILD_SAT sweep — CLOSED, 0 sim`.
+`MoE DAgger — idea-1 fb8 -91% but sg8 12x worse, idea-2 worse than soft7 — BLOCKED, 192k`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -144,6 +145,17 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
   0/5 wins: no MILD_SAT sweep, forecast->menu dead,
   bound +0.000199 stands. 0 sim.
 
+### Plan 21/P21-13: MoE revival via DAgger (BLOCKED, 2/2 failed)
+
+- SlotDaggerProbe (parity IDENTICAL, corrective 0.23) +
+  dag1/dag2 probes + 6 tests green. Diagnosis: 1K cold
+  drift by day 3 -> OOD -> comfort spiral. Idea-1:
+  fb8 gap -91% but sg8 12.6x worse. Idea-2 (3-pair):
+  mean 0.047 vs soft7 0.029 — worse everywhere but
+  fb8. Shared linear heads cannot hold conflicting
+  correctives; no convergence. T4 shut. Residual-ize
+  + per-mode routing queued for research. 191,940 sims.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -157,7 +169,7 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 
 ## Open
 
-- P21-13 MoE blocked (next),
+- P21-14 backlog closes (next, last),
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 
