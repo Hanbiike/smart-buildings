@@ -80,6 +80,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 `P22-1 UGAS — floor-cap lever mixed below floor (fb8 -0.00015, fb1 +0.00013) — KILL`.
 `P22-2 PRE — screen PASS (denver_3 -0.000515) but train-30 +0.000071 below floor — CLOSED`.
 `P22-3 DWU — phase-1 train-30 -0.00107 (hot catastrophe, SAT +5K w/o joint dampers) — KILL`.
+`P22-4 DMAX — fb1 -0.010, fb8 -0.004 (min-airflow under-delivers in deep cold) — KILL`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -206,6 +207,13 @@ confirmed NO-RLS (covariance alloc-only) and pockets
   +5K warmer w/o joint dampers = comfort collapse.
   Full-joint + climate-gate queued. 524,400 sims.
 
+### Plan 22/P22-4: DMAX dual-max staging (KILLED)
+
+- OccDmax9Policy (split 0.5/min 0.1 fixed) + 3 tests
+  green. Screen: fb1 -0.0101, fb8 -0.0037 — same-sign
+  wrong, 18-50x floor. Min-airflow heating under the
+  discharge cap under-delivers in deep cold. 37,560 sims.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -219,7 +227,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 
 ## Open
 
-- Plan-22 action (next): P22-4 DMAX dual-max probe.
+- Plan-22 action (next): P22-5 F2B ablation (1 run).
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

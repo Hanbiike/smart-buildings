@@ -116,3 +116,17 @@ rescore timing. Corrected-sim re-validation blocked on hosts.
   no phase-2 OFF. Full-joint port +
   climate-gate queued for research.
   524,400 sims (6,000 live + 518,400).
+- 2026-11-05 P22-4 done: KILLED (same
+  note). NEW OccDmax9Policy (dual-max
+  staging in occ9, fixed split 0.5/min
+  0.1) + key + 3 tests green. Screen
+  fb1+fb8 x8640: fb1 0.060201 vs
+  0.050064 (-0.0101), fb8 0.031267 vs
+  0.027586 (-0.0037) -- same-sign
+  WRONG, 18-50x floor. Mechanism:
+  min-airflow heating under the 308.15K
+  discharge cap under-delivers heat in
+  deep cold (reheat-first cannot
+  compensate capped air). Dual-max is a
+  mild-climate lever at best. 37,560
+  sims (3,000 live + 34,560).
