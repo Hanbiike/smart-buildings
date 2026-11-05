@@ -95,6 +95,7 @@ verified bank1-zero + memory skew. Wrote plan-23.
 `P22-10 — doc closes (RLS correction, pocket_stats.py, weight cite) — PLAN-22 COMPLETE (1 PASS, P21-13 unblocked)`.
 `P23-1 SCALE — monotone scale-up, res30 wins (fb8 cut 52%), sg8 holds — PASS, res30 new baseline`.
 `P23-2 SKEW — mismatch is divergence not a bug (9.6% deleg), unfixable by update rules — REVERTED, 0 sim`.
+`P23-3 BREAK — self-limit holds to 0.5 (res50 fb8 best) but s=1.0 explodes everywhere — KILL`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -289,6 +290,14 @@ verified bank1-zero + memory skew. Wrote plan-23.
   is closed-loop divergence (DAgger domain), not an
   update-rule bug. No screen, kept skew. 0 sim.
 
+### Plan 23/P23-3: noise-head break-test (KILLED)
+
+- ResidS50/S100Probes + 8 tests green. 9-run: fb8
+  res50 0.028820 (best) / res100 explosion; sg8 tie
+  at 0.5, 10x break at 1.0; phx4 res50 2.7x worse.
+  Self-limit holds to 0.5 only. res50 hot-risk, not
+  promoted; baseline res30. 80,760 sims.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -302,7 +311,7 @@ verified bank1-zero + memory skew. Wrote plan-23.
 
 ## Open
 
-- Plan-23 action (next): P23-3 noise-head kill.
+- Plan-23 action (next): P23-4 per-mode K=2.
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

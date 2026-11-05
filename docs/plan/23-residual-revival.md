@@ -74,3 +74,16 @@ bodies, submission budget + rescore timing.
   would be worse). Skew belongs to
   DAgger (P23-6), not to a deploy patch.
   Kept skew, documented. 0 sim.
+- 2026-11-05 P23-3 done: KILLED (claim
+  broken at s=1.0; same note). NEW
+  ResidS50/S100Probes + keys + 8 tests
+  green. Break-test 9-run: fb8 res50
+  0.028820 (better than res30!) res100
+  0.124747 (explosion); sg8 res50 tie
+  (4e-6) res100 0.072405 (10x break);
+  phx4 res50 0.037091 vs res15 0.013813
+  (2.7x worse). Self-limit holds to
+  0.5, breaks at 1.0: gate (all s)
+  FAILED. res50 not promoted (hot
+  risk); baseline stays res30. 80,760
+  sims (3,000 live + 77,760).

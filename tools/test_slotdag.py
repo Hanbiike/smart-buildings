@@ -6,7 +6,9 @@ from smart_buildings import evaluate
 from smart_buildings.baselines.probe_modes import (
     ResidPCProbe,
     ResidS05Probe,
+    ResidS100Probe,
     ResidS30Probe,
+    ResidS50Probe,
     ResidualSlotProbe,
     SlotDag1Probe,
     SlotDag2Probe,
@@ -47,7 +49,9 @@ class TestSlotDag(unittest.TestCase):
     def test_scale_arms_registered(self):
         for key, cls, scale in (
                 ("probe_slot_res05", ResidS05Probe, 0.05),
-                ("probe_slot_res30", ResidS30Probe, 0.30)):
+                ("probe_slot_res30", ResidS30Probe, 0.30),
+                ("probe_slot_res50", ResidS50Probe, 0.50),
+                ("probe_slot_res100", ResidS100Probe, 1.00)):
             self.assertIn(key, evaluate.POLICY_MAP)
             self.assertEqual(cls.RESID_SCALE, scale)
         self.assertIn("probe_slot_respc", evaluate.POLICY_MAP)

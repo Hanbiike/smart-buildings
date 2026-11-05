@@ -1281,6 +1281,20 @@ class ResidS30Probe(ResidualSlotProbe):
     RESID_SCALE = 0.30
 
 
+class ResidS50Probe(ResidualSlotProbe):
+    """P23-3: residual slot at scale 0.50 (break-test)."""
+
+    KEY = "probe_slot_res50"
+    RESID_SCALE = 0.50
+
+
+class ResidS100Probe(ResidualSlotProbe):
+    """P23-3: residual slot at scale 1.00 (break-test)."""
+
+    KEY = "probe_slot_res100"
+    RESID_SCALE = 1.00
+
+
 class ResidPCProbe(ResidualSlotProbe):
     """P23-1: per-channel p99-normalized residual scale.
 
