@@ -477,6 +477,24 @@ shipped).
   judge + G8 + notebook feasibility), not a
   P20-10 rider. Logged in plan-20.
 
+### Plan 20/P20-12: N3.2 bill/parity (done)
+
+- B8 3-bill 40/40: honest delta occ9
+  -0.000074 (Mima 0.00003 DROPPED as
+  constant, policy-dependent +-0.0004);
+  PR#3 delta +0.00003..0.00007 (below
+  floor). Tuning re-KILL on corrected sim
+  (+0.003791). Gateway parity holds by
+  construction (gap 0).
+- Judge 3-bill 168/168: honest delta occ9
+  +0.000078 (pool sign flips, Mima stays
+  dropped); PR#3 all below floor. Tuning
+  re-KILL +0.005314; skynet transfer gap
+  (b8 -0.000477, judge +0.002578). G8 all
+  PASS (worst 1.896, moot). 1,797,120
+  sims. PLAN-20 COMPLETE, no survivors.
+  Logged in plan-20.
+
 ### Simulator update check
 
 - Our tree is pre-PR#1 (tracker occupancy RNG stream);

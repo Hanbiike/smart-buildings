@@ -348,3 +348,48 @@ pieces ride inside N1.1 (P20-7) per synthesis.
   signal in plan-20 and must head the next
   plan, not ride P20-10 (not a line
   survivor).
+- 2026-11-04 P20-12 running (same note).
+  B8 3-bill screen landed 40/40 clean
+  (shipped occ9 leg = D4 CSVs, 0 sim):
+  HONEST delta shipped->honest: occ9
+  -0.000074, tuned -0.000307, skynet
+  +0.000388 -- Mima 0.00003 DROPPED as a
+  constant (occ9 2.5x larger, policy-
+  dependent sign/magnitude to +-0.0004).
+  PR#3 delta honest->PR#3: occ9 +0.000036,
+  tuned +0.000073, skynet +0.000032 (all
+  below floor; tuned fb8 +0.000510 single-
+  pair exception). Tuning-KILL check on
+  corrected sim: tuned 0.015141 vs occ9
+  0.011350 (+0.003791 re-KILL, N1 already
+  dead); skynet 0.010873 beats occ9
+  -0.000477 (noted, STOP RL stands).
+  Gateway parity: local pool-mean loss ==
+  gateway MAE semantics by construction
+  (equal scenario weights, full-length
+  episodes, no rejections) -- gap 0.
+  Judge 3-bill chain (168 runs: occ9 x3
+  bills + tuned/skynet ship+PR#3, honest
+  leg already in /tmp/n1fin_j) running in
+  background, ETA ~10h. G8 each candidate
+  after it lands. No code edits until then.
+- 2026-11-04 P20-12 done (same note).
+  Judge chain landed 168/168 clean.
+  HONEST delta judge: occ9 +0.000078 (b8
+  was -0.000074 -- pool-dependent sign,
+  same 7e-05 order; Mima 0.00003 stays
+  DROPPED), tuned -0.000110, skynet
+  +0.000340. PR#3 delta judge: occ9
+  +0.000026, tuned +0.000121, skynet
+  +0.000007 (all below floor). Tuning-KILL
+  on corrected sim judge: tuned-occ
+  +0.005314 (re-KILL confirmed); skynet-occ
+  +0.002578 on judge vs -0.000477 on b8 --
+  skynet has a transfer gap (beats occ9 on
+  b8, loses on judge). G8 all PASS (worst
+  1.896 skynet judge-PR#3; tuned 1.721;
+  b8 1.514/1.054) -- moot, mean gaps run
+  the wrong way. 1,797,120 sims (345,600
+  b8 + 1,451,520 judge). PLAN-20 COMPLETE:
+  P20-1..13 all done/closed/killed/skipped;
+  no survivors, no promotions.
