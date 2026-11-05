@@ -6,8 +6,9 @@ force_rule (pure rule) arms on fixed pairs, honest bill. Committed
 successor of the P10 scratch driver (/tmp/p10_screen.py).
 
 Usage: frozen_det_screen.py [--weights PT] [--tag NAME]
-  [--seed 31] [--steps 8640]
+  [--seed 31] [--steps 8640] [--base POLICY_KEY]
 Prints per-pair reward_sum lines; gaps are computed downstream.
+P21-1: --base occ_econdbhhot9 re-screens vs occ9 (P20-1 base occ_gated7).
 """
 import sys
 
@@ -32,6 +33,7 @@ def main():
     ap.add_argument("--tag", default="det")
     ap.add_argument("--seed", type=int, default=31)
     ap.add_argument("--steps", type=int, default=8640)
+    ap.add_argument("--base", default="occ_gated7")
     a = ap.parse_args()
     apply_honest_bill()
     for b, w in PAIRS:
@@ -43,7 +45,7 @@ def main():
             env.metrics_path = None
             meta = E.create_building_meta_data(env, d)
             spec = env.action_spec()
-            base = E.initialize_policy(POLICY_MAP["occ_gated7"], meta,
+            base = E.initialize_policy(POLICY_MAP[a.base], meta,
                                        spec)
             tr = roll.rollout_env(env, meta, spec, base, a.steps,
                                   seed=a.seed, **kw)

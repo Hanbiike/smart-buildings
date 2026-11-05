@@ -74,3 +74,26 @@ budget + corrected-sim/rescore timing (Kaggle API/host watch).
 
 - 2026-11-05 plan-21 written from round-4 synthesis (7/7 results read;
   terminal-value aggregate unread duplicate, no effect).
+- 2026-11-05 P21-1 running. Added --base to
+  tools/frozen_det_screen.py (default
+  occ_gated7, backward-compat). Smoke 1500
+  occ9-base OK (fb8 base -30.2186 vs det
+  -35.8223, phx3 -9.1100 vs -9.1809 --
+  protocol only). Full screens seed 31 +
+  99999 (69,120 honest) running serial in
+  background. No code edits until they land.
+- 2026-11-05 P21-1 done: FROZEN LINE KILLED
+  (same note). occ9-base screens landed:
+  fb8 base 0.027419 vs det 0.030931 (gap
+  -0.003512, wrong sign, 17x floor); phx3
+  base 0.006412 vs det 0.006397 (gap
+  +0.000015, below floor). Frozen-det beats
+  occ7-rule (+0.00168 P20-1) but LOSES to
+  occ9-rule -- the round-4 headline signal
+  was a weak-base artifact (P20-10:344 slip
+  confirmed critical). Seed-99999 replica
+  bit-identical to seed 31 (rollout seed
+  does not touch occupancy -- degenerate
+  replica; true second seed needs OCC_SEED,
+  moot now). P21-2 + P21-3 SKIPPED (gated
+  behind P21-1). 69,120 honest sims.

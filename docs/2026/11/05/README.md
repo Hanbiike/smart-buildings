@@ -55,7 +55,16 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 
 ## Measured
 
-No new sims today yet (research + planning only).
+`occ9det — fb8+phx3 x8640 honest — fb8 gap -0.003512, phx3 gap +0.000015 — KILL (wrong sign / below floor)`.
+
+### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
+
+- `--base` added to frozen_det_screen.py (default occ_gated7).
+  Screens seed 31 + 99999 (69,120 honest): fb8 det loses
+  -0.003512 (17x floor, wrong sign), phx3 +0.000015 (floor).
+  P20-1 signal was a weak-base artifact; P21-2/P21-3 SKIPPED.
+  Seed replica degenerate (rollout seed != occupancy).
+  Logged in plan-21.
 
 ## Decisions
 
