@@ -85,3 +85,34 @@ rescore timing. Corrected-sim re-validation blocked on hosts.
   climate-conditional margin queued for
   research. 555,960 sims (3,000 live +
   34,560 screen + 518,400 train-30).
+- 2026-11-05 P22-3 running. NEW
+  DwusatProbe (phase 1: drift + observer
+  + band + 11x2 search; SAT/recirc/
+  pressure post-chain, occ9 rest) + key
+  + 3 tests green. Fixed reset-before-init
+  crash (guard). Parity DWUSAT_ON=False:
+  0/1235 replay mismatches. Liveness
+  x1500 mixed (atl1 better -0.00047,
+  fb8 worse +0.00037, protocol).
+  Train-30 (518,400) running in
+  background. No code edits until it
+  lands.
+- 2026-11-05 P22-3 done: phase-1 KILLED
+  (same note). DwusatProbe + key + 3
+  tests green; parity 0/1235. Train-30
+  30/30: dwu 0.00985167 vs occ9
+  0.00878189 = -0.00106978 (5x floor,
+  wrong sign), wins 10/30. Hot pairs
+  catastrophe (phx5 -0.0061, phx4
+  -0.0047, phx6 -0.0042, sg4 -0.0025);
+  mild wins only (+0.0003..+0.0005 x5).
+  Mechanism: search rides SAT 5K warmer
+  (phx5 supply 296.9K vs 291.8K) --
+  without joint dampers/reheat (phase-1
+  keeps occ9's) warm supply + open
+  dampers = comfort collapse. Mapping
+  verified correct (spec ranges match).
+  Super-floor loss (not sub-floor):
+  no phase-2 OFF. Full-joint port +
+  climate-gate queued for research.
+  524,400 sims (6,000 live + 518,400).

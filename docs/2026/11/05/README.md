@@ -79,6 +79,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 `P21-14 — 6 doc closes (K07, ladder, r01, 11-04, bill bound ≤0.0003, 31/33) — PLAN-21 COMPLETE`.
 `P22-1 UGAS — floor-cap lever mixed below floor (fb8 -0.00015, fb1 +0.00013) — KILL`.
 `P22-2 PRE — screen PASS (denver_3 -0.000515) but train-30 +0.000071 below floor — CLOSED`.
+`P22-3 DWU — phase-1 train-30 -0.00107 (hot catastrophe, SAT +5K w/o joint dampers) — KILL`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -196,6 +197,15 @@ confirmed NO-RLS (covariance alloc-only) and pockets
   above-floor wins, 1 above-floor loss (denver_5).
   Below floor: no judge, no promotion. 555,960 sims.
 
+### Plan 22/P22-3: DWU sat-search port (phase-1 KILLED)
+
+- DwusatProbe (drift + observer + 11x2 search,
+  SAT/recirc/pressure only) + 3 tests green, parity
+  0/1235. Train-30: -0.00107 (5x floor wrong sign),
+  10/30 wins. Hot catastrophe (phx5 -0.0061): SAT
+  +5K warmer w/o joint dampers = comfort collapse.
+  Full-joint + climate-gate queued. 524,400 sims.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -209,7 +219,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 
 ## Open
 
-- Plan-22 action (next): P22-3 DWU sat-search port.
+- Plan-22 action (next): P22-4 DMAX dual-max probe.
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 
