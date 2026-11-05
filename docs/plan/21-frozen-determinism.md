@@ -170,3 +170,16 @@ budget + corrected-sim/rescore timing (Kaggle API/host watch).
   latest hour, so night spikes are
   near-impossible by construction.
   6,000 sims. No code changes.
+- 2026-11-05 P21-9 done: KILLED (same
+  note). R2 T&R fire-scan via C-parity
+  (any fire sets C's EMA > 0 and
+  diverges): xfer_3/msp1 x1500 C == occ9
+  bit-identical (0.034054 x2, all 3
+  CSVs); full-8640 C-parity b1/fb1
+  (0.050064 x2) + b2/fb2 (0.014267 x2)
+  bit-identical all 6 CSVs. Fire == 0
+  everywhere incl. pressure-lift pairs:
+  the lifts are heatopt's, T&R never
+  fires. R2 dead on train-30 + transfer
+  + 3 full episodes. 37,560 sims. No
+  code changes.
