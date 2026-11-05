@@ -58,3 +58,30 @@ rescore timing. Corrected-sim re-validation blocked on hosts.
   -38.3 (deeper floor breaks recovery
   in -21C), fb8 all better but small.
   48,060 sims.
+- 2026-11-05 P22-2 running. NEW
+  PreMargin12Policy (margin 6->12) + key
+  + 3 tests green. Liveness denver_3
+  x1500 DIFFERS better (-0.0008,
+  protocol). Screen denver_3+fb8 x8640:
+  denver_3 -0.000515 (2.6x floor,
+  comfort cut 44%), fb8 -0.000045,
+  same-sign; en+co regression within
+  floor both. Gate PASS -> train-30
+  (518,400) running in background. No
+  code edits until it lands.
+- 2026-11-05 P22-2 done: CLOSED
+  below-floor (same note). Screen PASS
+  (denver_3 -0.000515 2.6x floor,
+  comfort -44%; fb8 -0.000045; en+co
+  within floor). Train-30 30/30 clean:
+  prem12 0.00871097 vs occ9 0.00878189
+  = +0.00007092, 22/30 wins, 4
+  above-floor wins (denver_3 +0.000515,
+  phx4 +0.000423, fb4 +0.000308,
+  atlanta_3 +0.000201), 1 above-floor
+  loss (denver_5 -0.000315). Mean below
+  floor: no judge-24 (F2 law), no
+  promotion. Lever live but heterogeneous;
+  climate-conditional margin queued for
+  research. 555,960 sims (3,000 live +
+  34,560 screen + 518,400 train-30).

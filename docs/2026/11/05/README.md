@@ -78,6 +78,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 `MoE DAgger — idea-1 fb8 -91% but sg8 12x worse, idea-2 worse than soft7 — BLOCKED, 192k`.
 `P21-14 — 6 doc closes (K07, ladder, r01, 11-04, bill bound ≤0.0003, 31/33) — PLAN-21 COMPLETE`.
 `P22-1 UGAS — floor-cap lever mixed below floor (fb8 -0.00015, fb1 +0.00013) — KILL`.
+`P22-2 PRE — screen PASS (denver_3 -0.000515) but train-30 +0.000071 below floor — CLOSED`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -187,6 +188,14 @@ confirmed NO-RLS (covariance alloc-only) and pockets
   floor. fb1 comfort -46.8 vs -38.3 (recovery breaks).
   48,060 sims.
 
+### Plan 22/P22-2: PRE margin doubling (CLOSED below floor)
+
+- PreMargin12Policy + 3 tests green. Screen PASS:
+  denver_3 -0.000515 (comfort -44%), fb8 -0.000045.
+  Train-30 30/30: +0.000071 mean, 22/30 wins, 4
+  above-floor wins, 1 above-floor loss (denver_5).
+  Below floor: no judge, no promotion. 555,960 sims.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -200,7 +209,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 
 ## Open
 
-- Plan-22 action (next): P22-2 PRE arrival-edge probe.
+- Plan-22 action (next): P22-3 DWU sat-search port.
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 
