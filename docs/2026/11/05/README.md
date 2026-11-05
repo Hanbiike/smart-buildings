@@ -81,6 +81,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 `P22-2 PRE — screen PASS (denver_3 -0.000515) but train-30 +0.000071 below floor — CLOSED`.
 `P22-3 DWU — phase-1 train-30 -0.00107 (hot catastrophe, SAT +5K w/o joint dampers) — KILL`.
 `P22-4 DMAX — fb1 -0.010, fb8 -0.004 (min-airflow under-delivers in deep cold) — KILL`.
+`P22-5 F2B — ablation bit-identical to F2 (stale-offset refuted, F7-consistent) — F2 stays KILLED`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -214,6 +215,13 @@ confirmed NO-RLS (covariance alloc-only) and pockets
   wrong, 18-50x floor. Min-airflow heating under the
   discharge cap under-delivers in deep cold. 37,560 sims.
 
+### Plan 22/P22-5: F2b ablation (F2 stays KILLED)
+
+- SkynetColdBProbe + 6 tests green. 1-run ablation:
+  F2b == F2 bit-identical (0.026814 x2). Stale-offset
+  refuted (F7-consistent: offset never set). Cause is
+  residual-debt. 8,640 sims.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -227,7 +235,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 
 ## Open
 
-- Plan-22 action (next): P22-5 F2B ablation (1 run).
+- Plan-22 action (next): P22-6 RESID residual slot.
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

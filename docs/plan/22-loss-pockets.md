@@ -130,3 +130,16 @@ rescore timing. Corrected-sim re-validation blocked on hosts.
   compensate capped air). Dual-max is a
   mild-climate lever at best. 37,560
   sims (3,000 live + 34,560).
+- 2026-11-05 P22-5 done: F2 stays KILLED
+  (same note). NEW SkynetColdBProbe
+  (fallback + target_offset clear) + key
+  + 6 tests green. Decisive 1-run
+  ablation xfer_10/msp1 x8640: F2b
+  0.026814 == F2 0.026814 BIT-IDENTICAL
+  all 3 CSVs. Stale-offset causation
+  REFUTED (consistent with F7: no target
+  head in ckpt, offset never set, clear
+  is no-op). F2 degradation is
+  residual-debt/underheat, not stale
+  shifts. Gate unmet (22.7x stands).
+  8,640 sims.

@@ -201,7 +201,8 @@ from smart_buildings.baselines.probe_modes import (
     SlotDag2Probe,
     Zss05Probe, Zss10Probe, Zssc05Probe,
     SetpointProbe, SkynetResidualProbe, SkynetS0Probe, SkynetS025Probe,
-    SkynetS05Probe, SkynetNoToProbe, SkynetColdProbe, SkynetOccProbe,
+    SkynetS05Probe, SkynetNoToProbe, SkynetColdProbe, SkynetColdBProbe,
+    SkynetOccProbe,
     TodShiftProbe, WeekendFloorProbe)
 from smart_buildings.baselines.transfer_policy import TransferPolicy
 from smart_buildings.baselines.nn_policy import (  # noqa: F401
@@ -452,6 +453,7 @@ POLICY_MAP: dict[str, type[Any]] = {
     "probe_skynet_s05": SkynetS05Probe,
     "probe_skynet_noto": SkynetNoToProbe,
     "probe_skynet_cold": SkynetColdProbe,
+    "probe_skynet_coldb": SkynetColdBProbe,
     "probe_skynet_occ": SkynetOccProbe,
     "probe_xres": ExpandedResidualProbe,
     # Behavior-cloned imitation of dsat_gen31 (windowed Zipformer-lite,

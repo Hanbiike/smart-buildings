@@ -6,6 +6,7 @@ import numpy as np
 
 from smart_buildings import evaluate
 from smart_buildings.baselines.probe_modes import (
+    SkynetColdBProbe,
     SkynetColdProbe,
     SkynetOccProbe,
 )
@@ -13,8 +14,47 @@ from smart_buildings.baselines.probe_modes import (
 
 class TestF2F4(unittest.TestCase):
     def test_registered(self):
-        for key in ("probe_skynet_cold", "probe_skynet_occ"):
+        for key in ("probe_skynet_cold", "probe_skynet_coldb",
+                    "probe_skynet_occ"):
             self.assertIn(key, evaluate.POLICY_MAP)
+
+    def test_coldb_clears_offset(self):
+        probe = SkynetColdBProbe.__new__(SkynetColdBProbe)
+        state = {"offset": {"z": 1.0}}
+
+        class FakeFloor:
+            class pol:
+                comfort_temp_window = (294.0, 297.0)
+
+                @staticmethod
+                def _zone_band(obs, vav, lo, hi):
+                    return lo, hi
+
+            def propose(self, obs):
+                return "pc", "pd"
+
+            def finish(self, pc, pd):
+                return "base-action"
+
+        FakeFloor.pol.target_offset = state["offset"]
+
+        class FakeIx:
+            zone_obs = np.array([[0]])
+            zone_vav = ["v0"]
+            t_std = 1.0
+            t_mean = 280.0
+
+        class FakePol:
+            floor = FakeFloor()
+            ix = FakeIx()
+
+            def get_action(self, obs):
+                return "residual-action"
+
+        probe._pol = FakePol()
+        out = probe.get_action(np.array([0.0]))
+        self.assertEqual(out, "base-action")
+        self.assertEqual(FakeFloor.pol.target_offset, {})
 
     def test_cold_const(self):
         self.assertEqual(SkynetColdProbe.F2_COLD_K, 1.0)

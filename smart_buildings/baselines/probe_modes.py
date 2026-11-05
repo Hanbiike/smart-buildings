@@ -158,6 +158,25 @@ class SkynetColdProbe(SkynetResidualProbe):
         return pol.get_action(obs)
 
 
+class SkynetColdBProbe(SkynetColdProbe):
+    """P22-5 F2b: F2 + clear stale target_offset on the fallback path.
+
+    Decisive ablation: F2's fallback bypasses SkynetPolicy.get_action,
+    skipping the target_offset clearing while act() sets it every
+    residual step -- stale shifts persist through fallback spells.
+    """
+
+    KEY = "probe_skynet_coldb"
+
+    def get_action(self, obs):
+        pol = self._pol
+        if any_cold(pol.floor.pol, pol.ix, obs, self.F2_COLD_K):
+            pol.floor.pol.target_offset = {}
+            pc, pd = pol.floor.propose(obs)
+            return pol.floor.finish(pc, pd)
+        return pol.get_action(obs)
+
+
 class SkynetOccProbe(SkynetResidualProbe):
     """F4: skynet with occupancy-gated PI hours (OCC_GATE=True)."""
 
