@@ -94,6 +94,7 @@ verified bank1-zero + memory skew. Wrote plan-23.
 `P22-9 DAGX — cold-transfer confirmed (fb1 93%, fb2 50.5%) but sg8 poisons — CLOSED`.
 `P22-10 — doc closes (RLS correction, pocket_stats.py, weight cite) — PLAN-22 COMPLETE (1 PASS, P21-13 unblocked)`.
 `P23-1 SCALE — monotone scale-up, res30 wins (fb8 cut 52%), sg8 holds — PASS, res30 new baseline`.
+`P23-2 SKEW — mismatch is divergence not a bug (9.6% deleg), unfixable by update rules — REVERTED, 0 sim`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -281,6 +282,13 @@ verified bank1-zero + memory skew. Wrote plan-23.
   phx1 +0.00009 below floor. res30 = revival baseline.
   161,520 sims.
 
+### Plan 23/P23-2: memory-skew fix (REVERTED by analysis)
+
+- Deploy already matches train given same modes
+  (chain runs only non-shutdown). 9.6% deleg mismatch
+  is closed-loop divergence (DAgger domain), not an
+  update-rule bug. No screen, kept skew. 0 sim.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -294,7 +302,7 @@ verified bank1-zero + memory skew. Wrote plan-23.
 
 ## Open
 
-- Plan-23 action (next): P23-2 memory-skew fix.
+- Plan-23 action (next): P23-3 noise-head kill.
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

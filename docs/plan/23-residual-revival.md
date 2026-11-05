@@ -60,3 +60,17 @@ bodies, submission budget + rescore timing.
   (not promotion: still -0.0014 vs
   occ9). 161,520 sims (6,000 live +
   155,520).
+- 2026-11-05 P23-2 done: REVERTED by
+  analysis, 0 sim (same note). Deploy
+  _chain_action runs only in non-shutdown
+  modes (memory auto-frozen on shutdown)
+  -- train update=deleg matches deploy
+  GIVEN same modes. Mismatch (resid-vs-
+  occ7 deleg 9.6%) IS closed-loop
+  divergence, not an update-rule bug:
+  no update rule can match unknown
+  teacher-deleg in deploy (obs-run proxy
+  lags a step; train-side update=True
+  would be worse). Skew belongs to
+  DAgger (P23-6), not to a deploy patch.
+  Kept skew, documented. 0 sim.
