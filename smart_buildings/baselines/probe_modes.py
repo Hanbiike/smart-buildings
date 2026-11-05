@@ -1160,6 +1160,58 @@ class SlotT1HardProbe(_SlotHybrid7Mixin, SlotHybridPolicy,
     WEIGHTS = "smart_buildings/results/slot_runs/slot_t1_hard.npz"
 
 
+class ResidualSlotProbe(_SlotHybrid7Mixin, SlotHybridPolicy,
+                        OccGated7Policy):
+    """P22-6: occ7 authority + residual slot heads (delta * scale).
+
+    Heads fit delta=T-B (T=occ9 demos, B=occ7 replay); deploy writes
+    clip(base + delta * RESID_SCALE) instead of overwriting. Bounded
+    error instead of OOD overwrite.
+    """
+
+    KEY = "probe_slot_resid"
+    WEIGHTS = "smart_buildings/results/slot_runs/slot_resid.npz"
+    RESID_SCALE = 0.15
+
+    def _chain_action(self, obs):
+        action = super(SlotHybridPolicy, self)._chain_action(obs)
+        bank, slot, (zf, af, gf) = self.slot.step(np.asarray(obs))
+        Wz, bz = self._blended(self.Wz, self.bz, bank, slot)
+        Wa, ba = self._blended(self.Wa, self.ba, bank, slot)
+        Wg, bg = self._blended(self.Wg, self.bg, bank, slot)
+        zone = zf.astype(np.float64) @ Wz + bz
+        ahu = af.astype(np.float64) @ Wa + ba
+        wat = gf.astype(np.float64) @ Wg + bg
+        s = self.RESID_SCALE
+        cont = action["continuous_action"]
+        rooms = self.slot.ctx.rooms
+        for k, r in enumerate(rooms):
+            cont[r["damp_act"]] = np.float32(np.clip(
+                float(cont[r["damp_act"]]) + s * zone[k, 0], -1.0, 1.0))
+            cont[r["reheat_act"]] = np.float32(np.clip(
+                float(cont[r["reheat_act"]]) + s * zone[k, 1], -1.0, 1.0))
+        for i, act in enumerate(self.slot.ctx.ahu_actions):
+            cont[act["temp_idx"]] = np.float32(np.clip(
+                float(cont[act["temp_idx"]]) + s * ahu[i, 0], -1.0, 1.0))
+            if act["pressure_idx"] is not None:
+                cont[act["pressure_idx"]] = np.float32(np.clip(
+                    float(cont[act["pressure_idx"]]) + s * ahu[i, 1],
+                    -1.0, 1.0))
+            if act["recirc_idx"] is not None:
+                cont[act["recirc_idx"]] = np.float32(np.clip(
+                    float(cont[act["recirc_idx"]]) + s * ahu[i, 2],
+                    -1.0, 1.0))
+        w = self.slot.ctx.water
+        if w["water_temp_idx"] is not None:
+            cont[w["water_temp_idx"]] = np.float32(np.clip(
+                float(cont[w["water_temp_idx"]]) + s * wat[0], -1.0, 1.0))
+        if w["water_pressure_idx"] is not None:
+            cont[w["water_pressure_idx"]] = np.float32(np.clip(
+                float(cont[w["water_pressure_idx"]]) + s * wat[1],
+                -1.0, 1.0))
+        return action
+
+
 class SlotDag1Probe(SlotT1SoftProbe):
     """P21-13: soft-k3 architecture, DAgger-round-1 heads (occ9 + dag1)."""
 

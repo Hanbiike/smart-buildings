@@ -143,3 +143,21 @@ rescore timing. Corrected-sim re-validation blocked on hosts.
   residual-debt/underheat, not stale
   shifts. Gate unmet (22.7x stands).
   8,640 sims.
+- 2026-11-05 P22-6 done: PASS (same
+  note). Residual-ize WORKS. --residual-
+  base flag in slot_train.py (delta=T-B
+  targets, run cols keep T) + 30x B
+  replays (occ9 self-replay MSE=0 bit-
+  exact; mean|T-B|=0.17 p99=1.18) +
+  slot_resid.npz refit + ResidualSlotProbe
+  (clip(base+delta*0.15)) + key + 7 tests
+  green. 9-run screen: fb8 resid 0.029590
+  vs soft7 0.069742 vs occ7 0.030471
+  (gap cut 102%, beats occ7 by 0.00088);
+  phx1 0.004730 vs 0.004732 (tie 2e-6);
+  sg8 0.007362 vs 0.007364 (tie 2e-6).
+  Gate met (cut >=50%, no >floor
+  regression). Mean-3 beats occ7 by
+  0.000295 (T4 bar). P21-13 UNBLOCKED.
+  82,260 sims (4,500 live + 77,760;
+  refit/replay 0-sim).

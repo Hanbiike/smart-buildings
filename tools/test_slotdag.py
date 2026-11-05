@@ -4,6 +4,7 @@ import unittest
 
 from smart_buildings import evaluate
 from smart_buildings.baselines.probe_modes import (
+    ResidualSlotProbe,
     SlotDag1Probe,
     SlotDag2Probe,
     SlotDaggerProbe,
@@ -34,6 +35,11 @@ class TestSlotDag(unittest.TestCase):
         self.assertIn("probe_slot_dag2", evaluate.POLICY_MAP)
         self.assertEqual(SlotDag2Probe.KEY, "probe_slot_dag2")
         self.assertTrue(SlotDag2Probe.WEIGHTS.endswith("slot_dag2.npz"))
+
+    def test_resid_registered(self):
+        self.assertIn("probe_slot_resid", evaluate.POLICY_MAP)
+        self.assertEqual(ResidualSlotProbe.KEY, "probe_slot_resid")
+        self.assertEqual(ResidualSlotProbe.RESID_SCALE, 0.15)
 
     def test_teacher_import(self):
         from smart_buildings.baselines.occ_econdbhhot9 import (

@@ -82,6 +82,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 `P22-3 DWU — phase-1 train-30 -0.00107 (hot catastrophe, SAT +5K w/o joint dampers) — KILL`.
 `P22-4 DMAX — fb1 -0.010, fb8 -0.004 (min-airflow under-delivers in deep cold) — KILL`.
 `P22-5 F2B — ablation bit-identical to F2 (stale-offset refuted, F7-consistent) — F2 stays KILLED`.
+`P22-6 RESID — PASS: fb8 gap cut 102% (beats occ7 by 0.00088), elsewhere ties — P21-13 UNBLOCKED`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -222,6 +223,15 @@ confirmed NO-RLS (covariance alloc-only) and pockets
   refuted (F7-consistent: offset never set). Cause is
   residual-debt. 8,640 sims.
 
+### Plan 22/P22-6: residual slot (PASS, P21-13 UNBLOCKED)
+
+- --residual-base refit (delta=T-B, self-replay
+  bit-exact) + ResidualSlotProbe (scale 0.15) + 7
+  tests green. 9-run: fb8 0.0296 vs soft7 0.0697
+  vs occ7 0.0305 (cut 102%, beats occ7 0.00088);
+  phx1/sg8 tie occ7 (2e-6). Mean-3 beats occ7 by
+  0.000295 (T4 bar). 82,260 sims.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -235,7 +245,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 
 ## Open
 
-- Plan-22 action (next): P22-6 RESID residual slot.
+- Plan-22 action (next): P22-7 OFFM mild-only OFF.
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

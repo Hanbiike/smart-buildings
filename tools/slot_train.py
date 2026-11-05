@@ -57,6 +57,9 @@ def parse_arguments():
     ap.add_argument("--no-holdout", action="store_true",
                     help="train on all buildings including --hold-building "
                          "(default excludes it for held-out comparison)")
+    ap.add_argument("--residual-base", default=None,
+                    help="P22-6: fit delta=T-B instead of T, where B is the "
+                         "base replay in B_<tag>.npy next to each dump")
     return ap.parse_args()
 
 
@@ -145,6 +148,11 @@ def main():
         z = np.load(dump_path)
         obs, cont = z["obs"], z["action_continuous"].astype(np.float64)
         disc = z["action_discrete"].astype(np.float64)
+        base_c = None
+        if args.residual_base:
+            bp = Path(dump_path).parent / f"B_{args.residual_base}.npy"
+            base_c = np.load(bp).astype(np.float64)
+            assert base_c.shape == cont.shape, (key, base_c.shape)
         rooms = feat.ctx.rooms
         damp = [r["damp_act"] for r in rooms]
         reh = [r["reheat_act"] for r in rooms]
@@ -170,9 +178,12 @@ def main():
             if not deleg:
                 continue
             n_deleg += 1
+            bt = base_c[t] if base_c is not None else None
             zkeep = ahu_on[ahu_of_room]
             if zkeep.any():
                 yz = np.stack([cont[t, damp], cont[t, reh]], axis=1)
+                if bt is not None:
+                    yz = yz - np.stack([bt[damp], bt[reh]], axis=1)
                 Xz = zf[zkeep].astype(np.float64)
                 Yz = yz[zkeep]
             else:
@@ -186,12 +197,23 @@ def main():
                             if a["pressure_idx"] is not None else -1.0)
                 ya[j, 2] = (cont[t, a["recirc_idx"]]
                             if a["recirc_idx"] is not None else 1.0)
+                if bt is not None:
+                    ya[j, 0] -= bt[a["temp_idx"]]
+                    if a["pressure_idx"] is not None:
+                        ya[j, 1] -= bt[a["pressure_idx"]]
+                    if a["recirc_idx"] is not None:
+                        ya[j, 2] -= bt[a["recirc_idx"]]
                 ya[j, 3] = disc[t, a["run_disc_idx"]]
             yg = np.zeros(3)
             yg[0] = (cont[t, w["water_temp_idx"]]
                      if w["water_temp_idx"] is not None else -1.0)
             yg[1] = (cont[t, w["water_pressure_idx"]]
                      if w["water_pressure_idx"] is not None else -1.0)
+            if bt is not None:
+                if w["water_temp_idx"] is not None:
+                    yg[0] -= bt[w["water_temp_idx"]]
+                if w["water_pressure_idx"] is not None:
+                    yg[1] -= bt[w["water_pressure_idx"]]
             yg[2] = w_run
             Xg = gf.astype(np.float64)[None, :]
             for off, wt in zip(offsets, weights):
