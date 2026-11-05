@@ -766,6 +766,73 @@ class Ps9H3Probe(OccEconDbhHot9Policy):
     PRESTART_MARGIN_STEPS = 24
 
 
+# P20-8 R3a oracle menu: one live branch per arm (J5 fixed-const pattern).
+# Menu v1 (COLD_SAT / HOPT_P_MAX / ECON_FOUT_BIAS) died in liveness:
+# demand-SAT is overwritten by MixedSat, heatopt never raises pressure
+# on b8, econ-gated branches never fire. Menu v2 (FORCED_SAT /
+# FORCED_PRESSURE / raw recirc bias) died too: forced branches are also
+# overwritten by MixedSat, and raw recirc +/-0.15 is metric-dead (sim
+# clamps recirc at 0.70; cont differs but reward is bit-identical). Menu
+# v3 roots each dimension onto a branch with fire-count proof on b8x5.
+# Neutral == occ9 bit-for-bit (sim parity, not an arm run): the occ9
+# control leg comes from the D4 train-30 CSVs (shipped bill, seed 17321,
+# deterministic replay verified by cmp before the suite).
+
+
+class R3aSatProbe(OccEconDbhHot9Policy):
+    """R3a: occ9 with deepened MixedSat mild branch (MILD_SAT -0.4 -> -1.0).
+
+    DEEP_SAT writes land only on stopped AHUs (run1_frac 0.00 -- dead
+    channel); MILD_SAT writes land on running AHUs (run1_frac 1.00).
+    """
+
+    KEY = "probe_r3a_sat"
+    MILD_SAT = -1.0
+
+
+class _PressureFloorMixin:
+    """Static-pressure floor applied above the occ9 chain."""
+
+    PRESSURE_FLOOR = -1.0
+
+    def _base_action(self, obs):
+        action = super()._base_action(obs)
+        if self.PRESSURE_FLOOR > -1.0:
+            cont = action["continuous_action"]
+            for ctrl in self.ahu_controllers:
+                p_idx = ctrl.get("pressure_idx")
+                if p_idx is not None:
+                    cont[p_idx] = np.float32(max(
+                        float(cont[p_idx]), self.PRESSURE_FLOOR))
+        return action
+
+
+class R3aPcapProbe(_PressureFloorMixin, OccEconDbhHot9Policy):
+    """R3a: occ9 with raised pressure floor (-1.0 -> -0.6).
+
+    A cap is unrepresentable on b8x5 (pressure pinned at minimum all
+    episode: pressmin + dead T&R), so the pressure dimension enters as
+    a floor lift (J6-mixin pattern above the chain).
+    """
+
+    KEY = "probe_r3a_pcap"
+    PRESSURE_FLOOR = -0.6
+
+
+class R3aRecProbe(OccEconDbhHot9Policy):
+    """R3a: occ9 with capped econ outside-air fraction (clip-hi 1.0 -> 0.7)."""
+
+    KEY = "probe_r3a_rec"
+    ECON_FOUT_HI = 0.7
+
+
+class R3aHwsProbe(OccEconDbhHot9Policy):
+    """R3a: occ9 with cooler HWS (WATER_SCALE 1.0 -> 0.7)."""
+
+    KEY = "probe_r3a_hws"
+    WATER_SCALE = 0.7
+
+
 class _ZoneSideShiftMixin:
     """J6: rule-side in-band zone-target shift (their head analogue).
 

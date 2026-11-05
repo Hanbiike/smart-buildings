@@ -223,3 +223,39 @@ pieces ride inside N1.1 (P20-7) per synthesis.
   or transfer tails (gated7 validated on xfer_3
   tails, not train) -- re-screen R2 there if a
   firing pair is found (logged, not run).
+- 2026-11-04 P20-8 running (same note). R3a
+  oracle menu: 4 one-knob arms on occ9 (J5
+  fixed-const pattern) + occ9 control leg from
+  D4 CSVs (shipped bill, 17321; fresh-vs-D4 cmp
+  bit-identical fb8+atl1). Menu v1 (COLD_SAT /
+  HOPT_P_MAX / econ-bias) died in liveness
+  (3/4 bit-identical): demand-SAT overwritten
+  by MixedSat, heatopt never raises on b8, raw
+  recirc +/-0.15 metric-dead (sim clamps
+  recirc 0.70; cont differs, reward identical).
+  Menu v2 (FORCED_* / raw bias) died too
+  (forced overwritten by MixedSat). Menu v3.1
+  all 4 LIVE (fire-proofed): MILD_SAT -0.4 ->
+  -1.0 (DEEP writes land only on stopped AHUs,
+  MILD on running, run1_frac 1.00), pressure
+  FLOOR -1.0 -> -0.6 (cap unrepresentable:
+  pressure pinned at min), econ clip-hi 1.0 ->
+  0.7 (1720 writes atl1, 373 den6, 0 fb8/sg7),
+  WATER_SCALE 1.0 -> 0.7. NEW tools/oracle_bound.py
+  (96-step bins, best-of-5 per bin; 3 tests).
+  256/256 green. 20x b8x5 suite (172,800 sim)
+  running in background; bound vs 0.0005 bar
+  when it lands. No code edits until then.
+- 2026-11-04 P20-8 done: R3 KILLED UNBUILT
+  (same note). 20/20 clean, 450 bins x 96:
+  fixed-best mean 0.011333 (hws arm best
+  fixed on 4/5 pairs, rec edges phx4 by
+  1e-6) vs oracle mean 0.011134 -- BOUND
+  +0.000199 < 0.0005 J5 bar (also below the
+  0.0002 floor). Per-pair fixed-best: atl1
+  0.006087, den6 0.004298, fb8 0.027512,
+  phx4 0.012423, sg7 0.006345. A per-bin
+  hindsight head over this menu cannot pay
+  for its build; P20-13 stays SKIPPED
+  (condition unmet). 223,800 sim (172,800
+  suite + 51,000 liveness/counters).

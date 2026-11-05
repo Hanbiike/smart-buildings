@@ -430,6 +430,20 @@ shipped).
   transfer tails noted for P20-10. Logged in
   plan-20.
 
+### Plan 20/P20-8: R3a oracle (R3 KILLED UNBUILT)
+
+- Menu v1+v2 died in liveness (MixedSat
+  overwrites demand/forced SAT; raw recirc
+  metric-dead at sim 0.70 clamp). Menu v3.1
+  all 4 LIVE: MILD_SAT -1.0, pressure floor
+  -0.6, econ clip-hi 0.7, WATER_SCALE 0.7.
+- NEW `tools/oracle_bound.py` (96-step bins,
+  best-of-5 incl. D4-occ9 control); 256/256
+  green. 20/20 suite (172,800 sim): bound
+  +0.000199 < 0.0005 bar (below floor too).
+  P20-13 SKIPPED (condition unmet). 223,800
+  sim. Logged in plan-20.
+
 ### Simulator update check
 
 - Our tree is pre-PR#1 (tracker occupancy RNG stream);

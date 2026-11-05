@@ -23,6 +23,8 @@ class OccEconMixin:
 
     ECON_SAT_MIN_K = 285.0
     ECON_SAT_MAX_K = 305.0
+    ECON_FOUT_LO = 0.3
+    ECON_FOUT_HI = 1.0
 
     def __init__(self, building_meta_data, action_spec):
         super().__init__(building_meta_data, action_spec)
@@ -55,7 +57,8 @@ class OccEconMixin:
                 continue
             if oat >= inside or inside <= target:
                 continue
-            f_out = float(np.clip((inside - target) / (inside - oat), 0.3, 1.0))
+            f_out = float(np.clip((inside - target) / (inside - oat),
+                                  self.ECON_FOUT_LO, self.ECON_FOUT_HI))
             cont[r_idx] = np.float32(2.0 * (1.0 - f_out) - 1.0)
         return action
 
