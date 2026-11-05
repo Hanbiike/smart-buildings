@@ -105,3 +105,28 @@ budget + corrected-sim/rescore timing (Kaggle API/host watch).
   gap is elsewhere. 36,000 sims (dumps;
   plan said 0-sim -- judge obs did not
   exist, corrected).
+- 2026-11-05 P21-5 running. F3/F7 probes
+  + keys + 4 tests green. Liveness xfer_5
+  sg2 x1500: s0/s025/s05 DIFFERS (mono:
+  0.0338/0.0279/0.0247 vs s1 0.0230 --
+  smaller scale worse here, protocol only),
+  noto IDENTICAL. F7 CLOSED pre-screen
+  (0 gate sims): ckpt zone_mu is (2,64) --
+  NO target head, mz.shape[1]>2 never true,
+  target_offset never set (mechanism
+  absent, R1b-style). F3 7-day screens
+  (3 pairs x 4 scales x 2016 = 24,192)
+  running in background. No code edits
+  until they land.
+- 2026-11-05 P21-5 done: F3 KILLED, F7
+  CLOSED pre-screen (same note). F3 12/12:
+  scale<1 beats scale=1 by >=0.0002 on
+  1/3 probes only -- xfer_10/msp1 all win
+  (s0 -0.001999, s025 -0.001747, s05
+  -0.001455); xfer_5/sg2 + xfer_7/msp1 all
+  lose (s0 worst both). Pattern: residual
+  hurts in deep cold (msp1), helps
+  elsewhere -- but gate needs 2/3. Scale=0
+  is NOT a universal base win (no redirect).
+  31,692 sims (24,192 screens + 7,500
+  liveness).

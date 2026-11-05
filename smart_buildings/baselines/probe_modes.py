@@ -45,6 +45,61 @@ class SkynetResidualProbe:
         return self._pol.get_action(obs)
 
 
+# P21-5 F3/F7: frozen residual-scale grid + target-offset ablation.
+# Scale post-hoc override (ckpt scale 1.0); scale=0 zeroes the
+# continuous residual but latch votes stay live (approximate
+# base-only ablation, logged as limitation). F7 zeroes the third
+# zone output path via instance-level target_offsets patch.
+
+
+class _SkynetScaleBase(SkynetResidualProbe):
+    SKYNET_SCALE = None
+
+    def __init__(self, building_meta_data, action_spec):
+        super().__init__(building_meta_data, action_spec)
+        if self.SKYNET_SCALE is not None:
+            self._pol.scale = self.SKYNET_SCALE
+
+
+class SkynetS0Probe(_SkynetScaleBase):
+    """F3: skynet cont-residual off (scale 0; votes live)."""
+
+    KEY = "probe_skynet_s0"
+    SKYNET_SCALE = 0.0
+
+
+class SkynetS025Probe(_SkynetScaleBase):
+    """F3: skynet residual scale 0.25."""
+
+    KEY = "probe_skynet_s025"
+    SKYNET_SCALE = 0.25
+
+
+class SkynetS05Probe(_SkynetScaleBase):
+    """F3: skynet residual scale 0.5."""
+
+    KEY = "probe_skynet_s05"
+    SKYNET_SCALE = 0.5
+
+
+class SkynetNoToProbe(SkynetResidualProbe):
+    """F7: skynet with zeroed zone-target offsets."""
+
+    KEY = "probe_skynet_noto"
+
+    def __init__(self, building_meta_data, action_spec):
+        super().__init__(building_meta_data, action_spec)
+        ix = self._pol.ix
+        keys = list(ix.target_offsets(
+            __import__("numpy").zeros((len(ix.zone_vav), 3),
+                                      dtype=float), 1.0).keys())
+
+        def _zeroed(mz, scale):
+            return {v: 0.0 for v in keys}
+
+        ix.target_offsets = _zeroed
+
+
 def any_cold(floor, ix, obs, k):
     """True if any zone sits more than k below its band low edge.
 

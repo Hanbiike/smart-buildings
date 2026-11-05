@@ -187,7 +187,8 @@ from smart_buildings.baselines.probe_modes import (
     MedSat05Probe, UShift06Probe, Wknd6Probe, ErrResProbe,
     SlotT1HardProbe, SlotT1SoftProbe,
     Zss05Probe, Zss10Probe, Zssc05Probe,
-    SetpointProbe, SkynetResidualProbe, TodShiftProbe, WeekendFloorProbe)
+    SetpointProbe, SkynetResidualProbe, SkynetS0Probe, SkynetS025Probe,
+    SkynetS05Probe, SkynetNoToProbe, TodShiftProbe, WeekendFloorProbe)
 from smart_buildings.baselines.transfer_policy import TransferPolicy
 from smart_buildings.baselines.nn_policy import (  # noqa: F401
     BcV0Policy, BcV1Policy, BcV1SnapPolicy, BcV2Policy, BcV2SnapPolicy,
@@ -425,6 +426,10 @@ POLICY_MAP: dict[str, type[Any]] = {
     "probe_tod": TodShiftProbe,
     "probe_sat": SATProbe,
     "probe_skynet": SkynetResidualProbe,
+    "probe_skynet_s0": SkynetS0Probe,
+    "probe_skynet_s025": SkynetS025Probe,
+    "probe_skynet_s05": SkynetS05Probe,
+    "probe_skynet_noto": SkynetNoToProbe,
     "probe_xres": ExpandedResidualProbe,
     # Behavior-cloned imitation of dsat_gen31 (windowed Zipformer-lite,
     # torch CPU); checkpoint smart_buildings/results/nn_runs/bc_v0.pt.

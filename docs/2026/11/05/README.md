@@ -57,6 +57,7 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 
 `occ9det — fb8+phx3 x8640 honest — fb8 gap -0.003512, phx3 gap +0.000015 — KILL (wrong sign / below floor)`.
 `clip-rate — train 0/60M vs judge 0/46M — F6 KILL (judge not greater)`.
+`F3 scale — 1/3 probes (xfer_10/msp1 only) — KILL (needs 2/3)`; `F7 — no target head — CLOSED pre-screen`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -72,6 +73,13 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 - Train 0/60M vs judge 0/46M clip hits (24 fresh judge dumps).
   Input scale healthy; transfer gap elsewhere. 36,000 sims.
   Logged in plan-21.
+
+### Plan 21/P21-5: F3 scale + F7 offsets (F3 KILLED, F7 pre-screen)
+
+- F3 12/12 7-day: scale<1 wins only xfer_10/msp1 (1/3, needs
+  2/3). Residual hurts in deep cold, helps elsewhere. No
+  scale=0 redirect. F7: no target head in ckpt — CLOSED
+  pre-screen. 31,692 sims. Logged in plan-21.
 
 ## Decisions
 
