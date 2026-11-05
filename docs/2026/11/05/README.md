@@ -58,6 +58,7 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 `occ9det — fb8+phx3 x8640 honest — fb8 gap -0.003512, phx3 gap +0.000015 — KILL (wrong sign / below floor)`.
 `clip-rate — train 0/60M vs judge 0/46M — F6 KILL (judge not greater)`.
 `F3 scale — 1/3 probes (xfer_10/msp1 only) — KILL (needs 2/3)`; `F7 — no target head — CLOSED pre-screen`.
+`F2 cold — Monday regret 22.7x occ9 (gate 3x) — KILL`; `F4 occ-gate — trigger P~1e-44/day — CLOSED vacuous`; P21-7 DEAD.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -81,6 +82,20 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
   scale=0 redirect. F7: no target head in ckpt — CLOSED
   pre-screen. 31,692 sims. Logged in plan-21.
 
+### Plan 21/P21-6: F2 recovery + F4 occ-gate (F2 KILLED, F4 vacuous)
+
+- SkynetColdProbe (k=1.0K) + SkynetOccProbe (OCC_GATE) + 5
+  tests green. Liveness xfer_10/msp1 x1500: F2 0.0137 vs
+  skynet 0.0167 (live, better); F4 == base bit-identical
+  (base _pi_hours already day<5; weekday zero-occ is nights
+  only). F4 mechanism live synthetically, trigger
+  P(empty weekday) ~= 1e-44/day (N~=53) + 0 triggers in
+  ~40 episodes -> CLOSED gain-0.0 by construction (P20-6
+  precedent). F2 full x8640: Monday regret -0.055 vs occ9
+  -0.0024 = 22.7x (gate 3x); first Monday good (-0.0038)
+  then explodes (-0.15/-0.07/-0.05); full +0.009 worse.
+  21,780 sims. P21-7 DEAD (conditional, both killed).
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -94,8 +109,10 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 
 ## Open
 
-- P21-1 occ9-base 2-pair screen (seed 31 + 99999 replica).
-- P21-14 backlog closes (0-sim, anytime).
+- P21-8 R1a trigger-counter rescreen (~6k, next).
+- P21-9 R2 xfer_3/msp1 rescreen (~1.5k), P21-10 N1 singles,
+  P21-11 E2 bars, P21-12 R3a mine, P21-13 MoE blocked,
+  P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 
 ## Appendix

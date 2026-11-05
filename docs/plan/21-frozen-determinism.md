@@ -130,3 +130,31 @@ budget + corrected-sim/rescore timing (Kaggle API/host watch).
   is NOT a universal base win (no redirect).
   31,692 sims (24,192 screens + 7,500
   liveness).
+- 2026-11-05 P21-6 done: F2 KILLED, F4
+  CLOSED vacuous (same note). NEW
+  SkynetColdProbe (any-cold k=1.0K base
+  fallback) + SkynetOccProbe (OCC_GATE)
+  + keys + 5 tests green. Liveness
+  xfer_10/msp1 x1500: F2 0.013745 vs
+  skynet 0.016705 (DIFFERS, better),
+  F4 == base BIT-IDENTICAL -- base
+  _pi_hours already excludes weekends
+  (day<5), weekday zero-occ is nights
+  only: gate vacuous on-window. F4
+  mechanism proven live (synthetic Wed
+  noon: occ=0 -> False, occ=5 -> True)
+  but trigger P(empty weekday) ~=
+  (e^-2)^N ~= 1e-44/day (N~=53,
+  work_occupancy=3/zone) + 0 triggers
+  in ~40 scanned episodes -> CLOSED
+  gain-0.0 by construction (P20-6
+  precedent). F2 full-episode screen
+  xfer_10/msp1 x8640: Monday regret
+  -0.055 vs occ9 -0.0024 = 22.7x
+  (gate 3x) -- first Monday good
+  (-0.0038) then explodes (-0.15,
+  -0.07, -0.05); full +0.009 worse
+  than occ9. 21,780 sims (4,500
+  liveness + 17,280 full). P21-7 DEAD:
+  conditional on P21-5/6 pass, both
+  killed.

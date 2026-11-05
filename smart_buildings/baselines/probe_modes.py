@@ -140,6 +140,34 @@ def residual_free(policy, ix, obs, cold_k):
     return True
 
 
+# P21-6 F2/F4: morning-recovery suppression + occupancy gate on the
+# frozen skynet harness (NOT the occ7-xres cold gate above).
+
+
+class SkynetColdProbe(SkynetResidualProbe):
+    """F2: skynet with any-cold base fallback (k=1.0K under band)."""
+
+    KEY = "probe_skynet_cold"
+    F2_COLD_K = 1.0
+
+    def get_action(self, obs):
+        pol = self._pol
+        if any_cold(pol.floor.pol, pol.ix, obs, self.F2_COLD_K):
+            pc, pd = pol.floor.propose(obs)
+            return pol.floor.finish(pc, pd)
+        return pol.get_action(obs)
+
+
+class SkynetOccProbe(SkynetResidualProbe):
+    """F4: skynet with occupancy-gated PI hours (OCC_GATE=True)."""
+
+    KEY = "probe_skynet_occ"
+
+    def __init__(self, building_meta_data, action_spec):
+        super().__init__(building_meta_data, action_spec)
+        self._pol.floor.pol.OCC_GATE = True
+
+
 class ExpandedResidualProbe(OccGated7Policy):
     """occ_gated7 + expanded residual harness (stateful inputs + target head).
 
