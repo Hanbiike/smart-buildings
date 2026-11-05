@@ -61,6 +61,7 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 `F2 cold — Monday regret 22.7x occ9 (gate 3x) — KILL`; `F4 occ-gate — trigger P~1e-44/day — CLOSED vacuous`; P21-7 DEAD.
 `R1a rescreen — OCC_SEED=99999 counter 0 (bit-identical) — KILL`.
 `R2 rescreen — fire 0 (xfer_3 + 2 full C-parity) — KILL`.
+`N1 singles — p2 explodes train-fb, off/hyst lose to occ9 — all KILLED`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -115,6 +116,16 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
   on train-30 + transfer + 3 full episodes. 37,560 sims.
   No code changes.
 
+### Plan 21/P21-10: N1 singles scored liveness (all KILLED)
+
+- Screen 5 arms x 2 xfer x1500: all mean-win vs skynet,
+  p2 only same-sign both. Harness 3 singles x 5 SCEN
+  x864: p2 explodes train-fb (+0.027/+0.025, mean
+  +0.011); off == occ9 bit-identical all 3 fb (lever
+  vacuous, win was occ9-inside), +0.00025 vs occ9 mean;
+  hyst +0.00023 vs occ9 mean. No single beats occ9.
+  36,600 sims. No code changes.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -128,8 +139,7 @@ screen base) — P21-1 re-screens vs occ9 first. Wrote
 
 ## Open
 
-- P21-10 N1 singles (next),
-  P21-11 E2 bars, P21-12 R3a mine, P21-13 MoE blocked,
+- P21-11 E2 bars (next), P21-12 R3a mine, P21-13 MoE blocked,
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

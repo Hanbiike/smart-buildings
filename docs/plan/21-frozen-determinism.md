@@ -183,3 +183,20 @@ budget + corrected-sim/rescore timing (Kaggle API/host watch).
   fires. R2 dead on train-30 + transfer
   + 3 full episodes. 37,560 sims. No
   code changes.
+- 2026-11-05 P21-10 done: KILLED all
+  singles (same note). Screen 5 N1 arms
+  x 2 xfer pairs x1500 (15,000): all
+  mean-win vs skynet, p2 only same-sign
+  both (-0.0033/-0.0010). Harness 3
+  singles x {single,skynet,occ9} x 5
+  SCEN x864 (21,600): p2 EXPLODES on
+  train-fb (+0.027/+0.025 vs skynet,
+  mean +0.011) -- screen signal dead;
+  off == occ9 BIT-IDENTICAL all 3 fb
+  pairs (lever vacuous in cold,
+  screen-win was occ9-inside) and
+  +0.00025 worse than occ9 mean (above
+  floor, wrong sign); hyst +0.00023
+  worse than occ9 mean. No single beats
+  occ9: nothing promotable. 36,600
+  sims. No code changes.
