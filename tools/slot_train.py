@@ -60,6 +60,10 @@ def parse_arguments():
     ap.add_argument("--residual-base", default=None,
                     help="P22-6: fit delta=T-B instead of T, where B is the "
                          "base replay in B_<tag>.npy next to each dump")
+    ap.add_argument("--modes", type=int, default=1,
+                    help="P23-4: climate modes (1 = legacy bank/slot only)")
+    ap.add_argument("--mode-bounds", default="283.15",
+                    help="P23-4: comma OAT bounds in K (K-1 values)")
     return ap.parse_args()
 
 
@@ -134,17 +138,29 @@ def main():
     FZ, FA, FG = feat0.FZ, feat0.FA, feat0.FG
     print(f"dims: FZ={FZ} FA={FA} FG={FG}", flush=True)
 
-    acc_z = [[Accum(FZ, 2) for _ in range(N_SLOTS)] for _ in range(2)]
-    acc_a = [[Accum(FA, 4) for _ in range(N_SLOTS)] for _ in range(2)]
-    acc_g = [[Accum(FG, 3) for _ in range(N_SLOTS)] for _ in range(2)]
-    on_a = np.zeros((2, N_SLOTS))
-    n_a = np.zeros((2, N_SLOTS))
-    on_w = np.zeros((2, N_SLOTS))
-    n_w = np.zeros((2, N_SLOTS))
+    K = args.modes
+    if K == 1:
+        bounds: tuple = ()
+    else:
+        bounds = tuple(float(x) for x in args.mode_bounds.split(","))
+        assert len(bounds) == K - 1, (bounds, K)
+    print(f"modes: K={K} bounds={bounds}", flush=True)
+
+    acc_z = [[[Accum(FZ, 2) for _ in range(N_SLOTS)] for _ in range(2)]
+             for _ in range(K)]
+    acc_a = [[[Accum(FA, 4) for _ in range(N_SLOTS)] for _ in range(2)]
+             for _ in range(K)]
+    acc_g = [[[Accum(FG, 3) for _ in range(N_SLOTS)] for _ in range(2)]
+             for _ in range(K)]
+    on_a = np.zeros((K, 2, N_SLOTS))
+    n_a = np.zeros((K, 2, N_SLOTS))
+    on_w = np.zeros((K, 2, N_SLOTS))
+    n_w = np.zeros((K, 2, N_SLOTS))
 
     for key, dump_path, meta_path in runs:
         meta = json.load(open(meta_path))
         feat = SlotFeatures(meta)
+        feat.mode_bounds = bounds
         z = np.load(dump_path)
         obs, cont = z["obs"], z["action_continuous"].astype(np.float64)
         disc = z["action_discrete"].astype(np.float64)
@@ -166,15 +182,16 @@ def main():
             ahu_on = disc[t, run_disc] > 0.5
             deleg = bool(ahu_on.any())
             bank, slot, (zf, af, gf) = feat.step(obs[t], update=deleg)
+            mode = feat.mode
             ya_run = disc[t, run_disc]
             w_run = (disc[t, w["water_discrete_idx"]]
                      if 0 <= w["water_discrete_idx"] < disc.shape[1] else 0.0)
             for off, wt in zip(offsets, weights):
                 s2 = (slot + off) % N_SLOTS  # circular, bank-hard
-                on_a[bank, s2] += wt * ya_run.sum()
-                n_a[bank, s2] += wt * len(ahus)
-                on_w[bank, s2] += wt * w_run
-                n_w[bank, s2] += wt
+                on_a[mode, bank, s2] += wt * ya_run.sum()
+                n_a[mode, bank, s2] += wt * len(ahus)
+                on_w[mode, bank, s2] += wt * w_run
+                n_w[mode, bank, s2] += wt
             if not deleg:
                 continue
             n_deleg += 1
@@ -219,41 +236,50 @@ def main():
             for off, wt in zip(offsets, weights):
                 s2 = (slot + off) % N_SLOTS  # circular, bank-hard
                 if Xz is not None:
-                    acc_z[bank][s2].add(Xz, Yz, w=wt)
-                acc_a[bank][s2].add(kept_af, ya, w=wt)
+                    acc_z[mode][bank][s2].add(Xz, Yz, w=wt)
+                acc_a[mode][bank][s2].add(kept_af, ya, w=wt)
                 if yg[2] > 0.5:
-                    acc_g[bank][s2].add(Xg, yg[None, :], w=wt)
+                    acc_g[mode][bank][s2].add(Xg, yg[None, :], w=wt)
         print(f"  {key}: T={T} deleg={n_deleg}", flush=True)
 
-    Wz = np.zeros((2, N_SLOTS, FZ, 2))
-    bz = np.zeros((2, N_SLOTS, 2))
-    Wa = np.zeros((2, N_SLOTS, FA, 4))
-    ba = np.zeros((2, N_SLOTS, 4))
-    Wg = np.zeros((2, N_SLOTS, FG, 3))
-    bg = np.zeros((2, N_SLOTS, 3))
+    Wz = np.zeros((K, 2, N_SLOTS, FZ, 2))
+    bz = np.zeros((K, 2, N_SLOTS, 2))
+    Wa = np.zeros((K, 2, N_SLOTS, FA, 4))
+    ba = np.zeros((K, 2, N_SLOTS, 4))
+    Wg = np.zeros((K, 2, N_SLOTS, FG, 3))
+    bg = np.zeros((K, 2, N_SLOTS, 3))
     def fill(W, b, acc):
-        for bank in range(2):
-            have = [s for s in range(N_SLOTS) if acc[bank][s].n > 0]
-            for s in have:
-                Ws, bs = acc[bank][s].solve(args.ridge)
-                W[bank, s], b[bank, s] = Ws, bs
-            # empty slots inherit the bank mean head (two passes: the mean
-            # must see all solved heads)
-            Wm = np.mean([W[bank, h] for h in have], axis=0)
-            bm = np.mean([b[bank, h] for h in have], axis=0)
-            for s in range(N_SLOTS):
-                if s not in have:
-                    W[bank, s], b[bank, s] = Wm, bm
+        for m in range(K):
+            for bank in range(2):
+                have = [s for s in range(N_SLOTS) if acc[m][bank][s].n > 0]
+                for s in have:
+                    Ws, bs = acc[m][bank][s].solve(args.ridge)
+                    W[m, bank, s], b[m, bank, s] = Ws, bs
+                # Empty slots inherit the mode-bank mean head (two passes:
+                # the mean must see all solved heads). A fully starved
+                # mode-bank falls back to the bank mean over all modes.
+                if have:
+                    Wm = np.mean([W[m, bank, h] for h in have], axis=0)
+                    bm = np.mean([b[m, bank, h] for h in have], axis=0)
+                else:
+                    Wm = np.mean([W[mm, bank] for mm in range(K)], axis=(0, 1))
+                    bm = np.mean([b[mm, bank] for mm in range(K)], axis=(0, 1))
+                for s in range(N_SLOTS):
+                    if s not in have:
+                        W[m, bank, s], b[m, bank, s] = Wm, bm
 
     fill(Wz, bz, acc_z)
     fill(Wa, ba, acc_a)
     fill(Wg, bg, acc_g)
-    nz = np.array([[a.n for a in row] for row in acc_z])
-    na = np.array([[a.n for a in row] for row in acc_a])
-    ng = np.array([[a.n for a in row] for row in acc_g])
+    nz = np.array([[[a.n for a in row] for row in modes] for modes in acc_z])
+    na = np.array([[[a.n for a in row] for row in modes] for modes in acc_a])
+    ng = np.array([[[a.n for a in row] for row in modes] for modes in acc_g])
     for name, n in (("zone", nz), ("ahu", na), ("glob", ng)):
         print(f"{name}: samples/slot min={n.min()} med={np.median(n):.0f} "
               f"zeros={(n == 0).sum()}", flush=True)
+        for m in range(K):
+            print(f"  mode{m}: min={n[m].min()} med={np.median(n[m]):.0f} "
+                  f"zeros={(n[m] == 0).sum()}", flush=True)
 
     RUNS_DIR.mkdir(parents=True, exist_ok=True)
     out = RUNS_DIR / f"{args.out}.npz"
@@ -261,12 +287,20 @@ def main():
                        out=np.full_like(on_a, 0.5), where=n_a > 0)
     rate_w = np.divide(on_w, np.maximum(n_w, 1),
                        out=np.full_like(on_w, 0.5), where=n_w > 0)
-    np.savez_compressed(out, Wz=Wz, bz=bz, Wa=Wa, ba=ba, Wg=Wg, bg=bg,
-                        rate_a=rate_a, rate_w=rate_w,
-                        nz=nz, na=na, ng=ng, on_a=on_a, n_a=n_a,
-                        on_w=on_w, n_w=n_w,
-                        ridge=args.ridge, teacher=args.teacher,
-                        soft=args.soft, holdout=(excl or ""))
+    if K == 1:
+        # legacy 4-D format (bit-exact with the pre-P23-4 trainer)
+        payload = dict(Wz=Wz[0], bz=bz[0], Wa=Wa[0], ba=ba[0],
+                       Wg=Wg[0], bg=bg[0], rate_a=rate_a[0],
+                       rate_w=rate_w[0], nz=nz[0], na=na[0], ng=ng[0],
+                       on_a=on_a[0], n_a=n_a[0], on_w=on_w[0], n_w=n_w[0])
+    else:
+        payload = dict(Wz=Wz, bz=bz, Wa=Wa, ba=ba, Wg=Wg, bg=bg,
+                       rate_a=rate_a, rate_w=rate_w,
+                       nz=nz, na=na, ng=ng, on_a=on_a, n_a=n_a,
+                       on_w=on_w, n_w=n_w,
+                       modes=np.asarray(bounds, dtype=np.float64))
+    np.savez_compressed(out, ridge=args.ridge, teacher=args.teacher,
+                        soft=args.soft, holdout=(excl or ""), **payload)
     print(f"saved {out}")
 
 

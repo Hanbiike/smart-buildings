@@ -96,6 +96,7 @@ verified bank1-zero + memory skew. Wrote plan-23.
 `P23-1 SCALE — monotone scale-up, res30 wins (fb8 cut 52%), sg8 holds — PASS, res30 new baseline`.
 `P23-2 SKEW — mismatch is divergence not a bug (9.6% deleg), unfixable by update rules — REVERTED, 0 sim`.
 `P23-3 BREAK — self-limit holds to 0.5 (res50 fb8 best) but s=1.0 explodes everywhere — KILL`.
+`P23-4 K2 — OAT-split hurts fb8 (-0.000305): sample-split cost beats specialization — KILL, K=1 holds`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -298,6 +299,19 @@ verified bank1-zero + memory skew. Wrote plan-23.
   Self-limit holds to 0.5 only. res50 hot-risk, not
   promoted; baseline res30. 80,760 sims.
 
+### Plan 23/P23-4: per-mode K=2 resid (KILLED)
+
+- mode_of_oat + hysteresis in SlotFeatures, per-mode
+  accums in slot_train (K=1 bit-exact legacy),
+  mode-aware _blended, ResidK2Probe + 4 tests
+  green (301 total). Refit slot_resid_k2: zone/ahu
+  1 zero-slot each, water-mode1 370/576 fallback
+  (no heat in warm mode). 6-run vs res30: fb8
+  0.029268 vs 0.028963 (-0.000305, gate fail);
+  sg8/phx1 below floor; mean-3 -0.000107.
+  Split cost > gain (mode0 med 212 vs 1730).
+  K=1 holds; baseline res30. 52,140 sims.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -311,7 +325,7 @@ verified bank1-zero + memory skew. Wrote plan-23.
 
 ## Open
 
-- Plan-23 action (next): P23-4 per-mode K=2.
+- Plan-23 action (next): P23-5 feature augment.
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

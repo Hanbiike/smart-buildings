@@ -1295,6 +1295,14 @@ class ResidS100Probe(ResidualSlotProbe):
     RESID_SCALE = 1.00
 
 
+class ResidK2Probe(ResidualSlotProbe):
+    """P23-4: K=2 climate-mode resid (OAT-band heads), scale 0.30."""
+
+    KEY = "probe_slot_resk2"
+    WEIGHTS = "smart_buildings/results/slot_runs/slot_resid_k2.npz"
+    RESID_SCALE = 0.30
+
+
 class ResidPCProbe(ResidualSlotProbe):
     """P23-1: per-channel p99-normalized residual scale.
 

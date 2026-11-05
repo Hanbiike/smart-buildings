@@ -46,6 +46,11 @@ class SlotHybridPolicy(OccGated4Policy):
         self.ba = z["ba"].astype(np.float64)
         self.Wg = z["Wg"].astype(np.float64)
         self.bg = z["bg"].astype(np.float64)
+        # P23-4: 5-D weights carry a leading climate-mode dim + "modes" key.
+        self.K = self.Wz.shape[0] if self.Wz.ndim == 5 else 1
+        if self.K > 1:
+            self.slot.mode_bounds = tuple(float(x) for x in z["modes"])
+            assert len(self.slot.mode_bounds) == self.K - 1
 
     def reset(self) -> None:
         super().reset()
@@ -55,13 +60,23 @@ class SlotHybridPolicy(OccGated4Policy):
         if slot is not None:
             slot.reset()
 
-    def _blended(self, W, b, bank, slot):
-        Wm = np.zeros_like(W[bank, slot], dtype=np.float64)
-        bm = np.zeros_like(b[bank, slot], dtype=np.float64)
+    def _blended(self, W, b, bank, slot, mode=None):
+        if W.ndim == 4:  # legacy (bank, slot, F, out): mode ignored
+            Wm = np.zeros_like(W[bank, slot], dtype=np.float64)
+            bm = np.zeros_like(b[bank, slot], dtype=np.float64)
+            for j, w in enumerate(self.blend):
+                s = (slot + j - self.half) % N_SLOTS
+                Wm += w * W[bank, s]
+                bm += w * b[bank, s]
+            return Wm, bm
+        if mode is None:
+            mode = self.slot.mode
+        Wm = np.zeros_like(W[mode, bank, slot], dtype=np.float64)
+        bm = np.zeros_like(b[mode, bank, slot], dtype=np.float64)
         for j, w in enumerate(self.blend):
             s = (slot + j - self.half) % N_SLOTS
-            Wm += w * W[bank, s]
-            bm += w * b[bank, s]
+            Wm += w * W[mode, bank, s]
+            bm += w * b[mode, bank, s]
         return Wm, bm
 
     def _chain_action(self, obs):

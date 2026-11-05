@@ -87,3 +87,26 @@ bodies, submission budget + rescore timing.
   FAILED. res50 not promoted (hot
   risk); baseline stays res30. 80,760
   sims (3,000 live + 77,760).
+- 2026-11-05 P23-4 done: KILLED (fb8
+  worse above floor; same note). NEW
+  mode_of_oat + hyst state in
+  SlotFeatures, per-mode accums in
+  slot_train (--modes/--mode-bounds,
+  K=1 bit-exact legacy), mode-aware
+  _blended in SlotHybridPolicy,
+  ResidK2Probe (s=0.30) + key + 4
+  tests green (301 total). Refit
+  slot_resid_k2 (30 runs, holdout b5,
+  soft k3): zone/ahu 1 zero-slot each
+  (fallback covers), water-mode1
+  370/576 fallback (semantically
+  empty: no heat in warm mode).
+  6-run screen vs res30: fb8 0.029268
+  vs 0.028963 (-0.000305, gate fail),
+  sg8 -0.000035, phx1 +0.000018 (both
+  below floor); mean-3 -0.000107.
+  Mechanism: sample-split cost beats
+  specialization gain (mode0 zone med
+  212 vs pooled 1730). K=1 holds;
+  baseline stays res30. 52,140 sims
+  (300 live + 51,840).

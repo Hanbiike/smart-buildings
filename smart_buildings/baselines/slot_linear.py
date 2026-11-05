@@ -52,6 +52,18 @@ def bank_of_day(dow_sin: float, dow_cos: float) -> int:
     return 0 if day < 5 else 1
 
 
+MODE_HYST_K = 2.0
+
+
+def mode_of_oat(oat_k: float, bounds) -> int:
+    """Climate-mode index from OAT: #{bounds below oat_k}."""
+    m = 0
+    for b in bounds:
+        if oat_k >= b:
+            m += 1
+    return m
+
+
 def blend_weights(kind=(1, 2, 1)) -> np.ndarray:
     """Normalized symmetric blend kernel over neighboring slots."""
     w = np.asarray(kind, dtype=np.float64)
@@ -86,6 +98,7 @@ class SlotFeatures:
                                idx.get("hws_supervisor_run_command", -1))
         fz_room = 8
         self.FZ = fz_room + self.FZ_EXTRA
+        self.mode_bounds = tuple(meta.get("slot_mode_bounds", (283.15,)))
         self.reset()
 
     def reset(self) -> None:
@@ -95,6 +108,8 @@ class SlotFeatures:
         self._heat_ema = None  # per-AHU heat-need EMA
         self._cool_ema = None  # per-AHU cool-need EMA
         self._int_w = 0.0      # building heat-shortfall integral
+        self._oat_mode = None  # climate mode (hysteresis state)
+        self.mode = 0          # current mode, valid after step()
 
     # -- helpers ---------------------------------------------------------
 
@@ -117,6 +132,19 @@ class SlotFeatures:
         if entry is not None and abs(v) <= 150.0:
             return v * entry["sample_std"] + entry["sample_mean"]
         return v
+
+    def _update_oat_mode(self, oat_k: float) -> None:
+        """Hysteresis climate mode; frozen when step() is not updating."""
+        bounds = self.mode_bounds
+        if self._oat_mode is None:
+            self._oat_mode = mode_of_oat(oat_k, bounds)
+        else:
+            m = self._oat_mode
+            if m + 1 < len(bounds) + 1 and oat_k >= bounds[m] + MODE_HYST_K:
+                self._oat_mode = m + 1
+            elif m > 0 and oat_k < bounds[m - 1] - MODE_HYST_K:
+                self._oat_mode = m - 1
+        self.mode = self._oat_mode
 
     def _sat_kelvin(self, obs, ahu_i: int) -> float:
         cols = self.ctx.ahu_cols[ahu_i]
@@ -160,6 +188,7 @@ class SlotFeatures:
         soon = float(obs[self.soon_idx]) if self.soon_idx >= 0 else 0.0
         tw = self._water_kelvin(obs)
         oat = self._oat_kelvin(obs)
+        self._update_oat_mode(oat)
 
         t_now = np.array([
             obs[r["temp_obs"]] * ctx.z_std + ctx.z_mean for r in ctx.rooms
