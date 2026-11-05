@@ -84,6 +84,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 `P22-5 F2B — ablation bit-identical to F2 (stale-offset refuted, F7-consistent) — F2 stays KILLED`.
 `P22-6 RESID — PASS: fb8 gap cut 102% (beats occ7 by 0.00088), elsewhere ties — P21-13 UNBLOCKED`.
 `P22-7 OFFM — mild wins 7x below floor, sg7 bit-identical (gate blocks hot) — CLOSED`.
+`P22-8 P2M — OAT-gate kills explosions (fb ties) but atl2/sg7 lose — KILL`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -241,6 +242,13 @@ confirmed NO-RLS (covariance alloc-only) and pockets
   fire; ungated lost -1.18). Mechanism confirmed, no
   escalation. 54,840 sims.
 
+### Plan 22/P22-8: heat-interlocked P2 (KILLED)
+
+- N1P2MildProbe (OAT >= 10C) + 11 tests green.
+  SCEN-5 x864: fb ties (explosions gone) but atl2
+  -0.000545, sg7 -0.000168 lose. All-5-win gate
+  fails. P2 dead everywhere. 8,640 sims.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -254,7 +262,7 @@ confirmed NO-RLS (covariance alloc-only) and pockets
 
 ## Open
 
-- Plan-22 action (next): P22-8 P2M heat-interlocked P2.
+- Plan-22 action (next): P22-9 DAGX transfer falsification.
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

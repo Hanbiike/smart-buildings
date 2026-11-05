@@ -1014,6 +1014,20 @@ class N1P2Mixin:
     N1_P2_ON = 1
     N1_P2_EXP = 2.0
     N1_P2_MIN_PA = 200.0
+    N1_P2_OAT_MIN_K = None
+
+    def _p2_oat_ok(self, obs, ctrl) -> bool:
+        """OAT at/above the mild threshold (heat-interlock gate)."""
+        if self.N1_P2_OAT_MIN_K is None:
+            return True
+        oidx = ctrl.get("oat_idx")
+        if oidx is None:
+            return False
+        try:
+            oat = _outside_kelvin(self, float(obs[oidx]))
+        except (TypeError, ValueError):
+            return False
+        return bool(oat >= self.N1_P2_OAT_MIN_K)
 
     def _base_action(self, obs):
         action = super()._base_action(obs)
@@ -1024,6 +1038,8 @@ class N1P2Mixin:
         for ctrl in self.ahu_controllers:
             pidx = ctrl.get("pressure_idx")
             if pidx is None or not disc[ctrl["run_discrete_idx"]]:
+                continue
+            if not self._p2_oat_ok(obs, ctrl):
                 continue
             fmax = 0.0
             for vav_id, _, _ in ctrl["zones"]:
@@ -1041,6 +1057,13 @@ class N1P2Probe(N1P2Mixin, OccEconDbhHot9Policy):
     """N1.1: occ9 + danielwuu pressure fraction^2 reset."""
 
     KEY = "probe_n1_p2"
+
+
+class N1P2MildProbe(N1P2Mixin, OccEconDbhHot9Policy):
+    """P22-8: P2 pressure gated on mild OAT (>= 10C)."""
+
+    KEY = "probe_n1_p2mild"
+    N1_P2_OAT_MIN_K = 283.15
 
 
 class N1HystMixin:

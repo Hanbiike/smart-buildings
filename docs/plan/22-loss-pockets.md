@@ -175,3 +175,14 @@ rescore timing. Corrected-sim re-validation blocked on hosts.
   met but below floor: revive confirmed,
   no escalation. 54,840 sims (3,000
   live + 51,840).
+- 2026-11-05 P22-8 done: KILLED (same
+  note). NEW N1P2MildProbe (OAT >= 10C
+  gate, default None = existing probes
+  unchanged) + key + 11 tests green.
+  SCEN-5 x864: fb1/fb2/fb8 TIES (gate
+  blocks cold fire, explosions gone)
+  BUT atlanta_2 -0.000545 and sg7
+  -0.000168 LOSE. Gate needs all-5 win:
+  FAIL, no stage-2 fb checks. P2 dead
+  everywhere: cold = explosion, mild =
+  loss, hot = loss. 8,640 sims.

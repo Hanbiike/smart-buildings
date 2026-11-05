@@ -9,6 +9,7 @@ from smart_buildings.baselines.probe_modes import (
     N1OffMildProbe,
     N1OffMixin,
     N1OffProbe,
+    N1P2MildProbe,
     N1P2Mixin,
     N1P2Probe,
     N1StackProbe,
@@ -82,6 +83,21 @@ class TestN1Pieces(unittest.TestCase):
         probe0 = N1OffProbe.__new__(N1OffProbe)
         self.assertTrue(probe0._off_oat_ok(np.array([280.0]), ctrl,
                                            294.0, 297.0))
+
+    def test_p2mild_registered_and_gated(self):
+        self.assertIn("probe_n1_p2mild", evaluate.POLICY_MAP)
+        self.assertEqual(N1P2MildProbe.N1_P2_OAT_MIN_K, 283.15)
+        self.assertIsNone(N1P2Probe.N1_P2_OAT_MIN_K)
+
+    def test_p2_oat_ok(self):
+        import numpy as np
+        probe = N1P2MildProbe.__new__(N1P2MildProbe)
+        probe.outside_mean = 0.0
+        probe.outside_std = 1.0
+        ctrl = {"oat_idx": 0}
+        self.assertTrue(probe._p2_oat_ok(np.array([290.0]), ctrl))
+        self.assertFalse(probe._p2_oat_ok(np.array([270.0]), ctrl))
+        self.assertFalse(probe._p2_oat_ok(np.array([283.14]), ctrl))
 
     def test_p2_pressure_math(self):
         # fraction 1.0 -> 2000 Pa -> +1.0; fraction 0.1 -> clip 200 Pa -> -0.8.
