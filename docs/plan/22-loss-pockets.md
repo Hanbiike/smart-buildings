@@ -1,0 +1,43 @@
+# Plan 22 — loss pockets + danielwuu port (round-5 synthesis)
+
+Source: round-5 workflow (5 angles + critic + followup + synthesis, 8/8 read).
+Parent-verified before writing: (1) angle-0 two-teacher theory REFUTED for
+P21-13 runs — nn_data_dag1 bit-equals SlotDaggerProbe output whose teacher is
+occ9 in committed code (single-teacher divergence stands); old
+tools/dagger_collect.py (occ4, Oct 30) was never used for dag1/dag2.
+(2) angle-2 NO-RLS correction CONFIRMED — covariance allocated once
+(/tmp/dwu/policy.py:229, sha-verified archive) and never referenced; online
+adaptation is the residual disturbance observer. (3) angle-4 pockets
+REPRODUCED exactly from 30x occ9 reward_components.csv: total -2276.3,
+comfort weighted -114.1, hour-6+7 = 76.7% of comfort, hour-6 alone 57.7%.
+
+Shared gates (F/F3 law): judge-first (judge-24 F1 holdout), b8-second,
+0.0002 floor, G8 3x any-pair guard. Short runs protocol-only.
+Kill-conditions are per-item law; KILL means close without escalation.
+
+| ID | Item | Work | Gate |
+|---|---|---|---|
+| P22-1 | UGAS cold-unoccupied-gas trim | Probe: lower unocc heating floor + occupancy-EMA prestart gate on occ9 (precedent zone_pi.py:745-768); screen fb1+fb8 x8640 | Same-sign win vs occ9 both pairs >= 0.0002 mean; then train-30 + judge-24 + G8; else KILL |
+| P22-2 | PRE arrival-edge prestart | Probe: schedule-anchored min-prestart / earlier latch (latch exists occ_gated3.py:54-83, trigger too late); screen denver_3 + fb pair x8640 | Comfort cut with no en+co regression > floor; then train-30 + judge-24 + G8; else KILL |
+| P22-3 | DWU dwusat 11x2 SAT-search port | DwusatProbe(OccEconDbhHot9Policy) post-chain: free-drift + residual observer + slow EMA + per-AHU 11 SAT x 2 recirc cost-min (_choose_ahu core); keep occ9 dampers/reheat/occ-gate/water; DWUSAT_ON flag + parity test | Liveness mixed-climate pair, then train-30 shipped-bill vs occ9 >= 0.0002; then judge-24 + G8 + determinism parity; else KILL (faithful OFF follow-up only if SAT-search sub-floor but live) |
+| P22-4 | DMAX dual-max staging | Stack occ_dualmax.py DualMaxOutputMixin into occ9; screen fb1+fb8 x8640 | Same-sign win (fan + ventilation gas) both pairs; then train-30 + judge-24 + G8; else KILL |
+| P22-5 | F2B one-line ablation | Clear floor.pol.target_offset={} on SkynetColdProbe fallback path; 1 run xfer_10/msp1 x8640 | Revive iff Monday regret <= 3x occ9 same episode AND full-episode same-sign win >= 0.0002 vs occ9; else F2 stays KILLED |
+| P22-6 | RESID residual-ized slot | Refit delta=T-replay(B), B=occ7 T=occ9, new --residual-base flag (~30 lines); deploy cont=clip(B+delta*scale), scale from per-channel p99|T-B| start 0.15 ablate {0.05,0.15,0.3}; 0-sim refit + fb8/sg8/phx1 x8640 | fb8 gap cut >= 50% with no >floor regression elsewhere; then F/F3; unblocks P21-13 on pass; else P21-13 stays BLOCKED |
+| P22-7 | OFFM mild-only OAT-gated OFF | OAT-gated N1OffMixin (fire only when OAT inside comfort band); screen >= 2 atlanta/denver pairs x8640 + sg7 check | Same-sign win vs occ9 both mild pairs AND sg7 gap within 0.0002; else KILLED (general OFF stays dead) |
+| P22-8 | P2M heat-interlocked P2 | N1P2 pressure only when OAT mild (>10C) or clipped to occ9 range [-1.0,0.0]; 5 n1bo-SCEN pairs x864 + fb checks | Same-sign win vs occ9 all 5 AND no train-fb regression > floor; else KILLED |
+| P22-9 | DAGX dag1 fb1/fb2 falsification | SlotDag1Probe vs soft7 on fb1+fb2 x8640 (stop if fail) | Revive iff same-sign win both with gap cut >= 50% AND no >floor regression on fb4/fb5/sg; else DAG line stays dead |
+| P22-10 | Doc closes | danielwuu RLS->observer correction to research/21 + day notes; angle-4 stat scripts/paths to repo (repro); reward-weight value source cite | 0-sim; all closes landed |
+| P22-11 | Torch smoke (DEFERRED) | P21-3 kernels-push smoke (torch + 200KB base64, print __version__); ONLY after P22-1..4 resolve | Smoke COMPLETE + version pinned + ARCH-10 p99<5ms (time_policy.py); else RL push stays deferred |
+
+NOT RANKED: P22-COOL deep-cool electricity (smallest headroom, mostly
+optimized) — run last, only if ranks 1-4 all close.
+
+Needs-external (unchanged): PR #1/#2/#3 diff bodies, forum
+749531/752142/753804/749896/752678/751998 bodies, submission budget balance +
+rescore timing. Corrected-sim re-validation blocked on hosts.
+
+## Execution log
+
+- 2026-11-05 plan written from round-5 synthesis (8/8 read,
+  critic corrections applied, 3 parent verifications above).
+  Starting action at P22-1.

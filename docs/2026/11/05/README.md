@@ -19,6 +19,11 @@ Plan-21 ran P21-1..P21-14 same day: frozen line KILLED
 rescreens killed (R1a counter 0, R2 fire 0, N1 singles
 lose to occ9), E2 collapse, R3a no-sweep, MoE DAgger
 2/2 failed (BLOCKED), docs closed. COMPLETE, no survivors.
+Round-5 research workflow (5 angles + critic + followup +
+synthesis, 8/8 read): ranked 10 plan-22 candidates; parent
+refuted two-teacher theory (dag1 labels ARE occ9),
+confirmed NO-RLS (covariance alloc-only) and pockets
+(h67 76.7% exact). Wrote docs/plan/22-loss-pockets.md.
 
 ## Status
 
@@ -185,8 +190,7 @@ lose to occ9), E2 collapse, R3a no-sweep, MoE DAgger
 
 ## Open
 
-- Round-5 deep research (next): residual-ize, per-mode routing,
-  new angles; P21-13 unblocks on compounding-fix ideas.
+- Plan-22 action (next): P22-1 UGAS trim probe.
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 
