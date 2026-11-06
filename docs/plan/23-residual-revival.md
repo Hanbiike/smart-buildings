@@ -198,3 +198,12 @@ bodies, submission budget + rescore timing.
   0.006399; Sunday start covers
   shutdown+night+prestart). 1,000
   live sims.
+- 2026-11-05 P23-9 done: doc closes
+  (same note). research/22-round6
+  -angle-loss.md (gap + bank1/skew/p99
+  findings); day notes final.
+  PLAN-23 COMPLETE: P23-1 PASS (res30
+  baseline), P23-2 REVERTED, P23-3/4/5/6
+  KILLED, P23-7 CLOSED, P23-8 PASS
+  (infra). No promotion (res30 still
+  -0.0014 vs occ9 on fb8). 0 sims.

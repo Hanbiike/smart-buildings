@@ -101,6 +101,7 @@ verified bank1-zero + memory skew. Wrote plan-23.
 `P23-6 DAG6 — cold DAgger-on-resid: no win anywhere below floor (fb8 -0.000140), R2 warned sg8 .399→.137 — KILL, dag2-pattern`.
 `P23-7 STACK — 6×6 OAT table: all arms below floor (best stackb +161e-6), additive, no blowups — CLOSED`.
 `P23-8 SHIP — self-contained res30 + 179KB f32 cell, parity bit-exact, bars pass, 2×500 exec-check PASS — PASS (infra, not promotion)`.
+`P23-9 DOCS — round-6 loss record + findings to research — PLAN-23 COMPLETE (1 PASS baseline, 1 PASS infra, 4 KILL, 1 CLOSED, 1 REVERTED)`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -372,6 +373,18 @@ verified bank1-zero + memory skew. Wrote plan-23.
   prestart covered). res30 still below
   occ9: no promotion. 1,000 live sims.
 
+### Plan 23/P23-9: doc closes (PLAN-23 COMPLETE)
+
+- research/22-round6-angle-loss.md: gap
+  record (5/8 children lost) + 3 kept
+  findings (bank1-zero, skew-real,
+  p99 consts). Final tally: P23-1 PASS
+  (res30 revival baseline), P23-8 PASS
+  (ship infra), P23-3/4/5/6 KILLED,
+  P23-7 CLOSED, P23-2 REVERTED. No
+  promotion; revival gap to occ9 stands.
+  0 sims.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -385,8 +398,10 @@ verified bank1-zero + memory skew. Wrote plan-23.
 
 ## Open
 
-- Plan-23 action (next): P23-9 doc closes.
-  P21-14 backlog closes (0-sim, anytime).
+- Plan-23 COMPLETE. Next: fresh deep research
+  (revival gap to occ9 unresolved; res30
+  -0.0014 on fb8). P21-14 backlog closes
+  (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 
 ## Appendix
