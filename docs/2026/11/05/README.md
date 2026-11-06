@@ -100,6 +100,7 @@ verified bank1-zero + memory skew. Wrote plan-23.
 `P23-5 FEAT — zero R2 lift on phx1 SAT (.176→.176), err-channels exactly-0 weights (degenerate) — KILL, 0 sim`.
 `P23-6 DAG6 — cold DAgger-on-resid: no win anywhere below floor (fb8 -0.000140), R2 warned sg8 .399→.137 — KILL, dag2-pattern`.
 `P23-7 STACK — 6×6 OAT table: all arms below floor (best stackb +161e-6), additive, no blowups — CLOSED`.
+`P23-8 SHIP — self-contained res30 + 179KB f32 cell, parity bit-exact, bars pass, 2×500 exec-check PASS — PASS (infra, not promotion)`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -359,6 +360,18 @@ verified bank1-zero + memory skew. Wrote plan-23.
   catastrophe-avoidance value only.
   365,040 sims (home-disk results).
 
+### Plan 23/P23-8: ship hardening (PASS, infra only)
+
+- occ_resid30.py (self-contained ship,
+  lazy stdlib, no heavy imports) +
+  make_ship_weights.py (179KB f32 cell)
+  + nb_exec_check.py + 6 tests green
+  (319 total). Ship-vs-f32 bit-exact
+  (8640 obs); P21-3 bars pass; 2x500
+  exec-check PASS (shutdown+night+
+  prestart covered). res30 still below
+  occ9: no promotion. 1,000 live sims.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -372,7 +385,7 @@ verified bank1-zero + memory skew. Wrote plan-23.
 
 ## Open
 
-- Plan-23 action (next): P23-8 ship hardening.
+- Plan-23 action (next): P23-9 doc closes.
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

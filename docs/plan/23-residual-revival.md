@@ -176,3 +176,25 @@ bodies, submission budget + rescore timing.
   below floor). Catastrophe-avoidance
   value only. 365,040 sims (54,000
   stage-0 + 311,040).
+- 2026-11-05 P23-8 done: PASS (ship
+  hardening; NOT a promotion -- res30
+  still below occ9; same note). NEW
+  occ_resid30.py (self-contained
+  Resid30ShipPolicy: embedded slot
+  mirror FZ18/FA14/FG11, lazy stdlib,
+  no torch/nn_model/slot imports) +
+  tools/make_ship_weights.py (f32
+  savez+zlib9+b64, 179.0KB payload,
+  roundtrip-verified) + 6 tests green
+  (319 total): ship-vs-probe-f32
+  bit-exact on 8640 fb8 obs (mirror
+  proof), P21-3 bars vs f64 (<1e-4 +
+  discrete equal), determinism x2,
+  step-time <50ms mean proxy, consts
+  clean. Assembled notebooks/...res30
+  .ipynb via stock assembler (no
+  surgery) + NEW tools/nb_exec_check
+  .py: 2x500 PASS (fb8 0.012550, sg7
+  0.006399; Sunday start covers
+  shutdown+night+prestart). 1,000
+  live sims.
