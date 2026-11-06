@@ -157,3 +157,22 @@ bodies, submission budget + rescore timing.
   Baseline stays res30. 121,260 sims
   (300 live + 120,960; 3 runs lost to
   /tmp quota).
+- 2026-11-05 P23-7 done: CLOSED (all
+  arms below floor; same note). NEW
+  OatStackAProbe (offmild+pre12) +
+  OatStackBProbe (+ugas) + keys + 4
+  tests green (313 total). 6-pair
+  table (fb8/sg7/phx1/atl2/den7/phx4):
+  stage-0 6x6x1500 liveness PASS
+  (36/36, gates silent where expected),
+  then 6x6x8640. Mean-6 honest vs
+  occ9: offmild +15e-6, prem12 +118e-6
+  (phx4 +422e-6 single-pair), stacka
+  +136e-6, ugas +25e-6 (fb8-only
+  +152e-6), stackb +161e-6 (best, <
+  floor). Stacks additive-to-superadditive
+  (fb8 45+152=197 exact; atl2 26+47=73
+  vs 88); no blowups (sg7 -21e-6 worst,
+  below floor). Catastrophe-avoidance
+  value only. 365,040 sims (54,000
+  stage-0 + 311,040).

@@ -99,6 +99,7 @@ verified bank1-zero + memory skew. Wrote plan-23.
 `P23-4 K2 — OAT-split hurts fb8 (-0.000305): sample-split cost beats specialization — KILL, K=1 holds`.
 `P23-5 FEAT — zero R2 lift on phx1 SAT (.176→.176), err-channels exactly-0 weights (degenerate) — KILL, 0 sim`.
 `P23-6 DAG6 — cold DAgger-on-resid: no win anywhere below floor (fb8 -0.000140), R2 warned sg8 .399→.137 — KILL, dag2-pattern`.
+`P23-7 STACK — 6×6 OAT table: all arms below floor (best stackb +161e-6), additive, no blowups — CLOSED`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -345,6 +346,19 @@ verified bank1-zero + memory skew. Wrote plan-23.
   TMPDIR=~/sim_scratch/tmp for suite.
   Baseline res30. 121,260 sims.
 
+### Plan 23/P23-7: OAT-gated stack (CLOSED below floor)
+
+- OatStackA/BProbes (offmild+pre12 / +ugas)
+  + 4 tests green (313 total). Stage-0
+  6x6x1500 PASS (36/36 live); 6x6x8640
+  table: stackb best mean-6 +161e-6 <
+  floor; prem12 phx4 +422e-6 single-pair;
+  ugas fb8-only +152e-6. Stacks additive
+  (fb8 exact) to superadditive (atl2);
+  worst sg7 -21e-6. No promotion;
+  catastrophe-avoidance value only.
+  365,040 sims (home-disk results).
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -358,7 +372,7 @@ verified bank1-zero + memory skew. Wrote plan-23.
 
 ## Open
 
-- Plan-23 action (next): P23-7 OAT-gated stack.
+- Plan-23 action (next): P23-8 ship hardening.
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

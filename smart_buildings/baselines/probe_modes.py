@@ -8,6 +8,8 @@ from smart_buildings.baselines.occ_gated7 import OccGated7Policy
 from smart_buildings.baselines.slot_hybrid import SlotHybridPolicy
 from smart_buildings.baselines.occ_coolshift7 import CoolShiftMixin
 from smart_buildings.baselines.occ_econdbhhot9 import OccEconDbhHot9Policy
+from smart_buildings.baselines.occ_pre1 import PreMargin12Policy
+from smart_buildings.baselines.occ_ugas1 import UgasCap20Policy
 from smart_buildings.baselines.zone_pi import _outside_kelvin
 
 
@@ -1005,6 +1007,20 @@ class N1OffMildProbe(N1OffMixin, OccEconDbhHot9Policy):
     """P22-7: OFF-candidate gated on mild OAT (in-band only)."""
 
     KEY = "probe_n1_offmild"
+    N1_OFF_OAT_GATE = 1
+
+
+class OatStackAProbe(N1OffMixin, PreMargin12Policy):
+    """P23-7: OAT-gated OFF + doubled prestart margin (stack A)."""
+
+    KEY = "probe_oat_stacka"
+    N1_OFF_OAT_GATE = 1
+
+
+class OatStackBProbe(N1OffMixin, PreMargin12Policy, UgasCap20Policy):
+    """P23-7: stack A + deeper unoccupied floor cap (full stack)."""
+
+    KEY = "probe_oat_stackb"
     N1_OFF_OAT_GATE = 1
 
 
