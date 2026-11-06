@@ -98,6 +98,7 @@ verified bank1-zero + memory skew. Wrote plan-23.
 `P23-3 BREAK — self-limit holds to 0.5 (res50 fb8 best) but s=1.0 explodes everywhere — KILL`.
 `P23-4 K2 — OAT-split hurts fb8 (-0.000305): sample-split cost beats specialization — KILL, K=1 holds`.
 `P23-5 FEAT — zero R2 lift on phx1 SAT (.176→.176), err-channels exactly-0 weights (degenerate) — KILL, 0 sim`.
+`P23-6 DAG6 — cold DAgger-on-resid: no win anywhere below floor (fb8 -0.000140), R2 warned sg8 .399→.137 — KILL, dag2-pattern`.
 
 ### Plan 21/P21-1: occ9-base screen (FROZEN LINE KILLED)
 
@@ -326,6 +327,24 @@ verified bank1-zero + memory skew. Wrote plan-23.
   setpoints; degenerate in demos). No screen
   (ordered gate). Baseline res30. 0 sims.
 
+### Plan 23/P23-6: DAgger-on-resid cold-only (KILLED)
+
+- replay_base.py (bit-exact vs shipped B) +
+  dagger_collect POLICY_MAP keys + 4 tests
+  green (309 total). Collect 6 fb pairs
+  (res30/occ9) + B-replay + refit dag6 +
+  ResidDag6Probe. R2 warned (sg8 a.sat
+  .399→.137). Screen vs res30: fb8
+  -0.000140 (gate fail), sg8 -0.000025,
+  phx1 +0.000116; all below floor,
+  mean-3 -0.000016. Bound held poison
+  inside floor, bought no win:
+  non-convergent (dag2-pattern). Infra:
+  /tmp quota-capped (1GB write fails at
+  6G avail) — tests moved to slot_runs,
+  TMPDIR=~/sim_scratch/tmp for suite.
+  Baseline res30. 121,260 sims.
+
 ## Decisions
 
 - Plan-21 head is frozen-det over occ9 (only above-floor signal),
@@ -339,8 +358,7 @@ verified bank1-zero + memory skew. Wrote plan-23.
 
 ## Open
 
-- Plan-23 action (next): P23-6 DAgger-on-resid
-  (needs tools/replay_base.py first).
+- Plan-23 action (next): P23-7 OAT-gated stack.
   P21-14 backlog closes (0-sim, anytime).
 - Needs-external: PR diffs, forum bodies, budget/rescore timing.
 

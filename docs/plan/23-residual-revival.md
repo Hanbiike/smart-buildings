@@ -131,3 +131,29 @@ bodies, submission budget + rescore timing.
   demos); zone lift +.003 noise. No
   screen (gate ordered offline first).
   Baseline stays res30. 0 sims.
+- 2026-11-05 P23-6 done: KILLED
+  (no cold win; dag2-pattern; same
+  note). NEW tools/replay_base.py
+  (offline B-replay, bit-exact vs
+  shipped B_occ_gated7.npy) + 2 tests;
+  dagger_collect generalized to
+  POLICY_MAP keys (student/teacher) + 2
+  tests. Cold-only collect (res30
+  student, occ9 teacher, 6 fb pairs) +
+  B-replay + refit slot_resid_dag6
+  (demos + corrective, holdout b5) +
+  ResidDag6Probe. Offline R2 warned:
+  sg8 a.sat .399->.137 (corrective
+  pulls shared heads off hot). Screen
+  vs res30: fb8 0.029103 vs 0.028963
+  (-0.000140, gate fail), sg8
+  -0.000025, phx1 0.004705 vs 0.004821
+  (+0.000116, res30 carried from P23-4
+  by determinism -- fb8/sg8 res30
+  reproduced bit-exact); all below
+  floor, mean-3 -0.000016. Residual
+  bound held poison inside floor but
+  bought no win: non-convergent.
+  Baseline stays res30. 121,260 sims
+  (300 live + 120,960; 3 runs lost to
+  /tmp quota).

@@ -104,10 +104,11 @@ class TestK2Deploy(unittest.TestCase):
         # test); run the test-weights subclass directly for liveness.
         scen = (ROOT / "smart_buildings" / "training_scenarios"
                 / "building_train_8" / "fairbanks_8")
+        livedir = RUNS / "test_resk2live"
         summary = E.evaluate_policy_for_config(
-            Path("/tmp/resk2live"), scen, "test_resk2_k2", _T, 300)
+            livedir, scen, "test_resk2_k2", _T, 300)
         self.assertTrue(np.isfinite(summary["total_reward"]))
         import pandas as pd
-        df = pd.read_csv(Path("/tmp/resk2live") / "probe_slot_resk2"
+        df = pd.read_csv(livedir / "probe_slot_resk2"
                          / "reward_components.csv")
         self.assertEqual(len(df), 300)

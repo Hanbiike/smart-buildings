@@ -1304,6 +1304,14 @@ class ResidK2Probe(ResidualSlotProbe):
     RESID_SCALE = 0.30
 
 
+class ResidDag6Probe(ResidualSlotProbe):
+    """P23-6: cold-only DAgger-on-resid heads (demos + dag6r), scale 0.30."""
+
+    KEY = "probe_slot_resdag6"
+    WEIGHTS = "smart_buildings/results/slot_runs/slot_resid_dag6.npz"
+    RESID_SCALE = 0.30
+
+
 class ResidPCProbe(ResidualSlotProbe):
     """P23-1: per-channel p99-normalized residual scale.
 

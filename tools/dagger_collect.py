@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-"""DAgger collection: student (slot-hybrid) drives, teacher labels every obs.
+"""DAgger collection: student drives, teacher labels every obs.
 
 Writes results/<b>/<w>/nn_data_<tag>/obs_dump.npz with obs + TEACHER
 actions, in the same layout tools/slot_train.py consumes. slot_train.py
 accepts a comma-separated --teacher list so rounds aggregate.
+P23-6: student/teacher are POLICY_MAP keys (--student-key/--teacher-key);
+--student keeps the legacy slot_hybrid weights path.
 """
 import argparse
 import multiprocessing as mp
@@ -17,8 +19,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from smart_buildings.baselines.slot_hybrid import SlotHybridPolicy  # noqa: E402
-from smart_buildings.baselines.occ_gated4 import OccGated4Policy  # noqa: E402
+# Student/teacher classes resolve via evaluate.POLICY_MAP (P23-6).
 
 SCEN_DIR = PROJECT_ROOT / "smart_buildings" / "training_scenarios"
 RESULTS = PROJECT_ROOT / "smart_buildings" / "results"
@@ -34,7 +35,8 @@ SUBSET_8 = [
     ("building_train_8", "phoenix_4"),
 ]
 
-def _collect_proc(scenario, gin_path, student_weights, steps, tag):
+def _collect_proc(scenario, gin_path, student_key, student_weights, teacher_key,
+                  steps, tag):
     """One process per scenario: init exactly its env, collect, save."""
     from smart_buildings import evaluate as E
     env = E.load_hybrid_environment(Path(gin_path))
@@ -42,8 +44,12 @@ def _collect_proc(scenario, gin_path, student_weights, steps, tag):
     meta = E.create_building_meta_data(env, Path(gin_path).parent)
     spec = env.action_spec()
     tracker = E.SimulationTracker(env, capture_snapshots=False)
-    stu = SlotHybridPolicy(meta, spec, student_weights)
-    tea = OccGated4Policy(meta, spec)
+    stu_cls = E.POLICY_MAP[student_key]
+    try:
+        stu = stu_cls(meta, spec, student_weights)
+    except TypeError:
+        stu = stu_cls(meta, spec)
+    tea = E.initialize_policy(E.POLICY_MAP[teacher_key], meta, spec)
     stu.reset()
     tea.reset()
     tracker.reset()
@@ -79,7 +85,10 @@ def _collect_proc(scenario, gin_path, student_weights, steps, tag):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--student", required=True)
+    ap.add_argument("--student", default=None,
+                    help="legacy: weights path for slot_hybrid student")
+    ap.add_argument("--student-key", default="slot_hybrid")
+    ap.add_argument("--teacher-key", default="occ_gated4")
     ap.add_argument("--tag", default="dag1")
     ap.add_argument("--steps", type=int, default=8640)
     ap.add_argument("--workers", type=int, default=4)
@@ -103,7 +112,8 @@ def main():
     for s in scenarios:
         gin = str(SCEN_DIR / s[0] / s[1] / "config.gin")
         p = ctx.Process(target=_collect_proc,
-                        args=(s, gin, args.student, args.steps, args.tag))
+                        args=(s, gin, args.student_key, args.student,
+                              args.teacher_key, args.steps, args.tag))
         procs.append(p)
     # Throttle to --workers concurrent processes.
     running = []

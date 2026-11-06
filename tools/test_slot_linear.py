@@ -1,6 +1,7 @@
 """Focused tests for the slot-linear controller."""
 
 import math
+import os
 import unittest
 
 import numpy as np
@@ -90,15 +91,18 @@ class SlotPolicyTest(unittest.TestCase):
         feat = SlotFeatures(meta)
         rng = np.random.default_rng(0)
         FZ, FA, FG = feat.FZ, feat.FA, feat.FG
-        np.savez("/tmp/slot_test_weights.npz",
+        # /tmp is quota-capped; weights go next to the repo (git-ignored).
+        wpath = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             "..", "smart_buildings", "results",
+                             "slot_runs", "test_slot_weights.npz")
+        np.savez(wpath,
                  Wz=rng.normal(0, 0.1, (2, N_SLOTS, FZ, 2)),
                  bz=np.zeros((2, N_SLOTS, 2)),
                  Wa=rng.normal(0, 0.1, (2, N_SLOTS, FA, 4)),
                  ba=np.zeros((2, N_SLOTS, 4)),
                  Wg=rng.normal(0, 0.1, (2, N_SLOTS, FG, 3)),
                  bg=np.zeros((2, N_SLOTS, 3)))
-        pol = SlotLinearPolicy(meta, spec,
-                               weights_path="/tmp/slot_test_weights.npz")
+        pol = SlotLinearPolicy(meta, spec, weights_path=wpath)
         return pol, index
 
     def test_action_contract(self):
